@@ -1,0 +1,84 @@
+<Application x:Class="ModbusLogger.App.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ModbusLogger.App"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+
+        <!-- Barvna paleta, povzeta po www.hidria.com (logotip + poudarjene povezave) -->
+        <SolidColorBrush x:Key="Brand.DarkBlue" Color="#FF205080"/>
+        <SolidColorBrush x:Key="Brand.Blue" Color="#FF1888B8"/>
+        <SolidColorBrush x:Key="Brand.Teal" Color="#FF00A0C0"/>
+        <SolidColorBrush x:Key="Brand.Accent" Color="#FF3AA0FF"/>
+        <SolidColorBrush x:Key="Brand.Light" Color="#FFEFF6FA"/>
+        <SolidColorBrush x:Key="Brand.LightHover" Color="#FFDCEDF6"/>
+        <SolidColorBrush x:Key="Brand.Disabled" Color="#FFB7C4CC"/>
+
+        <LinearGradientBrush x:Key="Brand.HeaderAccent" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#FF205080" Offset="0"/>
+            <GradientStop Color="#FF1888B8" Offset="0.5"/>
+            <GradientStop Color="#FF00A0C0" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- Poln, poudarjen gumb (ZAŽENI/USTAVI) -->
+        <Style x:Key="Brand.PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource Brand.Teal}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource Brand.Blue}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource Brand.Disabled}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Obrobljen gumb za sekundarna dejanja (Ponovno naloži, Odpri mapo ...) -->
+        <Style x:Key="Brand.SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource Brand.Light}"/>
+            <Setter Property="Foreground" Value="{StaticResource Brand.DarkBlue}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{StaticResource Brand.Blue}"
+                                BorderThickness="1" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource Brand.LightHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource Brand.Disabled}"/>
+                                <Setter Property="Foreground" Value="{StaticResource Brand.Disabled}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Naslov GroupBox-a v barvi znamke; ker gre za GroupBox.Header (ne Foreground na GroupBox
+             samem), se to ne podeduje na vsebino znotraj (polja, tabele ...). -->
+        <Style x:Key="Brand.GroupHeader" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource Brand.DarkBlue}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+    </Application.Resources>
+</Application>

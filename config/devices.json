@@ -1,0 +1,43 @@
+{
+  "serial": {
+    "port": "COM3",
+    "baud": 19200,
+    "parity": "even",
+    "stopBits": 1,
+    "timeoutMs": 1000,
+    "retries": 2
+  },
+  "pollIntervalSeconds": 60,
+  "logging": {
+    "enabled": true,
+    "folder": "../logs",
+    "delimiter": ";",
+    "decimalSeparator": ","
+  },
+  "devices": [
+    {
+      "slaveId": 2,
+      "profile": "hidria-ec-fan",
+      "label": "Hidria 1",
+      "enabled": false
+    },
+    {
+      "slaveId": 1,
+      "profile": "hidria-ec-fan",
+      "label": "Ventilator",
+      "enabled": false
+    },
+    {
+      "slaveId": 1,
+      "profile": "hidria-ec-fan-custom",
+      "label": "Ventilator 1",
+      "enabled": true
+    },
+    {
+      "slaveId": 1,
+      "profile": "hidria-ec-fan-custom",
+      "label": "Ventilator 2",
+      "enabled": true
+    }
+  ]
+}

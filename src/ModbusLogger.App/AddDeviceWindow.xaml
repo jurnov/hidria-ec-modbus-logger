@@ -1,0 +1,97 @@
+<Window x:Class="ModbusLogger.App.AddDeviceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ModbusLogger.App"
+        Title="{Binding DialogTitle}" Height="580" Width="700" MinHeight="420" MinWidth="600"
+        WindowStartupLocation="CenterOwner" Icon="Assets/hidria.ico">
+    <Window.Resources>
+        <Style TargetType="TextBlock" x:Key="FieldLabel">
+            <Setter Property="Margin" Value="0,6,0,2"/>
+            <Setter Property="Foreground" Value="#555"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="{Binding DialogTitle}" Foreground="{StaticResource Brand.DarkBlue}"
+                   FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+
+        <!-- Osnovni podatki -->
+        <Grid Grid.Row="1" Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="120"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                <TextBlock Text="Ime naprave" Style="{StaticResource FieldLabel}"/>
+                <TextBox Text="{Binding Label, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="Slave ID" Style="{StaticResource FieldLabel}"/>
+                <TextBox Text="{Binding SlaveId}"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Profil -->
+        <GroupBox Grid.Row="2">
+            <GroupBox.Header>
+                <TextBlock Text="Profil naprave (register mapa)" Style="{StaticResource Brand.GroupHeader}"/>
+            </GroupBox.Header>
+            <DockPanel Margin="4">
+                <CheckBox DockPanel.Dock="Top" Content="Uredi register mapo tukaj (namesto izbire profila iz seznama)"
+                          IsChecked="{Binding IsNewProfile}" Margin="0,0,0,8"/>
+
+                <ComboBox DockPanel.Dock="Top" ItemsSource="{Binding AvailableProfiles}" SelectedItem="{Binding SelectedProfile}"
+                          IsEnabled="{Binding UseExistingProfile}" Margin="0,0,0,8"/>
+
+                <StackPanel DockPanel.Dock="Top" IsEnabled="{Binding IsNewProfile}" Margin="0,0,0,8">
+                    <TextBlock Text="Ime novega profila" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Text="{Binding NewProfileName, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <DockPanel DockPanel.Dock="Top" IsEnabled="{Binding IsNewProfile}" Margin="0,0,0,4">
+                    <TextBlock DockPanel.Dock="Left" Text="Registri" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <Button DockPanel.Dock="Right" Content="Odstrani izbranega" Command="{Binding RemoveRegisterCommand}"
+                            Style="{StaticResource Brand.SecondaryButton}" Padding="8,3" Margin="6,0,0,0"/>
+                    <Button DockPanel.Dock="Right" Content="+ Register" Command="{Binding AddRegisterCommand}"
+                            Style="{StaticResource Brand.SecondaryButton}" Padding="8,3"/>
+                </DockPanel>
+
+                <DataGrid x:Name="RegistersGrid" ItemsSource="{Binding Registers}" SelectedItem="{Binding SelectedRegister}"
+                          IsEnabled="{Binding IsNewProfile}" AutoGenerateColumns="False" CanUserAddRows="False"
+                          HeadersVisibility="Column" GridLinesVisibility="Horizontal">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Naslov" Binding="{Binding Address, UpdateSourceTrigger=PropertyChanged}" Width="75"/>
+                        <DataGridComboBoxColumn Header="Funkcija" SelectedItemBinding="{Binding Function}" Width="80"
+                                                 ItemsSource="{x:Static local:RegisterOptions.Functions}"/>
+                        <DataGridTextColumn Header="Ime" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+                        <DataGridTextColumn Header="Enota" Binding="{Binding Unit, UpdateSourceTrigger=PropertyChanged}" Width="55"/>
+                        <DataGridComboBoxColumn Header="Tip" SelectedItemBinding="{Binding Type}" Width="75"
+                                                 ItemsSource="{x:Static local:RegisterOptions.Types}"/>
+                        <DataGridTextColumn Header="Skala" Binding="{Binding Scale, UpdateSourceTrigger=PropertyChanged}" Width="55"/>
+                        <DataGridComboBoxColumn Header="Word order" SelectedItemBinding="{Binding WordOrder}" Width="80"
+                                                 ItemsSource="{x:Static local:RegisterOptions.WordOrders}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </GroupBox>
+
+        <TextBlock Grid.Row="3" Text="{Binding ValidationMessage}" Foreground="#C0392B" TextWrapping="Wrap"
+                   Margin="0,8,0,0" Visibility="{Binding ValidationMessage, Converter={x:Static local:EmptyToCollapsedConverter.Instance}}"/>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Prekliči" Command="{Binding CancelCommand}" Style="{StaticResource Brand.SecondaryButton}"
+                    Padding="14,6" Margin="0,0,8,0"/>
+            <Button Content="Shrani" Command="{Binding SaveCommand}" Style="{StaticResource Brand.PrimaryButton}"
+                    Width="100" Height="32"/>
+        </StackPanel>
+    </Grid>
+</Window>

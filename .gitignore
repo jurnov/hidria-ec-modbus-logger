@@ -1,0 +1,18 @@
+# Build output
+bin/
+obj/
+publish/
+publish-app/
+
+# Podatki, ki nastanejo med tekom aplikacije (ne izvorna koda)
+logs/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+
+# OS
+Thumbs.db
+.DS_Store
