@@ -46,18 +46,20 @@
                 <TextBlock Text="Profil naprave (register mapa)" Style="{StaticResource Brand.GroupHeader}"/>
             </GroupBox.Header>
             <DockPanel Margin="4">
-                <CheckBox DockPanel.Dock="Top" Content="Uredi register mapo tukaj (namesto izbire profila iz seznama)"
-                          IsChecked="{Binding IsNewProfile}" Margin="0,0,0,8"/>
+                <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Foreground="#999" FontSize="11" Margin="0,0,0,8"
+                           Text="Register mapa spodaj je last te naprave — spremembe ne vplivajo na druge naprave. Za souporabo/predloge uporabi 'Naloži profil' in 'Shrani kot profil'."/>
 
-                <ComboBox DockPanel.Dock="Top" ItemsSource="{Binding AvailableProfiles}" SelectedItem="{Binding SelectedProfile}"
-                          IsEnabled="{Binding UseExistingProfile}" Margin="0,0,0,8"/>
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                    <Button DockPanel.Dock="Left" Content="Naloži profil" Command="{Binding LoadProfileCommand}"
+                            Style="{StaticResource Brand.SecondaryButton}" Padding="8,3" Margin="0,0,6,0"/>
+                    <Button DockPanel.Dock="Left" Content="Izbriši profil" Command="{Binding DeleteProfileCommand}"
+                            Style="{StaticResource Brand.SecondaryButton}" Padding="8,3" Margin="0,0,16,0"/>
+                    <Button DockPanel.Dock="Right" Content="Shrani kot profil ..." Command="{Binding SaveAsProfileCommand}"
+                            Style="{StaticResource Brand.SecondaryButton}" Padding="8,3"/>
+                    <ComboBox ItemsSource="{Binding AvailableProfiles}" SelectedItem="{Binding ProfileToLoad}" Width="160"/>
+                </DockPanel>
 
-                <StackPanel DockPanel.Dock="Top" IsEnabled="{Binding IsNewProfile}" Margin="0,0,0,8">
-                    <TextBlock Text="Ime novega profila" Style="{StaticResource FieldLabel}"/>
-                    <TextBox Text="{Binding NewProfileName, UpdateSourceTrigger=PropertyChanged}"/>
-                </StackPanel>
-
-                <DockPanel DockPanel.Dock="Top" IsEnabled="{Binding IsNewProfile}" Margin="0,0,0,4">
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,4">
                     <TextBlock DockPanel.Dock="Left" Text="Registri" VerticalAlignment="Center" FontWeight="Bold"/>
                     <Button DockPanel.Dock="Right" Content="Odstrani izbranega" Command="{Binding RemoveRegisterCommand}"
                             Style="{StaticResource Brand.SecondaryButton}" Padding="8,3" Margin="6,0,0,0"/>
@@ -66,7 +68,7 @@
                 </DockPanel>
 
                 <DataGrid x:Name="RegistersGrid" ItemsSource="{Binding Registers}" SelectedItem="{Binding SelectedRegister}"
-                          IsEnabled="{Binding IsNewProfile}" AutoGenerateColumns="False" CanUserAddRows="False"
+                          AutoGenerateColumns="False" CanUserAddRows="False"
                           HeadersVisibility="Column" GridLinesVisibility="Horizontal">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Naslov" Binding="{Binding Address, UpdateSourceTrigger=PropertyChanged}" Width="75"/>

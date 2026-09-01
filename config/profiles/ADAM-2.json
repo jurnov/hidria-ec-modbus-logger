@@ -1,0 +1,22 @@
+{
+  "name": "ADAM-2",
+  "pollGroups": [
+    {
+      "function": "input",
+      "startAddress": "0x0000",
+      "count": 1
+    }
+  ],
+  "registers": [
+    {
+      "address": "0x0000",
+      "name": "Temp1",
+      "unit": "",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    }
+  ]
+}

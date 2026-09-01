@@ -2,8 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:ModbusLogger.App"
-        xmlns:oxy="http://oxyplot.org/wpf"
-        Title="Hidria EC — Modbus RTU zapisovalnik" Height="680" Width="1000" MinHeight="480" MinWidth="800"
+        Title="Hidria EC — Modbus zapisovalnik" Height="680" Width="1000" MinHeight="480" MinWidth="800"
         Icon="Assets/hidria.ico">
     <Window.Resources>
         <Style TargetType="TextBlock" x:Key="FieldLabel">
@@ -28,7 +27,7 @@
             <DockPanel>
                 <Image DockPanel.Dock="Left" Source="Assets/hidria_logo.png" Height="34" Margin="0,0,12,0"
                        HorizontalAlignment="Left" RenderOptions.BitmapScalingMode="HighQuality"/>
-                <TextBlock DockPanel.Dock="Left" Text="Modbus RTU zapisovalnik" VerticalAlignment="Center"
+                <TextBlock DockPanel.Dock="Left" Text="Modbus zapisovalnik" VerticalAlignment="Center"
                            Foreground="{StaticResource Brand.DarkBlue}" FontSize="16" FontWeight="Bold"/>
             </DockPanel>
         </Border>
@@ -37,19 +36,14 @@
         <DockPanel Grid.Row="1" Margin="0,0,0,8">
             <Button DockPanel.Dock="Left" Content="{Binding StartStopText}" Command="{Binding StartStopCommand}"
                     Width="110" Height="34" Style="{StaticResource Brand.PrimaryButton}"/>
-            <Button DockPanel.Dock="Left" Content="Naloži konfiguracijo" Command="{Binding ReloadCommand}"
+            <Button DockPanel.Dock="Left" Content="Naloži profil" Command="{Binding ReloadCommand}"
                     Margin="8,0,0,0" Padding="10,6" Style="{StaticResource Brand.SecondaryButton}"/>
-            <Button DockPanel.Dock="Left" Content="Shrani konfiguracijo" Command="{Binding SaveConfigCommand}"
-                    Margin="8,0,0,0" Padding="10,6" Style="{StaticResource Brand.SecondaryButton}"/>
-            <Button DockPanel.Dock="Left" Content="Odpri mapo logov" Command="{Binding OpenLogsCommand}"
+            <Button DockPanel.Dock="Left" Content="Shrani profil" Command="{Binding SaveConfigCommand}"
                     Margin="8,0,0,0" Padding="10,6" Style="{StaticResource Brand.SecondaryButton}"/>
             <Button DockPanel.Dock="Left" Content="Modbus promet (HEX)" Command="{Binding ShowTrafficCommand}"
                     Margin="8,0,0,0" Padding="10,6" Style="{StaticResource Brand.SecondaryButton}"/>
-            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center"
-                        ToolTip="Sprememba velja takoj, tudi med tekom beleženja.">
-                <TextBlock Text="Interval vzorčenja [s]:" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                <TextBox Text="{Binding IntervalSeconds}" Width="55" VerticalAlignment="Center"/>
-            </StackPanel>
+            <Button DockPanel.Dock="Left" Content="Nastavitve beleženja" Command="{Binding ShowLoggingSettingsCommand}"
+                    Margin="8,0,0,0" Padding="10,6" Style="{StaticResource Brand.SecondaryButton}"/>
             <TextBlock DockPanel.Dock="Right" Text="{Binding ConfigPath}" VerticalAlignment="Center"
                        Foreground="#777" TextTrimming="CharacterEllipsis" TextAlignment="Right"/>
         </DockPanel>
@@ -63,34 +57,54 @@
             </Grid.ColumnDefinitions>
 
             <!-- Nastavitve porta -->
-            <GroupBox Grid.Column="0" Padding="8" IsEnabled="{Binding IsStopped}">
+            <GroupBox Grid.Column="0" Padding="8">
                 <GroupBox.Header>
                     <TextBlock Text="Povezava" Style="{StaticResource Brand.GroupHeader}"/>
                 </GroupBox.Header>
                 <StackPanel>
-                    <TextBlock Text="COM port" Style="{StaticResource FieldLabel}"/>
-                    <DockPanel>
-                        <Button DockPanel.Dock="Right" Content="⟳" Command="{Binding RefreshPortsCommand}" Width="26"
-                                Padding="0" Margin="4,0,0,0" Style="{StaticResource Brand.SecondaryButton}"
-                                ToolTip="Osveži seznam portov"/>
-                        <ComboBox ItemsSource="{Binding Ports}" SelectedItem="{Binding SelectedPort}"/>
-                    </DockPanel>
+                    <!-- Nastavitve povezave: ni jih mogoče spreminjati med tekom, ker zahtevajo ponovni priklop. -->
+                    <StackPanel IsEnabled="{Binding IsStopped}">
+                        <TextBlock Text="Način povezave" Style="{StaticResource FieldLabel}"/>
+                        <ComboBox ItemsSource="{Binding ConnectionModeOptions}" DisplayMemberPath="Label"
+                                  SelectedValuePath="IsTcp" SelectedValue="{Binding IsTcpConnection}"/>
 
-                    <TextBlock Text="Hitrost (baud)" Style="{StaticResource FieldLabel}"/>
-                    <ComboBox ItemsSource="{Binding BaudRateOptions}" SelectedItem="{Binding Baud}"/>
+                        <StackPanel Visibility="{Binding IsTcpConnection, Converter={x:Static local:InverseBoolToVisibleConverter.Instance}}">
+                            <TextBlock Text="COM port" Style="{StaticResource FieldLabel}"/>
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right" Content="⟳" Command="{Binding RefreshPortsCommand}" Width="26"
+                                        Padding="0" Margin="4,0,0,0" Style="{StaticResource Brand.SecondaryButton}"
+                                        ToolTip="Osveži seznam portov"/>
+                                <ComboBox ItemsSource="{Binding Ports}" SelectedItem="{Binding SelectedPort}"/>
+                            </DockPanel>
 
-                    <TextBlock Text="Format (podatkovni/pariteta/stop)" Style="{StaticResource FieldLabel}"/>
-                    <ComboBox ItemsSource="{Binding FramingOptions}" SelectedItem="{Binding Framing}"/>
+                            <TextBlock Text="Hitrost (baud)" Style="{StaticResource FieldLabel}"/>
+                            <ComboBox ItemsSource="{Binding BaudRateOptions}" SelectedItem="{Binding Baud}"/>
 
-                    <TextBlock Text="Timeout [ms]" Style="{StaticResource FieldLabel}"/>
-                    <TextBox Text="{Binding TimeoutMs}"/>
+                            <TextBlock Text="Format (podatkovni/pariteta/stop)" Style="{StaticResource FieldLabel}"/>
+                            <ComboBox ItemsSource="{Binding FramingOptions}" SelectedItem="{Binding Framing}"/>
+                        </StackPanel>
 
-                    <TextBlock Text="Ponovitve" Style="{StaticResource FieldLabel}"/>
-                    <TextBox Text="{Binding Retries}"/>
+                        <StackPanel Visibility="{Binding IsTcpConnection, Converter={x:Static local:BoolToVisibleConverter.Instance}}">
+                            <TextBlock Text="IP naslov / gostitelj" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding TcpHost, UpdateSourceTrigger=PropertyChanged}"/>
 
-                    <CheckBox Content="Beleži v CSV" IsChecked="{Binding LogToCsv}" Margin="0,12,0,0"/>
+                            <TextBlock Text="TCP vrata" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding TcpPort}"/>
+                        </StackPanel>
 
-                    <TextBlock Text="Za trajno shrani nastavitve z gumbom 'Shrani konfiguracijo' zgoraj."
+                        <TextBlock Text="Timeout [ms]" Style="{StaticResource FieldLabel}"/>
+                        <TextBox Text="{Binding TimeoutMs}"/>
+
+                        <TextBlock Text="Ponovitve" Style="{StaticResource FieldLabel}"/>
+                        <TextBox Text="{Binding Retries}"/>
+                    </StackPanel>
+
+                    <!-- Čas vzorčenja ostane urejljiv tudi med tekom (velja takoj). -->
+                    <TextBlock Text="Čas vzorčenja [s]" Style="{StaticResource FieldLabel}" Margin="0,16,0,2"/>
+                    <TextBox Text="{Binding SampleIntervalSeconds}"
+                             ToolTip="Kako pogosto aplikacija bere naprave. Sprememba velja takoj, tudi med tekom."/>
+
+                    <TextBlock Text="Interval zapisa in nastavitve CSV/MySQL beleženja so v gumbu 'Nastavitve beleženja' zgoraj. Za trajno shranitev uporabi 'Shrani profil'."
                                TextWrapping="Wrap" Foreground="#999" FontSize="11" Margin="0,12,0,0"/>
                 </StackPanel>
             </GroupBox>
@@ -138,73 +152,36 @@
                 </DockPanel>
             </GroupBox>
 
-            <!-- Registri izbrane naprave: tabela ali graf -->
+            <!-- Registri izbrane naprave: tabela trenutnih vrednosti -->
             <GroupBox Grid.Column="2" Padding="4" Margin="8,0,0,0">
                 <GroupBox.Header>
                     <TextBlock Text="{Binding SelectedDevice.Label, FallbackValue=Registri}" Style="{StaticResource Brand.GroupHeader}"/>
                 </GroupBox.Header>
-                <DockPanel>
-                    <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
-                        <Button DockPanel.Dock="Right" Content="{Binding ChartToggleText}" Command="{Binding ToggleChartViewCommand}"
-                                Style="{StaticResource Brand.SecondaryButton}" Padding="10,4"/>
-                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="0,0,8,0"
-                                    Visibility="{Binding IsChartView, Converter={x:Static local:BoolToVisibleConverter.Instance}}">
-                            <ToggleButton x:Name="ParamsToggle" Content="Parametri ▾" Padding="10,4" Margin="0,0,8,0"/>
-                            <TextBlock Text="Okno:" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                            <ComboBox ItemsSource="{Binding TimeRangeOptions}" SelectedItem="{Binding SelectedTimeRange}" Width="70"/>
-                        </StackPanel>
-                    </DockPanel>
-
-                    <Popup IsOpen="{Binding IsChecked, ElementName=ParamsToggle}" StaysOpen="False"
-                           PlacementTarget="{Binding ElementName=ParamsToggle}" Placement="Bottom">
-                        <Border Background="White" BorderBrush="{StaticResource Brand.Blue}" BorderThickness="1" Padding="6"
-                                MaxHeight="320" MinWidth="240">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <ItemsControl ItemsSource="{Binding SelectedDevice.Registers}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal" Margin="2">
-                                                <CheckBox IsChecked="{Binding ShowOnChart}" Content="{Binding DisplayName}" Width="180"/>
-                                                <CheckBox IsChecked="{Binding UseRightAxis}" Content="desna os"
-                                                          IsEnabled="{Binding ShowOnChart}" Margin="8,0,0,0"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
-                        </Border>
-                    </Popup>
-
-                    <DataGrid ItemsSource="{Binding SelectedDevice.Registers}" AutoGenerateColumns="False"
-                              IsReadOnly="True" HeadersVisibility="Column" GridLinesVisibility="Horizontal"
-                              CanUserSortColumns="False" CanUserReorderColumns="False"
-                              Visibility="{Binding IsChartView, Converter={x:Static local:InverseBoolToVisibleConverter.Instance}}">
-                        <DataGrid.ColumnHeaderStyle>
-                            <Style TargetType="DataGridColumnHeader">
-                                <Setter Property="Background" Value="{StaticResource Brand.Light}"/>
-                                <Setter Property="Foreground" Value="{StaticResource Brand.DarkBlue}"/>
-                                <Setter Property="FontWeight" Value="Bold"/>
-                                <Setter Property="Padding" Value="6,4"/>
-                            </Style>
-                        </DataGrid.ColumnHeaderStyle>
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Naslov" Binding="{Binding Address}" Width="80"/>
-                            <DataGridTextColumn Header="Ime" Binding="{Binding Name}" Width="*"/>
-                            <DataGridTextColumn Header="Vrednost" Binding="{Binding ValueText}" Width="110">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="TextAlignment" Value="Right"/>
-                                        <Setter Property="FontFamily" Value="Consolas"/>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Enota" Binding="{Binding Unit}" Width="70"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <oxy:PlotView Model="{Binding ChartModel}"
-                                  Visibility="{Binding IsChartView, Converter={x:Static local:BoolToVisibleConverter.Instance}}"/>
-                </DockPanel>
+                <DataGrid ItemsSource="{Binding SelectedDevice.Registers}" AutoGenerateColumns="False"
+                          IsReadOnly="True" HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                          CanUserSortColumns="False" CanUserReorderColumns="False">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="{StaticResource Brand.Light}"/>
+                            <Setter Property="Foreground" Value="{StaticResource Brand.DarkBlue}"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Padding" Value="6,4"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Naslov" Binding="{Binding Address}" Width="80"/>
+                        <DataGridTextColumn Header="Ime" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Vrednost" Binding="{Binding ValueText}" Width="110">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextAlignment" Value="Right"/>
+                                    <Setter Property="FontFamily" Value="Consolas"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Enota" Binding="{Binding Unit}" Width="70"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </GroupBox>
         </Grid>
 

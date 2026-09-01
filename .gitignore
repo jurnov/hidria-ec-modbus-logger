@@ -3,6 +3,8 @@ bin/
 obj/
 publish/
 publish-app/
+installer-output/
+dist/ModbusLogger.App.exe
 
 # Podatki, ki nastanejo med tekom aplikacije (ne izvorna koda)
 logs/

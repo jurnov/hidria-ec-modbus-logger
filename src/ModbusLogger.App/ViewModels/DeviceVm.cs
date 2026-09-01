@@ -55,22 +55,20 @@ public sealed class DeviceVm : ViewModelBase
         Status = "čakam na prvo branje";
         StatusBrush = IdleBrush;
         LastReadText = "";
-        foreach (var reg in Registers)
-            reg.History.Clear();
+    }
+
+    /// <summary>Ob ustavitvi zapisovalnika: siva lučka, brez zadnjega odzivnega časa/statusa "OK".</summary>
+    public void SetStopped()
+    {
+        Status = "brez povezave — ustavljeno";
+        StatusBrush = IdleBrush;
+        LastReadText = "";
     }
 }
 
-/// <summary>Ena vzorčena vrednost registra ob določenem času — za graf.</summary>
-public sealed record RegisterSample(DateTime Time, double Value);
-
 public sealed class RegisterVm : ViewModelBase
 {
-    /// <summary>Omeji zgodovino, da poraba pomnilnika ne raste neomejeno pri dolgotrajnem teku.</summary>
-    private const int MaxHistory = 2000;
-
     private string _valueText = "—";
-    private bool _showOnChart;
-    private bool _useRightAxis;
 
     public RegisterVm(RegisterDef def)
     {
@@ -82,23 +80,8 @@ public sealed class RegisterVm : ViewModelBase
     public string Address { get; }
     public string Name { get; }
     public string Unit { get; }
-    public string DisplayName => string.IsNullOrEmpty(Unit) ? Name : $"{Name} [{Unit}]";
     public string ValueText { get => _valueText; private set => Set(ref _valueText, value); }
 
-    /// <summary>Ali je ta register trenutno prikazan na grafu (izbira v pojavnem meniju "Parametri").</summary>
-    public bool ShowOnChart { get => _showOnChart; set => Set(ref _showOnChart, value); }
-
-    /// <summary>Ko je izbran za graf: false = leva os, true = desna os.</summary>
-    public bool UseRightAxis { get => _useRightAxis; set => Set(ref _useRightAxis, value); }
-
-    /// <summary>Zgodovina vrednosti od zagona beleženja naprej, za grafični prikaz.</summary>
-    public System.Collections.ObjectModel.ObservableCollection<RegisterSample> History { get; } = new();
-
-    public void SetValue(double value)
-    {
+    public void SetValue(double value) =>
         ValueText = value.ToString(value == Math.Floor(value) ? "0" : "0.###", CultureInfo.CurrentCulture);
-        History.Add(new RegisterSample(DateTime.Now, value));
-        while (History.Count > MaxHistory)
-            History.RemoveAt(0);
-    }
 }

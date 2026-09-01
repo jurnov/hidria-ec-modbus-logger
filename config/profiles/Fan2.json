@@ -1,0 +1,302 @@
+{
+  "name": "Fan2",
+  "pollGroups": [
+    {
+      "function": "input",
+      "startAddress": "0xD048",
+      "count": 1
+    },
+    {
+      "function": "input",
+      "startAddress": "0xD100",
+      "count": 26
+    },
+    {
+      "function": "holding",
+      "startAddress": "0xD100",
+      "count": 1
+    }
+  ],
+  "registers": [
+    {
+      "address": "0xD100",
+      "name": "IO1",
+      "unit": "mV",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD101",
+      "name": "IO2",
+      "unit": "mV",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD102",
+      "name": "IO3",
+      "unit": "mV",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD103",
+      "name": "IO4",
+      "unit": "mV",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD104",
+      "name": "Ambient Temp",
+      "unit": "\u00B0C",
+      "type": "int16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD105",
+      "name": "Motor Temp",
+      "unit": "\u00B0C",
+      "type": "int16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD106",
+      "name": "Power Stage Temp",
+      "unit": "\u00B0C",
+      "type": "int16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD107",
+      "name": "DC-Link voltage",
+      "unit": "V",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD108",
+      "name": "S10V",
+      "unit": "mV",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD109",
+      "name": "IMC Error",
+      "unit": "",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD10A",
+      "name": "System error",
+      "unit": "",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD10B",
+      "name": "Target Speed",
+      "unit": "rpm",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD10C",
+      "name": "Actual Speed",
+      "unit": "rpm",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD10D",
+      "name": "Motor Voltage",
+      "unit": "V",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD10E",
+      "name": "Motor Current",
+      "unit": "mA",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD10F",
+      "name": "Calculated Speed",
+      "unit": "rpm",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD110",
+      "name": "IMC Flags",
+      "unit": "",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD111",
+      "name": "OP time s",
+      "unit": "s",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD112",
+      "name": "OP time min",
+      "unit": "min",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD113",
+      "name": "OP time h",
+      "unit": "h",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD114",
+      "name": "Power",
+      "unit": "W",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD115",
+      "name": "acc_x_rms",
+      "unit": "mg",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD116",
+      "name": "acc_y_rms",
+      "unit": "mg",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD117",
+      "name": "acc_z_rms",
+      "unit": "mg",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD118",
+      "name": "dP pressure",
+      "unit": "Pa",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD119",
+      "name": "PT1000",
+      "unit": "\u00B0C",
+      "type": "int16",
+      "scale": 0.01,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD048",
+      "name": "vib",
+      "unit": "mm/s",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "input"
+    },
+    {
+      "address": "0xD100",
+      "name": "address",
+      "unit": "",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "holding"
+    }
+  ]
+}

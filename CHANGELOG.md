@@ -98,3 +98,103 @@ Kronološki povzetek razvoja aplikacije, od prvega prototipa do trenutnega stanj
 - Večkosovni odgovori (NModbus jih lahko prebere v več `Read` klicih) se
   pravilno sestavijo v en zapis; brez odgovora (timeout) je prikazano
   ločeno.
+
+## Popravek zaznavanja izpada USB-RS485 pretvornika
+
+- **Popravek**: po fizičnem izklopu pretvornika je `SerialPort.IsOpen`
+  ostajal `true` (dokumentirana omejitev .NET/Windows), zato so lučke
+  naprav dlje časa ostajale zelene kljub timeoutom v HEX pregledu —
+  dodano dodatno preverjanje dejanskega stanja vodila (`BytesToRead`
+  v `try/catch`), ki na "mrtvem" portu zanesljivo vrže izjemo.
+
+## Urejanje profilov: ločeno od naprav, ki jih delijo
+
+- Urejanje register mape ene naprave ne spreminja več tiho profila, ki ga
+  uporablja tudi druga naprava — če je profil deljen, se sprememba samodejno
+  "razcepi" v zasebno kopijo za urejeno napravo.
+- Eksplicitni ukazi **Naloži profil**, **Shrani kot profil** (pravi Windows
+  dialog za shranjevanje, ukoreninjen v mapi `profiles/`) in **Izbriši
+  profil** (z opozorilom, če ga uporablja še katera druga naprava).
+
+## Nastavitve beleženja v ločenem oknu
+
+- Interval vzorčenja, "Beleži v CSV", mapa/ločilo/decimalno ločilo CSV
+  datotek premaknjeni iz glavnega okna v ločeno okno **Nastavitve
+  beleženja**, dostopno prek gumba v orodni vrstici.
+- Prikaz polno razrešene poti do CSV mape v živo, z gumbom **Odpri mapo**.
+- Glavna gumba v orodni vrstici preimenovana **Naloži profil**/**Shrani
+  profil** (bilo "konfiguracijo"), enotno po celotnem vmesniku.
+
+## Samodejno pomnjenje nazadnje naložene konfiguracije
+
+- Ob prvem zagonu aplikacija ne naloži ničesar samodejno — uporabnik izbere
+  profil sam prek **Naloži profil** (prej se je vedno poskusila naložiti
+  privzeta `config/devices.json`).
+- Pot do nazadnje uspešno naložene/shranjene konfiguracije se zapomni med
+  zagoni (`%AppData%\ModbusLogger\last-config.txt`, ločeno od samih
+  konfiguracijskih datotek) — ob naslednjem zagonu se naloži samodejno.
+- Gumb "Naloži profil" je zdaj vedno na voljo, tudi preden je karkoli
+  naloženo.
+
+## Modbus TCP, poleg RTU
+
+- Izbirnik načina povezave (**Serijska (RS-485)** / **Modbus TCP**) nad
+  nastavitvami povezave; glede na izbiro se prikažejo ustrezna polja
+  (COM port/hitrost/format oz. IP naslov/vrata).
+- Enotna arhitektura: `DeviceReader.Read` in vsa logika dekodiranja
+  registrov delujeta nespremenjeno na obeh povezavah (`IModbusMaster`),
+  Slave ID pri TCP ustreza Unit ID.
+- Zaznavanje prekinjene TCP povezave (Poll/Available trik na golem
+  socketu) in samodejno ponovno vzpostavljanje, analogno USB-RS485.
+- HEX pregled prometka prikazuje tudi Modbus TCP pakete (z MBAP glavo).
+
+## Odstranitev grafičnega prikaza
+
+- Preklop tabela/graf, izbirnik parametrov in časovnega okna ter knjižnica
+  **OxyPlot** odstranjeni — na voljo ostane samo tabela s trenutnimi
+  vrednostmi registrov izbrane naprave.
+
+## MySQL beleženje (dodatno k CSV)
+
+- V "Nastavitve beleženja" nova možnost **Beleži v MySQL**, neodvisna od
+  CSV (obe sta lahko omogočeni hkrati).
+- Gumb **Preberi stolpce iz tabele** prebere imena stolpcev obstoječe
+  tabele (`INFORMATION_SCHEMA.COLUMNS`); za vsak stolpec uporabnik izbere
+  vir podatka: čas meritve, ime naprave, Slave ID, status/napaka, čas
+  odziva, zastavica napake komunikacije (1/0), vrednost poljubnega
+  registra (po imenu) ali poljubna **konstantna vrednost**.
+- En INSERT na napravo na cikel zapisa (enaka zrnatost kot CSV) v skupno
+  tabelo; stolpci brez razpoložljivega vira za trenutno napravo ostanejo
+  prazni (NULL).
+- **Popravek**: tiha izpustitev vrstice, kadar noben mapiran stolpec ni
+  imel razpoložljive vrednosti, zdaj vidno javi v dnevnik dogodkov.
+
+## Namestitveni paket
+
+- Namestitveni program (Inno Setup) `ModbusLoggerSetup.exe` — namestitev
+  brez skrbniških pravic (per-user, `%LocalAppData%\Programs\ModbusLogger`),
+  ker aplikacija piše nastavitve/loge neposredno ob sebi.
+- Ob namestitvi doda že pripravljen `devices.json` z eno napravo ("Hidria
+  ventilator", profil `hidria-ec-fan") — samo, če taka datoteka še ne
+  obstaja, tako da nadgradnja nikoli ne prepiše žive konfiguracije; te
+  datoteke tudi niso odstranjene ob deinstalaciji.
+- Bližnjica v start meniju (in po želji na namizju), preverjanje
+  prisotnosti .NET 8 Desktop Runtime ob zagonu namestitve.
+
+## Ločen čas vzorčenja in interval zapisa; zaklepanje med tekom
+
+- Prejšnji enotni "interval vzorčenja" razdeljen na dva pojma: **Čas
+  vzorčenja** (kako pogosto se dejansko komunicira z napravami; ostaja
+  urejljiv tudi med tekom, v panelu "Povezava") in **Interval zapisa**
+  (kako pogosto se zadnji vzorec zapiše v CSV/MySQL; v "Nastavitve
+  beleženja").
+- Celotno okno "Nastavitve beleženja" (CSV, MySQL, interval zapisa) je
+  zdaj zaklenjeno, dokler zapisovalnik teče, z vidnim opozorilom — prej so
+  spremembe med tekom tiho ostale brez učinka do naslednjega zagona.
+
+## Popravek statusa naprav ob ustavitvi
+
+- **Popravek**: ob kliku "USTAVI" je lučka naprave ostala zelena z zadnjim
+  "OK (x ms)" stanjem, kar je dajalo vtis, da naprava še vedno komunicira
+  — zdaj se ob ustavitvi lučka obarva sivo, besedilo pa spremeni v "brez
+  povezave — ustavljeno".

@@ -10,7 +10,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Foreground="#777" FontSize="11" Margin="0,0,0,6" TextWrapping="Wrap"
-                   Text="Zadnjih do 500 izmenjav na trenutno odprtem portu. Ena vrstica = en poslan Modbus RTU zahtevek in nanj prejet odgovor (surovi bajti, HEX). Oranžno = ni bilo odgovora (timeout)."/>
+                   Text="Zadnjih do 500 izmenjav na trenutni povezavi. Ena vrstica = en poslan Modbus zahtevek in nanj prejet odgovor (surovi bajti, HEX). Oranžno = ni bilo odgovora (timeout)."/>
 
         <DataGrid Grid.Row="1" x:Name="ExchangeGrid" ItemsSource="{Binding TrafficLog}" AutoGenerateColumns="False"
                   IsReadOnly="True" HeadersVisibility="Column" GridLinesVisibility="Horizontal"

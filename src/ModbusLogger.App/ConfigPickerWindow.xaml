@@ -25,11 +25,11 @@
                    FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
 
         <StackPanel Grid.Row="1" Visibility="{Binding IsSaveMode, Converter={x:Static local:BoolToVisibleConverter.Instance}}">
-            <TextBlock Text="Ime konfiguracije" Style="{StaticResource FieldLabel}"/>
+            <TextBlock Text="Ime profila" Style="{StaticResource FieldLabel}"/>
             <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
 
-        <TextBlock Grid.Row="2" Text="Shranjene konfiguracije" Style="{StaticResource FieldLabel}"/>
+        <TextBlock Grid.Row="2" Text="Shranjeni profili" Style="{StaticResource FieldLabel}"/>
 
         <ListBox Grid.Row="3" ItemsSource="{Binding AvailableConfigs}" SelectedItem="{Binding SelectedConfig}"/>
 

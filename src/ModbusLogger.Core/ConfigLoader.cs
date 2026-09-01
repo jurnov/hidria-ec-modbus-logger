@@ -31,6 +31,10 @@ public static class ConfigLoader
     public static void SaveProfile(DeviceProfile profile, string profilePath) =>
         File.WriteAllText(profilePath, JsonSerializer.Serialize(profile, WriteOpts));
 
+    /// <summary>Prebere en profil neposredno (za "Naloži profil" v urejevalniku naprave) brez validacije.</summary>
+    public static DeviceProfile? LoadProfileRaw(string profilePath, out string? error) =>
+        Deserialize<DeviceProfile>(profilePath, out error);
+
     /// <summary>Vsi profili (imena datotek brez .json) v mapi profiles/ ob devices.json.</summary>
     public static List<string> ListAvailableProfiles(string devicesJsonPath)
     {
@@ -82,8 +86,10 @@ public static class ConfigLoader
         ValidateSerial(config.Serial, result);
         ValidateLogging(config.Logging, result);
 
-        if (config.PollIntervalSeconds < 1)
-            result.Errors.Add($"pollIntervalSeconds mora biti >= 1 (je {config.PollIntervalSeconds}).");
+        if (config.SampleIntervalSeconds < 1)
+            result.Errors.Add($"sampleIntervalSeconds mora biti >= 1 (je {config.SampleIntervalSeconds}).");
+        if (config.WriteIntervalSeconds < 1)
+            result.Errors.Add($"writeIntervalSeconds mora biti >= 1 (je {config.WriteIntervalSeconds}).");
 
         if (config.Devices.Count == 0)
             result.Errors.Add("Seznam \"devices\" je prazen.");
@@ -231,6 +237,25 @@ public static class ConfigLoader
             }
         }
         return null;
+    }
+
+    /// <summary>
+    /// Poišče obstoječo mapo "config" (za brskanje po shranjenih konfiguracijah, tudi če
+    /// devices.json še ni bil naložen), sicer privzeto mesto poleg .exe.
+    /// </summary>
+    public static string ResolveConfigDir()
+    {
+        foreach (string root in new[] { Directory.GetCurrentDirectory(), AppContext.BaseDirectory })
+        {
+            var dir = new DirectoryInfo(root);
+            for (int i = 0; i < 6 && dir is not null; i++, dir = dir.Parent)
+            {
+                string candidate = Path.Combine(dir.FullName, "config");
+                if (Directory.Exists(candidate))
+                    return candidate;
+            }
+        }
+        return Path.Combine(AppContext.BaseDirectory, "config");
     }
 
     /// <summary>Sprejme "0xD100" (hex) ali "53504" (decimalno).</summary>

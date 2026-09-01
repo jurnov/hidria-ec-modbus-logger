@@ -14,10 +14,11 @@
     "timeoutMs": 1000,
     "retries": 2
   },
-  "pollIntervalSeconds": 60,
+  "sampleIntervalSeconds": 5,
+  "writeIntervalSeconds": 60,
   "logging": {
     "enabled": true,
-    "folder": "../logs",
+    "folder": "logs",
     "delimiter": ";",
     "decimalSeparator": ","
   },
@@ -33,39 +34,9 @@
   },
   "devices": [
     {
-      "slaveId": 2,
-      "profile": "hidria-ec-fan",
-      "label": "Hidria 1",
-      "enabled": false
-    },
-    {
       "slaveId": 1,
       "profile": "hidria-ec-fan",
-      "label": "Ventilator",
-      "enabled": false
-    },
-    {
-      "slaveId": 1,
-      "profile": "Fan-1",
-      "label": "Fan 1",
-      "enabled": true
-    },
-    {
-      "slaveId": 2,
-      "profile": "Fan2",
-      "label": "Fan 2",
-      "enabled": true
-    },
-    {
-      "slaveId": 3,
-      "profile": "Fan-3",
-      "label": "Fan 3",
-      "enabled": true
-    },
-    {
-      "slaveId": 100,
-      "profile": "ADAM-2",
-      "label": "ADAM",
+      "label": "Hidria ventilator",
       "enabled": true
     }
   ]

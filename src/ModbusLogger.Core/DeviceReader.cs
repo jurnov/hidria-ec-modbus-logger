@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO.Ports;
+using System.Net.Sockets;
 using NModbus;
 
 namespace ModbusLogger.Core;
@@ -35,6 +36,23 @@ public static class DeviceReader
         WriteTimeout = s.TimeoutMs,
     };
 
+    /// <summary>
+    /// Vzpostavi TCP povezavo za Modbus TCP; connect je omejen na TimeoutMs, da oddaljen/
+    /// nedosegljiv naslov ne blokira zanke za (privzeto precej daljši) OS-timeout.
+    /// </summary>
+    public static TcpClient CreateTcpClient(TcpSettings s)
+    {
+        var client = new TcpClient();
+        if (!client.ConnectAsync(s.Host, s.Port).Wait(s.TimeoutMs))
+        {
+            client.Dispose();
+            throw new TimeoutException($"povezava na {s.Host}:{s.Port} ni uspela v {s.TimeoutMs} ms");
+        }
+        client.ReceiveTimeout = s.TimeoutMs;
+        client.SendTimeout = s.TimeoutMs;
+        return client;
+    }
+
     /// <summary>Prebere vse poll groupe profila z ene naprave in dekodira registre.</summary>
     public static DeviceReadResult Read(IModbusMaster master, byte slaveId, DeviceProfile profile)
     {
@@ -61,9 +79,9 @@ public static class DeviceReader
                     $"Modbus exception (function {ex.FunctionCode}, code {ex.SlaveExceptionCode}) — naprava zavrača zahtevo, preveri naslove v profilu",
                     sw.ElapsedMilliseconds);
             }
-            catch (Exception ex) when (ex is IOException or InvalidOperationException or UnauthorizedAccessException)
+            catch (Exception ex) when (ex is IOException or InvalidOperationException or UnauthorizedAccessException or SocketException)
             {
-                return DeviceReadResult.Failed(ts, $"napaka porta: {ex.Message}", sw.ElapsedMilliseconds);
+                return DeviceReadResult.Failed(ts, $"napaka povezave: {ex.Message}", sw.ElapsedMilliseconds);
             }
         }
 

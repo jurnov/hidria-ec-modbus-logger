@@ -9,10 +9,6 @@
     <Resource Include="Assets\hidria_logo.png" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
-  </ItemGroup>
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>

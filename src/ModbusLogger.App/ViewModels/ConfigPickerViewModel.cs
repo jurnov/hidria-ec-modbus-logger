@@ -35,7 +35,7 @@ public sealed class ConfigPickerViewModel : ViewModelBase
     }
 
     public bool IsSaveMode { get; }
-    public string DialogTitle => IsSaveMode ? "Shrani konfiguracijo kot" : "Naloži konfiguracijo";
+    public string DialogTitle => IsSaveMode ? "Shrani profil kot" : "Naloži profil";
     public string ConfirmButtonText => IsSaveMode ? "Shrani" : "Naloži";
 
     public ObservableCollection<string> AvailableConfigs { get; } = new();
@@ -72,7 +72,7 @@ public sealed class ConfigPickerViewModel : ViewModelBase
             name = SanitizeFileName(Name.Trim());
             if (name.Length == 0)
             {
-                ValidationMessage = "Vpiši ime konfiguracije.";
+                ValidationMessage = "Vpiši ime profila.";
                 return;
             }
         }
@@ -80,7 +80,7 @@ public sealed class ConfigPickerViewModel : ViewModelBase
         {
             if (SelectedConfig is null)
             {
-                ValidationMessage = "Izberi konfiguracijo s seznama.";
+                ValidationMessage = "Izberi profil s seznama.";
                 return;
             }
             name = SelectedConfig;

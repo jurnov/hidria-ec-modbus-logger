@@ -6,9 +6,20 @@ namespace ModbusLogger.Core;
 /// <summary>Vsebina devices.json: serijska povezava + seznam naprav na RS485 liniji.</summary>
 public sealed class AppConfig
 {
+    /// <summary>serial (RS-485/RS-232 prek COM porta) | tcp (Modbus TCP prek IP naslova)</summary>
+    public string ConnectionType { get; set; } = "serial";
+
     public SerialSettings Serial { get; set; } = new();
-    public int PollIntervalSeconds { get; set; } = 60;
+    public TcpSettings Tcp { get; set; } = new();
+
+    /// <summary>Kako pogosto aplikacija dejansko komunicira z napravami (bere registre).</summary>
+    public int SampleIntervalSeconds { get; set; } = 5;
+
+    /// <summary>Kako pogosto se zadnji prebrani vzorec zapiše v CSV/MySQL; >= SampleIntervalSeconds je smiselno.</summary>
+    public int WriteIntervalSeconds { get; set; } = 60;
+
     public LoggingSettings Logging { get; set; } = new();
+    public MySqlSettings MySql { get; set; } = new();
     public List<DeviceEntry> Devices { get; set; } = new();
 }
 
@@ -38,6 +49,29 @@ public sealed class SerialSettings
     public int StopBits { get; set; } = 1;
     public int TimeoutMs { get; set; } = 1000;
     public int Retries { get; set; } = 2;
+}
+
+public sealed class TcpSettings
+{
+    public string Host { get; set; } = "192.168.1.100";
+    public int Port { get; set; } = 502;
+    public int TimeoutMs { get; set; } = 1000;
+    public int Retries { get; set; } = 2;
+}
+
+/// <summary>Nastavitve za dodatno beleženje v MySQL, neodvisno od CSV (oboje je lahko omogočeno hkrati).</summary>
+public sealed class MySqlSettings
+{
+    public bool Enabled { get; set; } = false;
+    public string Host { get; set; } = "localhost";
+    public int Port { get; set; } = 3306;
+    public string Database { get; set; } = "";
+    public string User { get; set; } = "";
+    public string Password { get; set; } = "";
+    public string Table { get; set; } = "";
+
+    /// <summary>Ime stolpca v tabeli -> ključ vira podatka (glej MySqlLogSink.BuildFieldValues).</summary>
+    public Dictionary<string, string> ColumnMapping { get; set; } = new();
 }
 
 public sealed class DeviceEntry

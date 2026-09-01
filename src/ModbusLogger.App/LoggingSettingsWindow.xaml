@@ -1,0 +1,118 @@
+<Window x:Class="ModbusLogger.App.LoggingSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ModbusLogger.App"
+        Title="Nastavitve beleženja" Height="620" Width="440" MinHeight="420" MinWidth="380"
+        WindowStartupLocation="CenterOwner" Icon="Assets/hidria.ico">
+    <Window.Resources>
+        <Style TargetType="TextBlock" x:Key="FieldLabel">
+            <Setter Property="Margin" Value="0,6,0,2"/>
+            <Setter Property="Foreground" Value="#555"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Nastavitve beleženja" Foreground="{StaticResource Brand.DarkBlue}"
+                   FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+
+        <TextBlock Grid.Row="1" Text="Beleženje teče — ustavi ga (ZAŽENI/USTAVI v glavnem oknu), da spremeniš te nastavitve."
+                   Foreground="#C0392B" TextWrapping="Wrap" Margin="0,0,0,8" VerticalAlignment="Top"
+                   Visibility="{Binding IsStopped, Converter={x:Static local:InverseBoolToVisibleConverter.Instance}}"/>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,26,0,0"
+                      IsEnabled="{Binding IsStopped}">
+        <StackPanel>
+            <TextBlock Text="Interval zapisa [s]" Style="{StaticResource FieldLabel}"/>
+            <TextBox Text="{Binding WriteIntervalSeconds}"
+                     ToolTip="Kako pogosto se zadnji prebrani vzorec zapiše v CSV/MySQL."/>
+
+            <CheckBox Content="Beleži v CSV" IsChecked="{Binding LogToCsv}" Margin="0,14,0,4"/>
+
+            <!-- Nastavitve, ki so smiselne samo, če je CSV beleženje omogočeno -->
+            <StackPanel Visibility="{Binding LogToCsv, Converter={x:Static local:BoolToVisibleConverter.Instance}}">
+                <TextBlock Text="Mapa za CSV datoteke" Style="{StaticResource FieldLabel}"/>
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Content="Prebrskaj ..." Command="{Binding BrowseCsvFolderCommand}"
+                            Style="{StaticResource Brand.SecondaryButton}" Padding="8,3" Margin="6,0,0,0"/>
+                    <TextBox Text="{Binding CsvFolder, UpdateSourceTrigger=PropertyChanged}"/>
+                </DockPanel>
+                <DockPanel Margin="0,3,0,0">
+                    <Button DockPanel.Dock="Right" Content="Odpri mapo" Command="{Binding OpenLogsCommand}"
+                            Style="{StaticResource Brand.SecondaryButton}" Padding="8,2" Margin="6,0,0,0"/>
+                    <TextBlock Text="{Binding ResolvedCsvFolderPath}" Foreground="#999" FontSize="11"
+                               TextWrapping="Wrap" VerticalAlignment="Center"/>
+                </DockPanel>
+
+                <TextBlock Text="Ločilo stolpcev" Style="{StaticResource FieldLabel}"/>
+                <ComboBox ItemsSource="{Binding DelimiterOptions}" DisplayMemberPath="Label"
+                          SelectedValuePath="Value" SelectedValue="{Binding CsvDelimiter}"/>
+
+                <TextBlock Text="Decimalno ločilo" Style="{StaticResource FieldLabel}"/>
+                <ComboBox ItemsSource="{Binding DecimalSeparatorOptions}" SelectedItem="{Binding CsvDecimalSeparator}"/>
+            </StackPanel>
+
+            <CheckBox Content="Beleži v MySQL" IsChecked="{Binding LogToMySql}" Margin="0,14,0,4"/>
+
+            <!-- Nastavitve, ki so smiselne samo, če je MySQL beleženje omogočeno -->
+            <StackPanel Visibility="{Binding LogToMySql, Converter={x:Static local:BoolToVisibleConverter.Instance}}">
+                <TextBlock Text="Gostitelj" Style="{StaticResource FieldLabel}"/>
+                <TextBox Text="{Binding MySqlHost, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Text="Vrata" Style="{StaticResource FieldLabel}"/>
+                <TextBox Text="{Binding MySqlPort}"/>
+
+                <TextBlock Text="Baza" Style="{StaticResource FieldLabel}"/>
+                <TextBox Text="{Binding MySqlDatabase, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Text="Uporabnik" Style="{StaticResource FieldLabel}"/>
+                <TextBox Text="{Binding MySqlUser, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Text="Geslo" Style="{StaticResource FieldLabel}"/>
+                <PasswordBox x:Name="MySqlPasswordBox" PasswordChanged="MySqlPasswordBox_PasswordChanged"/>
+
+                <TextBlock Text="Tabela" Style="{StaticResource FieldLabel}"/>
+                <TextBox Text="{Binding MySqlTable, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Button Content="Preberi stolpce iz tabele" Command="{Binding FetchMySqlColumnsCommand}"
+                        Style="{StaticResource Brand.SecondaryButton}" Padding="8,4"
+                        HorizontalAlignment="Left" Margin="0,8,0,0"/>
+
+                <TextBlock Text="Povezava stolpcev s podatki (klikni 'Preberi stolpce', če je seznam prazen)"
+                           Style="{StaticResource FieldLabel}" TextWrapping="Wrap"/>
+                <ItemsControl ItemsSource="{Binding MySqlColumnMappings}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="130"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Column}" VerticalAlignment="Center"
+                                           FontFamily="Consolas" TextTrimming="CharacterEllipsis"/>
+                                <ComboBox Grid.Column="1" ItemsSource="{Binding FieldOptions}"
+                                          SelectedItem="{Binding SelectedField}"/>
+                                <TextBox Grid.Column="2" Text="{Binding ConstantValue, UpdateSourceTrigger=PropertyChanged}"
+                                         Width="80" Margin="4,0,0,0"
+                                         Visibility="{Binding IsConstant, Converter={x:Static local:BoolToVisibleConverter.Instance}}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <TextBlock Text="Za trajno shranitev uporabi 'Shrani profil' v glavnem oknu."
+                       TextWrapping="Wrap" Foreground="#999" FontSize="11" Margin="0,16,0,0"/>
+        </StackPanel>
+        </ScrollViewer>
+
+        <Button Grid.Row="2" Content="Zapri" Click="Close_Click" Style="{StaticResource Brand.PrimaryButton}"
+                Width="100" Height="32" HorizontalAlignment="Right" Margin="0,10,0,0"/>
+    </Grid>
+</Window>

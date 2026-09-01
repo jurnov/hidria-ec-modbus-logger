@@ -2,6 +2,8 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Windows;
+using Microsoft.Win32;
 using ModbusLogger.Core;
 
 namespace ModbusLogger.App.ViewModels;
@@ -29,8 +31,11 @@ public sealed class RegisterRowVm : ViewModelBase
 }
 
 /// <summary>
-/// Doda ali uredi napravo v devices.json — z izbiro obstoječega profila ali z
-/// ustvarjanjem/urejanjem profila neposredno (register mapa).
+/// Doda ali uredi napravo v devices.json. Register mapa je vedno urejena neposredno tukaj
+/// in se privzeto shrani v profil, ki je izključno "last" te naprave — urejanje registrov
+/// za eno napravo torej ne vpliva na druge naprave, tudi če so prej uporabljale isti profil
+/// (v tem primeru se ob shranjevanju samodejno "razcepi" v nov, zasebni profil).
+/// Za namerno souporabo/predloge sta na voljo ločeni akciji "Naloži profil" in "Shrani kot profil".
 /// </summary>
 public sealed class AddDeviceViewModel : ViewModelBase
 {
@@ -40,11 +45,9 @@ public sealed class AddDeviceViewModel : ViewModelBase
     private string _label = "";
     private byte _slaveId = 1;
     private bool _enabled = true;
-    private string? _selectedProfile;
-    private bool _isNewProfile;
-    private string _newProfileName = "";
     private string _validationMessage = "";
     private RegisterRowVm? _selectedRegister;
+    private string? _profileToLoad;
 
     /// <summary>Način dodajanja nove naprave.</summary>
     public AddDeviceViewModel(string devicesPath) : this(devicesPath, null, null) { }
@@ -63,10 +66,6 @@ public sealed class AddDeviceViewModel : ViewModelBase
             _label = editing.Label;
             _slaveId = editing.SlaveId;
             _enabled = editing.Enabled;
-            SelectedProfile = AvailableProfiles.FirstOrDefault(p =>
-                string.Equals(p, editing.Profile, StringComparison.OrdinalIgnoreCase)) ?? editing.Profile;
-            _newProfileName = editing.Profile;
-            IsNewProfile = true;   // privzeto pokaži urejevalnik registrov trenutnega profila
 
             if (editingProfile is not null)
             {
@@ -84,20 +83,20 @@ public sealed class AddDeviceViewModel : ViewModelBase
                     });
                 }
             }
-            if (Registers.Count == 0)
-                Registers.Add(new RegisterRowVm());
         }
-        else
-        {
-            SelectedProfile = AvailableProfiles.FirstOrDefault();
-            IsNewProfile = SelectedProfile is null;
+
+        if (Registers.Count == 0)
             Registers.Add(new RegisterRowVm());
-        }
+
+        _profileToLoad = AvailableProfiles.FirstOrDefault();
 
         AddRegisterCommand = new RelayCommand(() => Registers.Add(new RegisterRowVm()));
         RemoveRegisterCommand = new RelayCommand(
             () => { if (SelectedRegister is not null) Registers.Remove(SelectedRegister); },
             () => SelectedRegister is not null);
+        LoadProfileCommand = new RelayCommand(LoadProfile, () => ProfileToLoad is not null);
+        SaveAsProfileCommand = new RelayCommand(SaveAsProfile);
+        DeleteProfileCommand = new RelayCommand(DeleteProfile, () => ProfileToLoad is not null);
         SaveCommand = new RelayCommand(Save);
         CancelCommand = new RelayCommand(() => RequestClose?.Invoke(false));
     }
@@ -110,6 +109,9 @@ public sealed class AddDeviceViewModel : ViewModelBase
 
     public RelayCommand AddRegisterCommand { get; }
     public RelayCommand RemoveRegisterCommand { get; }
+    public RelayCommand LoadProfileCommand { get; }
+    public RelayCommand SaveAsProfileCommand { get; }
+    public RelayCommand DeleteProfileCommand { get; }
     public RelayCommand SaveCommand { get; }
     public RelayCommand CancelCommand { get; }
 
@@ -119,24 +121,151 @@ public sealed class AddDeviceViewModel : ViewModelBase
     public string Label { get => _label; set => Set(ref _label, value); }
     public byte SlaveId { get => _slaveId; set => Set(ref _slaveId, value); }
     public bool Enabled { get => _enabled; set => Set(ref _enabled, value); }
-    public string? SelectedProfile { get => _selectedProfile; set => Set(ref _selectedProfile, value); }
-
-    public bool IsNewProfile
-    {
-        get => _isNewProfile;
-        set { if (Set(ref _isNewProfile, value)) Raise(nameof(UseExistingProfile)); }
-    }
-
-    /// <summary>Nasprotje IsNewProfile — za IsEnabled vezavo izbirnika obstoječih profilov.</summary>
-    public bool UseExistingProfile => !_isNewProfile;
-
-    public string NewProfileName { get => _newProfileName; set => Set(ref _newProfileName, value); }
     public string ValidationMessage { get => _validationMessage; private set => Set(ref _validationMessage, value); }
+
+    /// <summary>Izbran profil v spustnem seznamu za "Naloži profil"/"Izbriši profil" (samo predloga, ne trajna povezava).</summary>
+    public string? ProfileToLoad
+    {
+        get => _profileToLoad;
+        set
+        {
+            if (Set(ref _profileToLoad, value))
+            {
+                LoadProfileCommand.RaiseCanExecuteChanged();
+                DeleteProfileCommand.RaiseCanExecuteChanged();
+            }
+        }
+    }
 
     public RegisterRowVm? SelectedRegister
     {
         get => _selectedRegister;
         set { if (Set(ref _selectedRegister, value)) RemoveRegisterCommand.RaiseCanExecuteChanged(); }
+    }
+
+    /// <summary>Naloži izbran obstoječi profil v urejevalnik registrov (nadomesti trenutno vsebino).</summary>
+    private void LoadProfile()
+    {
+        if (ProfileToLoad is null)
+            return;
+
+        string profilesDir = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_devicesPath))!, "profiles");
+        string path = Path.Combine(profilesDir, ProfileToLoad + ".json");
+        var profile = ConfigLoader.LoadProfileRaw(path, out string? error);
+        if (profile is null)
+        {
+            ValidationMessage = $"Profila '{ProfileToLoad}' ni bilo mogoče naložiti: {error}";
+            return;
+        }
+
+        Registers.Clear();
+        foreach (var r in profile.Registers)
+        {
+            Registers.Add(new RegisterRowVm
+            {
+                Address = r.Address,
+                Name = r.Name,
+                Unit = r.Unit,
+                Type = r.Type,
+                Scale = r.Scale.ToString(CultureInfo.InvariantCulture),
+                WordOrder = r.WordOrder,
+                Function = r.Function,
+            });
+        }
+        if (Registers.Count == 0)
+            Registers.Add(new RegisterRowVm());
+
+        ValidationMessage = "";
+    }
+
+    /// <summary>
+    /// Shrani trenutno register mapo kot samostojen profil (predlogo) — odpre Windows okno
+    /// "Shrani kot", ki se odpre neposredno v mapi profiles/, kamor uporabnik vpiše ime.
+    /// </summary>
+    private void SaveAsProfile()
+    {
+        var errors = new List<string>();
+        var parsed = ParseRegisters(errors);
+        if (parsed.Count == 0)
+            errors.Add("Ni registrov za shranjevanje.");
+        if (errors.Count > 0)
+        {
+            ValidationMessage = string.Join("\n", errors);
+            return;
+        }
+
+        string profilesDir = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_devicesPath))!, "profiles");
+        Directory.CreateDirectory(profilesDir);
+
+        var dialog = new SaveFileDialog
+        {
+            Title = "Shrani kot profil",
+            InitialDirectory = profilesDir,
+            Filter = "Profil (*.json)|*.json",
+            DefaultExt = "json",
+            FileName = SanitizeFileName(Label.Trim()) is { Length: > 0 } suggested ? suggested + ".json" : "profil.json",
+        };
+        if (dialog.ShowDialog() != true)
+            return;
+
+        try
+        {
+            string name = Path.GetFileNameWithoutExtension(dialog.FileName);
+            var profile = new DeviceProfile { Name = name, Registers = parsed.Select(p => p.Def).ToList() };
+            profile.PollGroups.AddRange(BuildPollGroups(parsed));
+            ConfigLoader.SaveProfile(profile, dialog.FileName);
+
+            // Osveži seznam, če je datoteka pristala v mapi profiles/ (kamor kaže "Naloži profil").
+            AvailableProfiles.Clear();
+            foreach (string n in ConfigLoader.ListAvailableProfiles(_devicesPath))
+                AvailableProfiles.Add(n);
+            if (AvailableProfiles.Contains(name, StringComparer.OrdinalIgnoreCase))
+                ProfileToLoad = name;
+            ValidationMessage = $"Profil '{name}' shranjen.";
+        }
+        catch (Exception ex)
+        {
+            ValidationMessage = $"Napaka pri shranjevanju profila: {ex.Message}";
+        }
+    }
+
+    /// <summary>Izbriše izbran profil s diska, po potrditvi. Opozori, če ga trenutno uporablja katera naprava.</summary>
+    private void DeleteProfile()
+    {
+        if (ProfileToLoad is null)
+            return;
+        string name = ProfileToLoad;
+
+        var usedBy = ConfigLoader.Load(_devicesPath).Config.Devices
+            .Where(d => string.Equals(d.Profile, name, StringComparison.OrdinalIgnoreCase))
+            .Select(d => d.Label)
+            .ToList();
+        // Naprava, ki jo trenutno urejamo, se ob shranjevanju itak razcepi v svoj profil,
+        // zato njena morebitna trenutna uporaba tega profila ni razlog za opozorilo.
+        if (_editingOriginal is not null)
+            usedBy.Remove(_editingOriginal.Label);
+
+        string warning = usedBy.Count > 0
+            ? $"\n\nOpozorilo: ta profil trenutno uporablja(jo) tudi: {string.Join(", ", usedBy)}. Po izbrisu ne bodo delovale, dokler jim ne izberete drugega profila."
+            : "";
+        var choice = MessageBox.Show(
+            $"Izbrišem profil '{name}' s diska?{warning}",
+            "Izbriši profil", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+        if (choice != MessageBoxResult.Yes)
+            return;
+
+        try
+        {
+            string profilesDir = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_devicesPath))!, "profiles");
+            File.Delete(Path.Combine(profilesDir, name + ".json"));
+            AvailableProfiles.Remove(name);
+            ProfileToLoad = AvailableProfiles.FirstOrDefault();
+            ValidationMessage = $"Profil '{name}' izbrisan.";
+        }
+        catch (Exception ex)
+        {
+            ValidationMessage = $"Napaka pri brisanju profila: {ex.Message}";
+        }
     }
 
     private void Save()
@@ -148,71 +277,9 @@ public sealed class AddDeviceViewModel : ViewModelBase
         if (SlaveId is < 1 or > 247)
             errors.Add("Slave ID mora biti med 1 in 247.");
 
-        string profileName;
-        DeviceProfile? newProfile = null;
-        string? newProfilePath = null;
-
-        if (IsNewProfile)
-        {
-            profileName = SanitizeFileName(NewProfileName.Trim());
-            if (profileName.Length == 0)
-                errors.Add("Ime novega profila ne sme biti prazno.");
-
-            string profilesDir = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_devicesPath))!, "profiles");
-            newProfilePath = Path.Combine(profilesDir, profileName + ".json");
-            bool overwritingSameProfile = _editingOriginal is not null &&
-                string.Equals(profileName, _editingOriginal.Profile, StringComparison.OrdinalIgnoreCase);
-            if (profileName.Length > 0 && File.Exists(newProfilePath) && !overwritingSameProfile)
-                errors.Add($"Profil '{profileName}' že obstaja — izberi drugo ime.");
-
-            var parsed = new List<(RegisterDef Def, ushort Addr, int WordCount, string Function)>();
-            foreach (var row in Registers)
-            {
-                if (string.IsNullOrWhiteSpace(row.Name))
-                {
-                    errors.Add("Vsak register potrebuje ime.");
-                    continue;
-                }
-                if (!ConfigLoader.TryParseAddress(row.Address, out ushort addr))
-                {
-                    errors.Add($"Neveljaven naslov registra '{row.Name}': '{row.Address}'.");
-                    continue;
-                }
-                if (!double.TryParse(row.Scale, NumberStyles.Float, CultureInfo.InvariantCulture, out double scale))
-                {
-                    errors.Add($"Neveljavna skala za register '{row.Name}': '{row.Scale}'.");
-                    continue;
-                }
-                int wordCount = row.Type is "uint32" or "int32" or "float32" ? 2 : 1;
-                var def = new RegisterDef
-                {
-                    Address = row.Address.Trim(),
-                    Name = row.Name.Trim(),
-                    Unit = row.Unit.Trim(),
-                    Type = row.Type,
-                    Scale = scale,
-                    WordOrder = row.WordOrder,
-                    Function = row.Function,
-                };
-                parsed.Add((def, addr, wordCount, row.Function));
-            }
-
-            if (parsed.Count == 0)
-            {
-                errors.Add("Nov profil potrebuje vsaj en register.");
-            }
-            else if (errors.Count == 0)
-            {
-                newProfile = new DeviceProfile { Name = profileName, Registers = parsed.Select(p => p.Def).ToList() };
-                newProfile.PollGroups.AddRange(BuildPollGroups(parsed));
-            }
-        }
-        else
-        {
-            if (SelectedProfile is null)
-                errors.Add("Izberi obstoječi profil naprave.");
-            profileName = SelectedProfile ?? "";
-        }
+        var parsed = ParseRegisters(errors);
+        if (parsed.Count == 0)
+            errors.Add("Naprava potrebuje vsaj en register.");
 
         if (errors.Count > 0)
         {
@@ -220,19 +287,35 @@ public sealed class AddDeviceViewModel : ViewModelBase
             return;
         }
 
+        var newProfile = new DeviceProfile { Registers = parsed.Select(p => p.Def).ToList() };
+        newProfile.PollGroups.AddRange(BuildPollGroups(parsed));
+
         try
         {
-            if (newProfile is not null && newProfilePath is not null)
+            var loaded = ConfigLoader.Load(_devicesPath);
+            string profilesDir = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_devicesPath))!, "profiles");
+            Directory.CreateDirectory(profilesDir);
+
+            // Če ta naprava trenutno souporablja profil z drugimi, ga ob shranjevanju "razcepimo"
+            // v nov, zasebni profil te naprave — spremembe registrov tako ne vplivajo na druge.
+            string profileFileName;
+            if (_editingOriginal is not null &&
+                loaded.Config.Devices.Count(d => string.Equals(d.Profile, _editingOriginal.Profile, StringComparison.OrdinalIgnoreCase)) <= 1)
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(newProfilePath)!);
-                ConfigLoader.SaveProfile(newProfile, newProfilePath);
+                profileFileName = _editingOriginal.Profile;   // že zaseben — obdrži isto ime/datoteko
+            }
+            else
+            {
+                profileFileName = GenerateUniquePrivateName(label, profilesDir);
             }
 
-            var loaded = ConfigLoader.Load(_devicesPath);
+            newProfile.Name = profileFileName;
+            ConfigLoader.SaveProfile(newProfile, Path.Combine(profilesDir, profileFileName + ".json"));
+
             var updatedEntry = new DeviceEntry
             {
                 SlaveId = SlaveId,
-                Profile = IsNewProfile ? newProfile!.Name : (SelectedProfile ?? ""),
+                Profile = profileFileName,
                 Label = label,
                 Enabled = Enabled,
             };
@@ -256,6 +339,60 @@ public sealed class AddDeviceViewModel : ViewModelBase
         }
 
         RequestClose?.Invoke(true);
+    }
+
+    /// <summary>Razčleni vrstice urejevalnika v RegisterDef + pomožne podatke za BuildPollGroups.</summary>
+    private List<(RegisterDef Def, ushort Addr, int WordCount, string Function)> ParseRegisters(List<string> errors)
+    {
+        var parsed = new List<(RegisterDef Def, ushort Addr, int WordCount, string Function)>();
+        foreach (var row in Registers)
+        {
+            if (string.IsNullOrWhiteSpace(row.Name))
+            {
+                errors.Add("Vsak register potrebuje ime.");
+                continue;
+            }
+            if (!ConfigLoader.TryParseAddress(row.Address, out ushort addr))
+            {
+                errors.Add($"Neveljaven naslov registra '{row.Name}': '{row.Address}'.");
+                continue;
+            }
+            if (!double.TryParse(row.Scale, NumberStyles.Float, CultureInfo.InvariantCulture, out double scale))
+            {
+                errors.Add($"Neveljavna skala za register '{row.Name}': '{row.Scale}'.");
+                continue;
+            }
+            int wordCount = row.Type is "uint32" or "int32" or "float32" ? 2 : 1;
+            var def = new RegisterDef
+            {
+                Address = row.Address.Trim(),
+                Name = row.Name.Trim(),
+                Unit = row.Unit.Trim(),
+                Type = row.Type,
+                Scale = scale,
+                WordOrder = row.WordOrder,
+                Function = row.Function,
+            };
+            parsed.Add((def, addr, wordCount, row.Function));
+        }
+        return parsed;
+    }
+
+    /// <summary>Poišče prosto ime datoteke profila, ki izhaja iz imena naprave (npr. "Ventilator-1", "-2" ...).</summary>
+    private static string GenerateUniquePrivateName(string label, string profilesDir)
+    {
+        string baseName = SanitizeFileName(label);
+        if (baseName.Length == 0)
+            baseName = "naprava";
+
+        string candidate = baseName;
+        int i = 2;
+        while (File.Exists(Path.Combine(profilesDir, candidate + ".json")))
+        {
+            candidate = $"{baseName}-{i}";
+            i++;
+        }
+        return candidate;
     }
 
     /// <summary>

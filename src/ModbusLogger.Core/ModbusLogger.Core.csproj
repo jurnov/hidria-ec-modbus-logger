@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MySqlConnector" Version="2.6.2" />
     <PackageReference Include="NModbus" Version="3.0.83" />
     <PackageReference Include="NModbus.Serial" Version="3.0.83" />
     <PackageReference Include="System.IO.Ports" Version="10.0.10" />

@@ -46,7 +46,7 @@ internal static class Program
         if (opts.PortOverride is not null)
             cfg.Serial.Port = opts.PortOverride;
         if (opts.IntervalOverride is not null)
-            cfg.PollIntervalSeconds = opts.IntervalOverride.Value;
+            cfg.SampleIntervalSeconds = opts.IntervalOverride.Value;
 
         var devices = cfg.Devices.Where(d => d.Enabled).ToList();
         Console.WriteLine($"Naprave: {string.Join(", ", devices.Select(d => $"{d.Label} (slave {d.SlaveId}, {d.Profile})"))}");
@@ -62,7 +62,7 @@ internal static class Program
         {
             Console.WriteLine("CSV beleženje je izklopljeno (--no-log).");
         }
-        Console.WriteLine($"Interval: {cfg.PollIntervalSeconds} s. Ustavi s Ctrl+C.");
+        Console.WriteLine($"Čas vzorčenja: {cfg.SampleIntervalSeconds} s, interval zapisa: {cfg.WriteIntervalSeconds} s. Ustavi s Ctrl+C.");
         Console.WriteLine();
 
         using var service = new PollService(loaded, sinks);
