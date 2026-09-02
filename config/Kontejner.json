@@ -14,7 +14,8 @@
     "timeoutMs": 1000,
     "retries": 2
   },
-  "pollIntervalSeconds": 60,
+  "sampleIntervalSeconds": 5,
+  "writeIntervalSeconds": 60,
   "logging": {
     "enabled": true,
     "folder": "../logs",

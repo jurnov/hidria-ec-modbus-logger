@@ -7,7 +7,7 @@ namespace ModbusLogger.App;
 /// </summary>
 public static class RegisterOptions
 {
-    public static readonly string[] Functions = { "input", "holding" };
+    public static readonly string[] Functions = { "input", "holding", "constant" };
     public static readonly string[] Types = { "uint16", "int16", "uint32", "int32", "float32" };
     public static readonly string[] WordOrders = { "big", "little" };
 }

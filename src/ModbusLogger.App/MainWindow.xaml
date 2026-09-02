@@ -169,7 +169,18 @@
                         </Style>
                     </DataGrid.ColumnHeaderStyle>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Naslov" Binding="{Binding Address}" Width="80"/>
+                        <DataGridTextColumn Header="Naslov" Binding="{Binding Address}" Width="80">
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsConstant}" Value="True">
+                                            <Setter Property="Background" Value="#DDDDDD"/>
+                                            <Setter Property="ToolTip" Value="Konstantni register nima pravega Modbus naslova."/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                        </DataGridTextColumn>
                         <DataGridTextColumn Header="Ime" Binding="{Binding Name}" Width="*"/>
                         <DataGridTextColumn Header="Vrednost" Binding="{Binding ValueText}" Width="110">
                             <DataGridTextColumn.ElementStyle>

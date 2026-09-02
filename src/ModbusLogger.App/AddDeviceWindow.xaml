@@ -71,7 +71,30 @@
                           AutoGenerateColumns="False" CanUserAddRows="False"
                           HeadersVisibility="Column" GridLinesVisibility="Horizontal">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Naslov" Binding="{Binding Address, UpdateSourceTrigger=PropertyChanged}" Width="75"/>
+                        <DataGridTemplateColumn Header="Naslov" Width="75">
+                            <DataGridTemplateColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsConstant}" Value="True">
+                                            <Setter Property="Background" Value="#DDDDDD"/>
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                            <Setter Property="ToolTip" Value="Konstantni register nima pravega Modbus naslova."/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTemplateColumn.CellStyle>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Address}" Padding="4,0" VerticalAlignment="Center"
+                                               Visibility="{Binding IsConstant, Converter={x:Static local:InverseBoolToVisibleConverter.Instance}}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellEditingTemplate>
+                                <DataTemplate>
+                                    <TextBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellEditingTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridComboBoxColumn Header="Funkcija" SelectedItemBinding="{Binding Function}" Width="80"
                                                  ItemsSource="{x:Static local:RegisterOptions.Functions}"/>
                         <DataGridTextColumn Header="Ime" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
@@ -81,6 +104,19 @@
                         <DataGridTextColumn Header="Skala" Binding="{Binding Scale, UpdateSourceTrigger=PropertyChanged}" Width="55"/>
                         <DataGridComboBoxColumn Header="Word order" SelectedItemBinding="{Binding WordOrder}" Width="80"
                                                  ItemsSource="{x:Static local:RegisterOptions.WordOrders}"/>
+                        <DataGridTextColumn Header="Konstanta" Binding="{Binding ConstantValue, UpdateSourceTrigger=PropertyChanged}" Width="70">
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="ToolTip" Value="Uporabljeno samo pri funkciji 'constant': fiksna vrednost, ki se ne bere z Modbus vodila."/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsConstant}" Value="False">
+                                            <Setter Property="Background" Value="#DDDDDD"/>
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </DockPanel>

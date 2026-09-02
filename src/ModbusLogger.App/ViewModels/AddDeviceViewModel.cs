@@ -18,6 +18,7 @@ public sealed class RegisterRowVm : ViewModelBase
     private string _scale = "1";
     private string _wordOrder = "big";
     private string _function = "input";
+    private string _constantValue = "0";
 
     public string Address { get => _address; set => Set(ref _address, value); }
     public string Name { get => _name; set => Set(ref _name, value); }
@@ -26,8 +27,18 @@ public sealed class RegisterRowVm : ViewModelBase
     public string Scale { get => _scale; set => Set(ref _scale, value); }
     public string WordOrder { get => _wordOrder; set => Set(ref _wordOrder, value); }
 
-    /// <summary>input (fc 04) | holding (fc 03) — vsak register lahko izbere svojo.</summary>
-    public string Function { get => _function; set => Set(ref _function, value); }
+    /// <summary>input (fc 04) | holding (fc 03) | constant — vsak register lahko izbere svojo.</summary>
+    public string Function
+    {
+        get => _function;
+        set { if (Set(ref _function, value)) Raise(nameof(IsConstant)); }
+    }
+
+    /// <summary>Uporabljeno samo, kadar je Function="constant" — fiksna vrednost, ki se ne bere z vodila.</summary>
+    public string ConstantValue { get => _constantValue; set => Set(ref _constantValue, value); }
+
+    /// <summary>true, kadar ta "register" nima pravega Modbus naslova (Function="constant").</summary>
+    public bool IsConstant => string.Equals(Function, "constant", StringComparison.OrdinalIgnoreCase);
 }
 
 /// <summary>
@@ -80,6 +91,7 @@ public sealed class AddDeviceViewModel : ViewModelBase
                         Scale = r.Scale.ToString(CultureInfo.InvariantCulture),
                         WordOrder = r.WordOrder,
                         Function = r.Function,
+                        ConstantValue = r.ConstantValue.ToString(CultureInfo.InvariantCulture),
                     });
                 }
             }
@@ -170,6 +182,7 @@ public sealed class AddDeviceViewModel : ViewModelBase
                 Scale = r.Scale.ToString(CultureInfo.InvariantCulture),
                 WordOrder = r.WordOrder,
                 Function = r.Function,
+                ConstantValue = r.ConstantValue.ToString(CultureInfo.InvariantCulture),
             });
         }
         if (Registers.Count == 0)
@@ -352,6 +365,25 @@ public sealed class AddDeviceViewModel : ViewModelBase
                 errors.Add("Vsak register potrebuje ime.");
                 continue;
             }
+
+            if (string.Equals(row.Function, "constant", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!double.TryParse(row.ConstantValue, NumberStyles.Float, CultureInfo.InvariantCulture, out double constantValue))
+                {
+                    errors.Add($"Neveljavna konstantna vrednost za '{row.Name}': '{row.ConstantValue}'.");
+                    continue;
+                }
+                var constantDef = new RegisterDef
+                {
+                    Name = row.Name.Trim(),
+                    Unit = row.Unit.Trim(),
+                    Function = "constant",
+                    ConstantValue = constantValue,
+                };
+                parsed.Add((constantDef, 0, 0, row.Function));
+                continue;
+            }
+
             if (!ConfigLoader.TryParseAddress(row.Address, out ushort addr))
             {
                 errors.Add($"Neveljaven naslov registra '{row.Name}': '{row.Address}'.");
@@ -398,13 +430,15 @@ public sealed class AddDeviceViewModel : ViewModelBase
     /// <summary>
     /// Registre razdeli po funkciji (input/holding — vsak Modbus paket lahko uporabi le eno),
     /// nato jih znotraj vsake funkcije po naslovu požrešno združi v čim manj blokov,
-    /// tako da nihče ne presega Modbus omejitve 125 registrov na branje.
+    /// tako da nihče ne presega Modbus omejitve 125 registrov na branje. Konstantni "registri"
+    /// se nikoli ne berejo z vodila, zato zanje ni poll group-a.
     /// </summary>
     private static List<PollGroup> BuildPollGroups(List<(RegisterDef Def, ushort Addr, int WordCount, string Function)> registers)
     {
         var groups = new List<PollGroup>();
+        var pollable = registers.Where(r => !string.Equals(r.Function, "constant", StringComparison.OrdinalIgnoreCase));
 
-        foreach (var byFunction in registers.GroupBy(r => r.Function, StringComparer.OrdinalIgnoreCase))
+        foreach (var byFunction in pollable.GroupBy(r => r.Function, StringComparer.OrdinalIgnoreCase))
         {
             var sorted = byFunction.OrderBy(r => r.Addr).ToList();
             ushort? groupStart = null;

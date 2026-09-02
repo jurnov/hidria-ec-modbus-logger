@@ -72,10 +72,14 @@ public sealed class RegisterVm : ViewModelBase
 
     public RegisterVm(RegisterDef def)
     {
-        Address = $"0x{def.AddressValue:X4}";
+        IsConstant = def.FunctionValue == ModbusFunction.Constant;
+        Address = IsConstant ? "" : $"0x{def.AddressValue:X4}";
         Name = def.Name;
         Unit = def.Unit;
     }
+
+    /// <summary>true, kadar ta "register" nima pravega Modbus naslova (fiksna vrednost iz profila).</summary>
+    public bool IsConstant { get; }
 
     public string Address { get; }
     public string Name { get; }

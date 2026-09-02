@@ -198,3 +198,28 @@ Kronološki povzetek razvoja aplikacije, od prvega prototipa do trenutnega stanj
   "OK (x ms)" stanjem, kar je dajalo vtis, da naprava še vedno komunicira
   — zdaj se ob ustavitvi lučka obarva sivo, besedilo pa spremeni v "brez
   povezave — ustavljeno".
+
+## MySQL beleženje: konstanta po napravi in oznaka napake
+
+- Dodana možnost "Konstantna vrednost" pri mapiranju MySQL stolpca —
+  fiksno besedilo, vpisano neposredno v nastavitvah beleženja, na voljo v
+  vsaki vrstici ne glede na napravo.
+- Dodano polje "Napaka komunikacije (1/0)" med viri podatka za MySQL
+  stolpec — 1 ob neuspešnem branju, 0 ob uspešnem.
+
+## Konstantni "register" v profilu naprave
+
+- V urejevalniku register mape nova funkcija **constant**: register, ki
+  se nikoli ne bere z Modbus vodila, ampak ima fiksno, ročno vpisano
+  vrednost (nov stolpec "Konstanta"). Ker je vsak profil last ene naprave,
+  ima lahko vsaka naprava svojo vrednost (npr. št. linije/lokacije), ki se
+  nato v MySQL nastavitvah poveže na poljuben stolpec enako kot pravi
+  register.
+- Naslov takega registra se nikjer ne izpiše (ni pravega naslova) — polje
+  je sivo, tako v urejevalniku naprave kot v tabeli trenutnih vrednosti.
+
+## Popravek tipa registrov hitrosti
+
+- **Popravek**: registri "Target Speed", "Actual Speed" in "Calculated
+  Speed" v profilu Hidria EC ventilatorja so bili `uint16`, spremenjeni v
+  `int16` (vsi obstoječi profili ventilatorjev na disku).

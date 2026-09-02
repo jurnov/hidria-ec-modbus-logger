@@ -183,12 +183,17 @@ public static class ConfigLoader
         {
             r.Type = r.Type.ToLowerInvariant();
             r.WordOrder = r.WordOrder.ToLowerInvariant();
-            string rwho = $"{who}, register \"{r.Name}\" ({r.Address})";
+            string rwho = $"{who}, register \"{r.Name}\"";
+
+            r.FunctionValue = ParseFunction(r.Function, $"{rwho}: neznana funkcija \"{r.Function}\" (input/holding/constant)", result);
+
+            // Konstantni "register" se nikoli ne bere z vodila — brez naslova, tipa ali poll group pokritosti.
+            if (r.FunctionValue == ModbusFunction.Constant)
+                continue;
 
             if (!TryParseAddress(r.Address, out ushort addr))
-                result.Errors.Add($"{rwho}: neveljaven naslov.");
+                result.Errors.Add($"{rwho} ({r.Address}): neveljaven naslov.");
             r.AddressValue = addr;
-            r.FunctionValue = ParseFunction(r.Function, $"{rwho}: neznana funkcija \"{r.Function}\" (input/holding)", result);
 
             if (r.Type is not ("uint16" or "int16" or "uint32" or "int32" or "float32"))
                 result.Errors.Add($"{rwho}: neznan tip \"{r.Type}\" (uint16/int16/uint32/int32/float32).");
@@ -199,7 +204,7 @@ public static class ConfigLoader
                 g.FunctionValue == r.FunctionValue &&
                 addr >= g.StartAddressValue && addr + r.WordCount <= g.StartAddressValue + g.Count);
             if (!covered)
-                result.Errors.Add($"{rwho}: naslov ni pokrit z nobenim poll group iste funkcije ({r.Function}) — dodaj ali razširi blok.");
+                result.Errors.Add($"{rwho} ({r.Address}): naslov ni pokrit z nobenim poll group iste funkcije ({r.Function}) — dodaj ali razširi blok.");
         }
     }
 
@@ -207,6 +212,7 @@ public static class ConfigLoader
         function.ToLowerInvariant() switch
         {
             "input" or "04" or "4" or "readinputregisters" => ModbusFunction.ReadInputRegisters,
+            "constant" => ModbusFunction.Constant,
             "holding" or "03" or "3" or "readholdingregisters" => ModbusFunction.ReadHoldingRegisters,
             _ => Fail(errorIfUnknown, result),
         };

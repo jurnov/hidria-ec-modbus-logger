@@ -26,7 +26,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD101",
@@ -36,7 +37,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD102",
@@ -46,7 +48,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD103",
@@ -56,7 +59,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD104",
@@ -66,7 +70,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD105",
@@ -76,7 +81,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD106",
@@ -86,7 +92,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD107",
@@ -96,7 +103,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD108",
@@ -106,7 +114,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD109",
@@ -116,7 +125,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD10A",
@@ -126,27 +136,30 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD10B",
       "name": "Target Speed",
       "unit": "rpm",
-      "type": "uint16",
+      "type": "int16",
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD10C",
       "name": "Actual Speed",
       "unit": "rpm",
-      "type": "uint16",
+      "type": "int16",
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD10D",
@@ -156,7 +169,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD10E",
@@ -166,17 +180,19 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD10F",
       "name": "Calculated Speed",
       "unit": "rpm",
-      "type": "uint16",
+      "type": "int16",
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD110",
@@ -186,7 +202,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD111",
@@ -196,7 +213,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD112",
@@ -206,7 +224,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD113",
@@ -216,7 +235,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD114",
@@ -226,7 +246,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD115",
@@ -236,7 +257,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD116",
@@ -246,7 +268,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD117",
@@ -256,7 +279,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD118",
@@ -266,7 +290,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD119",
@@ -276,7 +301,8 @@
       "scale": 0.01,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD048",
@@ -286,7 +312,8 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "input"
+      "function": "input",
+      "constantValue": 0
     },
     {
       "address": "0xD100",
@@ -296,7 +323,19 @@
       "scale": 1,
       "offset": 0,
       "wordOrder": "big",
-      "function": "holding"
+      "function": "holding",
+      "constantValue": 0
+    },
+    {
+      "address": "0",
+      "name": "lokacija",
+      "unit": "",
+      "type": "uint16",
+      "scale": 1,
+      "offset": 0,
+      "wordOrder": "big",
+      "function": "constant",
+      "constantValue": 14
     }
   ]
 }

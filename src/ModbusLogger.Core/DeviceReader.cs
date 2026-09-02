@@ -88,6 +88,13 @@ public static class DeviceReader
         var readings = new List<RegisterReading>(profile.Registers.Count);
         foreach (var def in profile.Registers)
         {
+            if (def.FunctionValue == ModbusFunction.Constant)
+            {
+                // Ni pravi register — nikoli se ne bere z vodila, vrednost je fiksna, vpisana v profilu.
+                readings.Add(new RegisterReading(def, Array.Empty<ushort>(), def.ConstantValue));
+                continue;
+            }
+
             var (group, data) = blocks.First(b =>
                 b.Group.FunctionValue == def.FunctionValue &&
                 def.AddressValue >= b.Group.StartAddressValue &&

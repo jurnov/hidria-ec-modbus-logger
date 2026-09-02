@@ -114,6 +114,9 @@ public enum ModbusFunction
 {
     ReadInputRegisters,
     ReadHoldingRegisters,
+
+    /// <summary>Ni pravi Modbus register — fiksna vrednost, vpisana v profilu, ki se nikoli ne bere z vodila.</summary>
+    Constant,
 }
 
 public sealed class RegisterDef
@@ -133,8 +136,11 @@ public sealed class RegisterDef
     /// <summary>Vrstni red besed pri 32-bitnih tipih: big (višja beseda prva) | little.</summary>
     public string WordOrder { get; set; } = "big";
 
-    /// <summary>input (fc 04) | holding (fc 03) — register lahko pripada drugi funkciji kot drugi v istem profilu.</summary>
+    /// <summary>input (fc 04) | holding (fc 03) | constant — register lahko pripada drugi funkciji kot drugi v istem profilu.</summary>
     public string Function { get; set; } = "input";
+
+    /// <summary>Vrednost, kadar je Function="constant" — se nikoli ne bere z vodila, uporabnik jo vpiše v profilu.</summary>
+    public double ConstantValue { get; set; } = 0;
 
     [JsonIgnore] public ushort AddressValue { get; internal set; }
     [JsonIgnore] public ModbusFunction FunctionValue { get; internal set; }
