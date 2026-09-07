@@ -110,6 +110,7 @@ I dettagli sono in {1}</value></data>
   <data name="Main_ConfigPathDisplay" xml:space="preserve"><value>Profilo: {0}</value></data>
   <data name="Main_Lang_Label" xml:space="preserve"><value>Lingua</value></data>
   <data name="Main_HelpButton_Tooltip" xml:space="preserve"><value>Istruzioni per l'uso</value></data>
+  <data name="Main_UpdateAvailable" xml:space="preserve"><value>È disponibile la versione {0} — scarica</value></data>
 
   <!-- AddDeviceWindow -->
   <data name="AddDevice_Title_Add" xml:space="preserve"><value>Aggiungi dispositivo</value></data>

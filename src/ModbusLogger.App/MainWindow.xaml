@@ -41,6 +41,9 @@
                            Foreground="{StaticResource Brand.DarkBlue}" FontSize="16" FontWeight="Bold"/>
                 <TextBlock DockPanel.Dock="Left" Text="{Binding AppVersion}" VerticalAlignment="Bottom"
                            Foreground="#999" FontSize="11" Margin="6,0,0,3"/>
+                <Button DockPanel.Dock="Left" Content="{Binding UpdateBannerText}" Command="{Binding OpenUpdateCommand}"
+                        Visibility="{Binding UpdateAvailable, Converter={x:Static local:BoolToVisibleConverter.Instance}}"
+                        Style="{StaticResource Brand.LinkButton}" VerticalAlignment="Bottom" Margin="12,0,0,3"/>
             </DockPanel>
         </Border>
 

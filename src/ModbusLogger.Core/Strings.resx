@@ -109,6 +109,7 @@ Podrobnosti so v {1}</value></data>
   <data name="Main_ConfigPathDisplay" xml:space="preserve"><value>Profil: {0}</value></data>
   <data name="Main_Lang_Label" xml:space="preserve"><value>Jezik</value></data>
   <data name="Main_HelpButton_Tooltip" xml:space="preserve"><value>Navodila za uporabo</value></data>
+  <data name="Main_UpdateAvailable" xml:space="preserve"><value>Na voljo je nova verzija {0} — prenesi</value></data>
 
   <!-- AddDeviceWindow -->
   <data name="AddDevice_Title_Add" xml:space="preserve"><value>Dodaj napravo</value></data>

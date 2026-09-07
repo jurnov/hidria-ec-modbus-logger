@@ -3,7 +3,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Ports;
+using System.Net.Http;
 using System.Reflection;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Win32;
@@ -75,9 +77,12 @@ public sealed class MainViewModel : ViewModelBase
         BrowseCsvFolderCommand = new RelayCommand(BrowseCsvFolder);
         FetchMySqlColumnsCommand = new RelayCommand(FetchMySqlColumns);
         ShowHelpCommand = new RelayCommand(ShowHelp);
+        OpenUpdateCommand = new RelayCommand(() =>
+            Process.Start(new ProcessStartInfo(_updateUrl) { UseShellExecute = true }));
 
         RefreshPorts();
         LoadConfig();
+        _ = CheckForUpdatesAsync();
     }
 
     public ObservableCollection<DeviceVm> Devices { get; } = new();
@@ -162,6 +167,46 @@ public sealed class MainViewModel : ViewModelBase
             Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
     }
 
+    /// <summary>
+    /// Tiho preveri najnovejšo izdajo na GitHubu (jurnov/hidria-ec-modbus-logger) in ob morebitni
+    /// novejši verziji prikaže klikljivo obvestilo. Napake (brez interneta, GitHub nedosegljiv ...)
+    /// se tiho prezrejo — to ni kritična funkcionalnost.
+    /// </summary>
+    private async Task CheckForUpdatesAsync()
+    {
+        try
+        {
+            using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
+            http.DefaultRequestHeaders.UserAgent.ParseAdd("ModbusLogger-App");
+            string json = await http.GetStringAsync(
+                "https://api.github.com/repos/jurnov/hidria-ec-modbus-logger/releases/latest");
+
+            using var doc = JsonDocument.Parse(json);
+            string? tag = doc.RootElement.TryGetProperty("tag_name", out var t) ? t.GetString() : null;
+            string? url = doc.RootElement.TryGetProperty("html_url", out var u) ? u.GetString() : null;
+            if (tag is null)
+                return;
+
+            string tagVersion = tag.TrimStart('v', 'V');
+            string? currentVersionText = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
+            if (!Version.TryParse(tagVersion, out var latest) || !Version.TryParse(currentVersionText, out var current))
+                return;
+            if (latest <= current)
+                return;
+
+            _ = _dispatcher.BeginInvoke(() =>
+            {
+                _updateUrl = url ?? _updateUrl;
+                UpdateBannerText = string.Format(Strings.Main_UpdateAvailable, tag);
+                UpdateAvailable = true;
+            });
+        }
+        catch
+        {
+            // Ni internetne povezave, GitHub ni dosegljiv ali odgovor ni pričakovane oblike — ni kritično.
+        }
+    }
+
     /// <summary>Možnosti v izbirniku načina povezave nad nastavitvami "Povezava".</summary>
     public ConnectionModeOption[] ConnectionModeOptions { get; } = new[]
     {
@@ -181,6 +226,18 @@ public sealed class MainViewModel : ViewModelBase
 
     /// <summary>Verzija aplikacije (iz Version v .csproj), za prikaz v naslovni vrstici.</summary>
     public string AppVersion { get; } = "v" + (Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "?");
+
+    private bool _updateAvailable;
+    private string _updateBannerText = "";
+    private string _updateUrl = "https://github.com/jurnov/hidria-ec-modbus-logger/releases/latest";
+
+    /// <summary>true, ko GitHub Releases javlja novejšo verzijo, kot je trenutno nameščena.</summary>
+    public bool UpdateAvailable { get => _updateAvailable; private set => Set(ref _updateAvailable, value); }
+
+    /// <summary>Besedilo klikljivega obvestila v glavi okna, npr. "Na voljo je nova verzija v1.2.0 — prenesi".</summary>
+    public string UpdateBannerText { get => _updateBannerText; private set => Set(ref _updateBannerText, value); }
+
+    public RelayCommand OpenUpdateCommand { get; }
 
     /// <summary>true = Modbus TCP (oddaljen IP naslov), false = serijska povezava (RS-485/RS-232 prek COM porta).</summary>
     public bool IsTcpConnection { get => _isTcpConnection; set => Set(ref _isTcpConnection, value); }

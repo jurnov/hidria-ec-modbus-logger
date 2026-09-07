@@ -61,6 +61,7 @@ public static class Strings
     public static string Main_ConfigPathDisplay => Get(nameof(Main_ConfigPathDisplay));
     public static string Main_Lang_Label => Get(nameof(Main_Lang_Label));
     public static string Main_HelpButton_Tooltip => Get(nameof(Main_HelpButton_Tooltip));
+    public static string Main_UpdateAvailable => Get(nameof(Main_UpdateAvailable));
 
     public static string AddDevice_Title_Add => Get(nameof(AddDevice_Title_Add));
     public static string AddDevice_Title_Edit => Get(nameof(AddDevice_Title_Edit));
