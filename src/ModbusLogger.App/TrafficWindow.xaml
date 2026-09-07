@@ -1,7 +1,8 @@
 <Window x:Class="ModbusLogger.App.TrafficWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Modbus promet (HEX)" Height="500" Width="780" MinHeight="300" MinWidth="520"
+        xmlns:core="clr-namespace:ModbusLogger.Core;assembly=ModbusLogger.Core"
+        Title="{x:Static core:Strings.Traffic_Title}" Height="500" Width="780" MinHeight="300" MinWidth="520"
         Icon="Assets/hidria.ico">
     <Grid Margin="8">
         <Grid.RowDefinitions>
@@ -10,7 +11,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Foreground="#777" FontSize="11" Margin="0,0,0,6" TextWrapping="Wrap"
-                   Text="Zadnjih do 500 izmenjav na trenutni povezavi. Ena vrstica = en poslan Modbus zahtevek in nanj prejet odgovor (surovi bajti, HEX). Oranžno = ni bilo odgovora (timeout)."/>
+                   Text="{x:Static core:Strings.Traffic_Hint}"/>
 
         <DataGrid Grid.Row="1" x:Name="ExchangeGrid" ItemsSource="{Binding TrafficLog}" AutoGenerateColumns="False"
                   IsReadOnly="True" HeadersVisibility="Column" GridLinesVisibility="Horizontal"
@@ -25,9 +26,9 @@
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Čas pošiljanja" Binding="{Binding TimeText}" Width="105"/>
-                <DataGridTextColumn Header="Poslano (request)" Binding="{Binding Request}" Width="*"/>
-                <DataGridTextColumn Header="Čas prejema" Binding="{Binding ResponseTimeText}" Width="105">
+                <DataGridTextColumn Header="{x:Static core:Strings.Traffic_Col_CasPosiljanja}" Binding="{Binding TimeText}" Width="105"/>
+                <DataGridTextColumn Header="{x:Static core:Strings.Traffic_Col_Poslano}" Binding="{Binding Request}" Width="*"/>
+                <DataGridTextColumn Header="{x:Static core:Strings.Traffic_Col_CasPrejema}" Binding="{Binding ResponseTimeText}" Width="105">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
@@ -38,7 +39,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Prejeto (response)" Binding="{Binding Response}" Width="*">
+                <DataGridTextColumn Header="{x:Static core:Strings.Traffic_Col_Prejeto}" Binding="{Binding Response}" Width="*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>

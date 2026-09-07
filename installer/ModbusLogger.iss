@@ -5,7 +5,7 @@
 ; (devices.json, profili, CSV logi) neposredno v mapo poleg .exe.
 
 #define MyAppName "Hidria EC - Modbus zapisovalnik"
-#define MyAppVersion "1.0"
+#define MyAppVersion "1.1.0"
 #define MyAppPublisher "Hidria"
 #define MyAppExeName "ModbusLogger.App.exe"
 
@@ -38,6 +38,8 @@ Source: "..\dist\ModbusLogger.App.exe"; DestDir: "{app}"; Flags: ignoreversion
 ; ne prepiše uporabnikova živa konfiguracija) in se nikoli ne izbrišeta ob odstranitvi programa.
 Source: "..\dist\config\devices.json"; DestDir: "{app}\config"; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "..\dist\config\profiles\hidria-ec-fan.json"; DestDir: "{app}\config\profiles"; Flags: onlyifdoesntexist uninsneveruninstall
+; Navodila za uporabo (HTML, po jezikih) - vedno posodobljena na najnovejšo verzijo ob nadgradnji.
+Source: "..\dist\docs\*.html"; DestDir: "{app}\docs"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

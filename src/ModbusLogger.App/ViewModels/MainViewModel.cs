@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.IO.Ports;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Win32;
@@ -48,10 +50,14 @@ public sealed class MainViewModel : ViewModelBase
     private DeviceVm? _selectedDevice;
     private TrafficWindow? _trafficWindow;
     private LoggingSettingsWindow? _loggingSettingsWindow;
+    private LanguageOption _selectedLanguage;
 
     public MainViewModel(Dispatcher dispatcher)
     {
         _dispatcher = dispatcher;
+        _selectedLanguage = LanguageOptions.FirstOrDefault(o =>
+            string.Equals(o.Code, CultureInfo.CurrentUICulture.TwoLetterISOLanguageName, StringComparison.OrdinalIgnoreCase))
+            ?? LanguageOptions[0];
         StartStopCommand = new RelayCommand(StartStop, () => !_isBusy && (_isRunning || _loaded is { IsValid: true }));
         ReloadCommand = new RelayCommand(OpenLoadConfigDialog, () => !_isRunning && !_isBusy);
         RefreshPortsCommand = new RelayCommand(RefreshPorts, () => !_isRunning);
@@ -60,10 +66,15 @@ public sealed class MainViewModel : ViewModelBase
         AddDeviceCommand = new RelayCommand(AddDevice, () => !_isRunning && !_isBusy && _loaded is { IsValid: true });
         EditDeviceCommand = new RelayCommand(EditDevice, () => !_isRunning && !_isBusy && SelectedDevice is not null);
         RemoveDeviceCommand = new RelayCommand(RemoveDevice, () => !_isRunning && !_isBusy && SelectedDevice is not null);
+        MoveDeviceUpCommand = new RelayCommand(() => MoveSelectedDevice(-1),
+            () => !_isRunning && !_isBusy && SelectedDevice is not null && Devices.IndexOf(SelectedDevice) > 0);
+        MoveDeviceDownCommand = new RelayCommand(() => MoveSelectedDevice(1),
+            () => !_isRunning && !_isBusy && SelectedDevice is not null && Devices.IndexOf(SelectedDevice) < Devices.Count - 1);
         ShowTrafficCommand = new RelayCommand(ShowTraffic);
         ShowLoggingSettingsCommand = new RelayCommand(ShowLoggingSettings);
         BrowseCsvFolderCommand = new RelayCommand(BrowseCsvFolder);
         FetchMySqlColumnsCommand = new RelayCommand(FetchMySqlColumns);
+        ShowHelpCommand = new RelayCommand(ShowHelp);
 
         RefreshPorts();
         LoadConfig();
@@ -84,29 +95,92 @@ public sealed class MainViewModel : ViewModelBase
     public RelayCommand AddDeviceCommand { get; }
     public RelayCommand EditDeviceCommand { get; }
     public RelayCommand RemoveDeviceCommand { get; }
+    public RelayCommand MoveDeviceUpCommand { get; }
+    public RelayCommand MoveDeviceDownCommand { get; }
     public RelayCommand ShowTrafficCommand { get; }
     public RelayCommand ShowLoggingSettingsCommand { get; }
     public RelayCommand BrowseCsvFolderCommand { get; }
     public RelayCommand FetchMySqlColumnsCommand { get; }
+    public RelayCommand ShowHelpCommand { get; }
 
     /// <summary>Ločila stolpcev, ki jih ponuja izbirnik v nastavitvah beleženja.</summary>
     public DelimiterOption[] DelimiterOptions { get; } = new[]
     {
-        new DelimiterOption("; (podpičje)", ";"),
-        new DelimiterOption(", (vejica)", ","),
-        new DelimiterOption("Tabulator", "\t"),
+        new DelimiterOption(Strings.LoggingSettings_Delim_Podpicje, ";"),
+        new DelimiterOption(Strings.LoggingSettings_Delim_Vejica, ","),
+        new DelimiterOption(Strings.LoggingSettings_Delim_Tab, "\t"),
     };
 
     public string[] DecimalSeparatorOptions { get; } = { ",", "." };
 
+    /// <summary>
+    /// Jeziki vmesnika, na voljo v izbirniku v orodni vrstici. Prikazna oznaka je namerno vedno
+    /// dvočrkovna koda (ne prevedeno ime jezika) — ostane enaka ne glede na trenutno izbrano kulturo.
+    /// </summary>
+    public LanguageOption[] LanguageOptions { get; } = new[]
+    {
+        new LanguageOption("SL", "sl"),
+        new LanguageOption("EN", "en"),
+        new LanguageOption("DE", "de"),
+        new LanguageOption("IT", "it"),
+        new LanguageOption("ES", "es"),
+    };
+
+    /// <summary>
+    /// Izbran jezik vmesnika. Sprememba se shrani in aplikacija se takoj znova zažene, da se
+    /// nova kultura uveljavi povsod (x:Static v XAML se razreši samo enkrat, ob nalaganju okna).
+    /// </summary>
+    public LanguageOption SelectedLanguage
+    {
+        get => _selectedLanguage;
+        set
+        {
+            if (!Set(ref _selectedLanguage, value))
+                return;
+            AppState.SaveLanguage(value.Code);
+            RestartApplication();
+        }
+    }
+
+    private static void RestartApplication()
+    {
+        string? exePath = Environment.ProcessPath;
+        if (exePath is not null)
+            Process.Start(new ProcessStartInfo(exePath) { UseShellExecute = true });
+        Application.Current.Shutdown();
+    }
+
+    /// <summary>Odpre navodila za uporabo (HTML) v privzetem brskalniku, v trenutno izbranem jeziku vmesnika.</summary>
+    private static void ShowHelp()
+    {
+        string lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToLowerInvariant();
+        string docsDir = Path.Combine(AppContext.BaseDirectory, "docs");
+        string path = Path.Combine(docsDir, $"help-{lang}.html");
+        if (!File.Exists(path))
+            path = Path.Combine(docsDir, "help-sl.html");
+        if (File.Exists(path))
+            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+    }
+
     /// <summary>Možnosti v izbirniku načina povezave nad nastavitvami "Povezava".</summary>
     public ConnectionModeOption[] ConnectionModeOptions { get; } = new[]
     {
-        new ConnectionModeOption("Serijska (RS-485)", false),
-        new ConnectionModeOption("Modbus TCP", true),
+        new ConnectionModeOption(Strings.Main_ConnMode_Serial, false),
+        new ConnectionModeOption(Strings.Main_ConnMode_Tcp, true),
     };
 
-    public string ConfigPath { get => _configPath; private set => Set(ref _configPath, value); }
+    public string ConfigPath
+    {
+        get => _configPath;
+        private set { if (Set(ref _configPath, value)) Raise(nameof(ConfigPathDisplay)); }
+    }
+
+    /// <summary>Kratek prikaz naloženega profila v orodni vrstici, brez polne poti do datoteke.</summary>
+    public string ConfigPathDisplay =>
+        string.IsNullOrEmpty(_configPath) ? "" : string.Format(Strings.Main_ConfigPathDisplay, Path.GetFileNameWithoutExtension(_configPath));
+
+    /// <summary>Verzija aplikacije (iz Version v .csproj), za prikaz v naslovni vrstici.</summary>
+    public string AppVersion { get; } = "v" + (Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "?");
 
     /// <summary>true = Modbus TCP (oddaljen IP naslov), false = serijska povezava (RS-485/RS-232 prek COM porta).</summary>
     public bool IsTcpConnection { get => _isTcpConnection; set => Set(ref _isTcpConnection, value); }
@@ -152,7 +226,7 @@ public sealed class MainViewModel : ViewModelBase
             if (_service is not null)
             {
                 _service.SampleIntervalSeconds = clamped;
-                Log($"Čas vzorčenja spremenjen na {clamped} s (velja takoj).");
+                Log(string.Format(Strings.Log_CasVzorcenjaSpremenjen, clamped));
             }
         }
     }
@@ -195,6 +269,8 @@ public sealed class MainViewModel : ViewModelBase
             {
                 EditDeviceCommand.RaiseCanExecuteChanged();
                 RemoveDeviceCommand.RaiseCanExecuteChanged();
+                MoveDeviceUpCommand.RaiseCanExecuteChanged();
+                MoveDeviceDownCommand.RaiseCanExecuteChanged();
             }
         }
     }
@@ -214,7 +290,7 @@ public sealed class MainViewModel : ViewModelBase
     }
 
     public bool IsStopped => !_isRunning;
-    public string StartStopText => _isRunning ? "USTAVI" : "ZAŽENI";
+    public string StartStopText => _isRunning ? Strings.Main_StartStop_Stop : Strings.Main_StartStop_Start;
 
     /// <summary>Znova naloži trenutno aktivno konfiguracijsko datoteko (ali privzeto, če še ni bila izbrana).</summary>
     private void LoadConfig()
@@ -222,7 +298,7 @@ public sealed class MainViewModel : ViewModelBase
         string? path = AppState.LoadLastConfigPath();
         if (path is null)
         {
-            StatusText = "Ni naložene konfiguracije — uporabi 'Naloži profil'.";
+            StatusText = Strings.St_NiNalozeneKonf;
             Log(StatusText);
             RefreshCommands();
             return;
@@ -234,7 +310,7 @@ public sealed class MainViewModel : ViewModelBase
     {
         if (path is null)
         {
-            StatusText = "config\\devices.json ni najden — postavi ga poleg aplikacije.";
+            StatusText = Strings.St_DevicesJsonNiNajden;
             Log(StatusText);
             return;
         }
@@ -244,12 +320,12 @@ public sealed class MainViewModel : ViewModelBase
         AppState.SaveLastConfigPath(path);
 
         foreach (string w in _loaded.Warnings)
-            Log($"OPOZORILO: {w}");
+            Log(string.Format(Strings.Log_Opozorilo, w));
         if (!_loaded.IsValid)
         {
             foreach (string e in _loaded.Errors)
-                Log($"NAPAKA: {e}");
-            StatusText = $"Konfiguracija ima {_loaded.Errors.Count} napak — glej dnevnik.";
+                Log(string.Format(Strings.Log_Napaka, e));
+            StatusText = string.Format(Strings.St_KonfImaNapak, _loaded.Errors.Count);
             Devices.Clear();
             RefreshCommands();
             return;
@@ -294,7 +370,42 @@ public sealed class MainViewModel : ViewModelBase
                 MySqlColumnMappings.Add(new MySqlColumnMappingVm(column, options, key));
         }
 
-        StatusText = $"Naloženo: {Devices.Count} naprav, {_loaded.Profiles.Count} profilov.";
+        StatusText = string.Format(Strings.St_Nalozeno, Devices.Count, _loaded.Profiles.Count);
+        Log(StatusText);
+        RefreshCommands();
+    }
+
+    /// <summary>
+    /// Po Dodaj/Uredi/Odstrani napravo: znova prebere samo seznam naprav in profile z diska,
+    /// brez da bi (kot LoadConfig/LoadConfigFrom) prepisal polja povezave/beleženja v vmesniku
+    /// — ta dialogi teh nastavitev ne spreminjajo, zato bi sicer izgubili morebitne še
+    /// neshranjene spremembe (COM port, CSV mapa ...), ki jih je uporabnik vpisal v vmesniku.
+    /// </summary>
+    private void RefreshDevicesFromDisk()
+    {
+        if (_loaded is null)
+            return;
+
+        var reloaded = ConfigLoader.Load(_loaded.DevicesPath);
+        foreach (string w in reloaded.Warnings)
+            Log(string.Format(Strings.Log_Opozorilo, w));
+        if (!reloaded.IsValid)
+        {
+            foreach (string e in reloaded.Errors)
+                Log(string.Format(Strings.Log_Napaka, e));
+            StatusText = string.Format(Strings.St_KonfImaNapak, reloaded.Errors.Count);
+            Devices.Clear();
+            RefreshCommands();
+            return;
+        }
+
+        _loaded = reloaded;
+        Devices.Clear();
+        foreach (var dev in reloaded.Config.Devices.Where(d => d.Enabled))
+            Devices.Add(new DeviceVm(dev, reloaded.Profiles[dev.Profile]));
+        SelectedDevice = Devices.FirstOrDefault();
+
+        StatusText = string.Format(Strings.St_Nalozeno, Devices.Count, reloaded.Profiles.Count);
         Log(StatusText);
         RefreshCommands();
     }
@@ -316,13 +427,13 @@ public sealed class MainViewModel : ViewModelBase
         {
             if (string.IsNullOrWhiteSpace(TcpHost))
             {
-                StatusText = "Vpiši IP naslov ali ime gostitelja.";
+                StatusText = Strings.St_VpisiIpNaslov;
                 return;
             }
         }
         else if (SelectedPort is null)
         {
-            StatusText = "Izberi COM port.";
+            StatusText = Strings.St_IzberiComPort;
             return;
         }
 
@@ -359,17 +470,17 @@ public sealed class MainViewModel : ViewModelBase
             {
                 var csv = new CsvLogSink(cfg.Logging, Path.GetDirectoryName(_loaded.DevicesPath)!);
                 sinks.Add(csv);
-                Log($"CSV beleženje v: {csv.Folder}");
+                Log(string.Format(Strings.Log_CsvBelezenjeV, csv.Folder));
             }
             catch (Exception ex)
             {
-                Log($"NAPAKA: mape za CSV ni mogoče ustvariti: {ex.Message}");
+                Log(string.Format(Strings.Log_NapakaMapeCsv, ex.Message));
                 return;
             }
         }
         else
         {
-            Log("CSV beleženje je izklopljeno — samo prikaz.");
+            Log(Strings.Log_CsvIzklopljeno);
         }
 
         if (LogToMySql)
@@ -379,12 +490,11 @@ public sealed class MainViewModel : ViewModelBase
                 var mysql = new MySqlLogSink(cfg.MySql);
                 mysql.Diagnostic += msg => _dispatcher.BeginInvoke(() => Log(msg));
                 sinks.Add(mysql);
-                Log($"MySQL beleženje v tabelo '{MySqlTable}' na {MySqlHost}:{MySqlPort}/{MySqlDatabase} " +
-                    $"({cfg.MySql.ColumnMapping.Count} povezanih stolpcev).");
+                Log(string.Format(Strings.Log_MySqlBelezenjeV, MySqlTable, MySqlHost, MySqlPort, MySqlDatabase, cfg.MySql.ColumnMapping.Count));
             }
             catch (Exception ex)
             {
-                Log($"NAPAKA: MySQL povezave ni mogoče vzpostaviti: {ex.Message}");
+                Log(string.Format(Strings.Log_NapakaMySqlPovezave, ex.Message));
                 return;
             }
         }
@@ -413,8 +523,8 @@ public sealed class MainViewModel : ViewModelBase
         _runTask = Task.Run(() => service.Run(cts.Token));
 
         IsRunning = true;
-        StatusText = $"Beleženje teče (vzorčenje {cfg.SampleIntervalSeconds} s, zapis {cfg.WriteIntervalSeconds} s).";
-        Log("Zagnano.");
+        StatusText = string.Format(Strings.St_BelezenjeTece, cfg.SampleIntervalSeconds, cfg.WriteIntervalSeconds);
+        Log(Strings.Log_Zagnano);
     }
 
     private async void Stop()
@@ -424,10 +534,10 @@ public sealed class MainViewModel : ViewModelBase
 
         _isBusy = true;
         RefreshCommands();
-        StatusText = "Ustavljam ...";
+        StatusText = Strings.St_Ustavljam;
         _cts.Cancel();
         try { await _runTask; }
-        catch (Exception ex) { Log($"Napaka ob ustavljanju: {ex.Message}"); }
+        catch (Exception ex) { Log(string.Format(Strings.Log_NapakaObUstavljanju, ex.Message)); }
 
         _service?.Dispose();
         _service = null;
@@ -440,8 +550,8 @@ public sealed class MainViewModel : ViewModelBase
 
         _isBusy = false;
         IsRunning = false;
-        StatusText = "Ustavljeno.";
-        Log("Ustavljeno.");
+        StatusText = Strings.St_Ustavljeno;
+        Log(Strings.St_Ustavljeno);
     }
 
     /// <summary>Ob zapiranju okna: sinhrono ustavi zanko, da se port lepo zapre.</summary>
@@ -495,7 +605,7 @@ public sealed class MainViewModel : ViewModelBase
 
         if (result == true && dialogVm.ResultPath is not null)
         {
-            Log($"Nalagam profil: {Path.GetFileNameWithoutExtension(dialogVm.ResultPath)}");
+            Log(string.Format(Strings.Log_NalagamProfil, Path.GetFileNameWithoutExtension(dialogVm.ResultPath)));
             LoadConfigFrom(dialogVm.ResultPath);
         }
     }
@@ -550,11 +660,11 @@ public sealed class MainViewModel : ViewModelBase
             cfg.MySql = BuildMySqlSettings();
 
             ConfigLoader.Save(cfg, dialogVm.ResultPath);
-            Log($"Profil shranjen kot: {Path.GetFileNameWithoutExtension(dialogVm.ResultPath)}");
+            Log(string.Format(Strings.Log_ProfilShranjenKot, Path.GetFileNameWithoutExtension(dialogVm.ResultPath)));
         }
         catch (Exception ex)
         {
-            Log($"NAPAKA pri shranjevanju profila: {ex.Message}");
+            Log(string.Format(Strings.Log_NapakaPriShranjevanjuProfila, ex.Message));
             return;
         }
 
@@ -593,7 +703,7 @@ public sealed class MainViewModel : ViewModelBase
 
     private void BrowseCsvFolder()
     {
-        var dialog = new OpenFolderDialog { Title = "Izberi mapo za CSV datoteke" };
+        var dialog = new OpenFolderDialog { Title = Strings.Dlg_IzberiMapoCsv };
         string current = CsvFolder;
         if (_loaded is not null)
         {
@@ -627,14 +737,14 @@ public sealed class MainViewModel : ViewModelBase
     {
         var options = new List<MySqlFieldOption>
         {
-            new("(ne uporabi)", null),
-            new("Čas meritve", MySqlLogSink.FieldTimestamp),
-            new("Naprava (ime)", MySqlLogSink.FieldDevice),
-            new("Slave ID", MySqlLogSink.FieldSlaveId),
-            new("Status / napaka", MySqlLogSink.FieldStatus),
-            new("Čas odziva [ms]", MySqlLogSink.FieldResponseMs),
-            new("Napaka komunikacije (1 = napaka, 0 = OK)", MySqlLogSink.FieldErrorFlag),
-            new("Konstantna vrednost ...", MySqlLogSink.ConstantFieldPrefix),
+            new(Strings.MySqlField_NeUporabi, null),
+            new(Strings.MySqlField_CasMeritve, MySqlLogSink.FieldTimestamp),
+            new(Strings.MySqlField_NapravaIme, MySqlLogSink.FieldDevice),
+            new(Strings.MySqlField_SlaveId, MySqlLogSink.FieldSlaveId),
+            new(Strings.MySqlField_StatusNapaka, MySqlLogSink.FieldStatus),
+            new(Strings.MySqlField_CasOdziva, MySqlLogSink.FieldResponseMs),
+            new(Strings.MySqlField_NapakaKomunikacije, MySqlLogSink.FieldErrorFlag),
+            new(Strings.MySqlField_Konstanta, MySqlLogSink.ConstantFieldPrefix),
         };
 
         if (_loaded is not null)
@@ -645,7 +755,7 @@ public sealed class MainViewModel : ViewModelBase
                 .Distinct()
                 .OrderBy(n => n, StringComparer.OrdinalIgnoreCase);
             foreach (string name in registerNames)
-                options.Add(new MySqlFieldOption($"Register: {name}", MySqlLogSink.RegisterFieldPrefix + name));
+                options.Add(new MySqlFieldOption(string.Format(Strings.MySqlField_Register, name), MySqlLogSink.RegisterFieldPrefix + name));
         }
 
         return options.ToArray();
@@ -663,7 +773,7 @@ public sealed class MainViewModel : ViewModelBase
             var columns = MySqlLogSink.FetchColumns(settings);
             if (columns.Count == 0)
             {
-                Log($"Tabela '{MySqlTable}' v bazi '{MySqlDatabase}' ne obstaja ali nima stolpcev.");
+                Log(string.Format(Strings.Log_TabelaNeObstaja, MySqlTable, MySqlDatabase));
                 return;
             }
 
@@ -672,11 +782,11 @@ public sealed class MainViewModel : ViewModelBase
             MySqlColumnMappings.Clear();
             foreach (string col in columns)
                 MySqlColumnMappings.Add(new MySqlColumnMappingVm(col, options, existing.GetValueOrDefault(col)));
-            Log($"Prebranih {columns.Count} stolpcev iz tabele '{MySqlTable}'. Poveži jih s podatki spodaj.");
+            Log(string.Format(Strings.Log_PrebranihStolpcev, columns.Count, MySqlTable));
         }
         catch (Exception ex)
         {
-            Log($"NAPAKA pri branju stolpcev MySQL tabele: {ex.Message}");
+            Log(string.Format(Strings.Log_NapakaBranjaStolpcev, ex.Message));
         }
     }
 
@@ -691,8 +801,8 @@ public sealed class MainViewModel : ViewModelBase
 
         if (result == true)
         {
-            Log($"Naprava '{dialogVm.Label}' (slave {dialogVm.SlaveId}) je bila dodana v devices.json.");
-            LoadConfig();
+            Log(string.Format(Strings.Log_NapravaDodana, dialogVm.Label, dialogVm.SlaveId));
+            RefreshDevicesFromDisk();
         }
     }
 
@@ -704,7 +814,7 @@ public sealed class MainViewModel : ViewModelBase
         var entry = SelectedDevice.Entry;
         if (!_loaded.Profiles.TryGetValue(entry.Profile, out var profile))
         {
-            Log($"NAPAKA: profil '{entry.Profile}' za napravo '{entry.Label}' ni naložen — ni ga mogoče urediti.");
+            Log(string.Format(Strings.Log_NapakaProfilNiNalozen, entry.Profile, entry.Label));
             return;
         }
 
@@ -714,8 +824,8 @@ public sealed class MainViewModel : ViewModelBase
 
         if (result == true)
         {
-            Log($"Naprava '{dialogVm.Label}' (slave {dialogVm.SlaveId}) je bila posodobljena.");
-            LoadConfig();
+            Log(string.Format(Strings.Log_NapravaPosodobljena, dialogVm.Label, dialogVm.SlaveId));
+            RefreshDevicesFromDisk();
         }
     }
 
@@ -726,8 +836,8 @@ public sealed class MainViewModel : ViewModelBase
 
         var entry = SelectedDevice.Entry;
         var choice = MessageBox.Show(
-            $"Odstranim napravo '{entry.Label}' (slave {entry.SlaveId}) iz devices.json?\n\nProfil '{entry.Profile}' ostane na disku (lahko ga uporablja druga naprava).",
-            "Odstrani napravo", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            string.Format(Strings.Msg_OdstraniNapravo, entry.Label, entry.SlaveId, entry.Profile),
+            Strings.Msg_OdstraniNapravoTitle, MessageBoxButton.YesNo, MessageBoxImage.Question);
         if (choice != MessageBoxResult.Yes)
             return;
 
@@ -741,16 +851,46 @@ public sealed class MainViewModel : ViewModelBase
             ConfigLoader.Save(loaded.Config, _loaded.DevicesPath);
 
             Log(removed > 0
-                ? $"Naprava '{entry.Label}' (slave {entry.SlaveId}) je bila odstranjena iz devices.json."
-                : $"Naprave '{entry.Label}' ni bilo mogoče najti v devices.json (že odstranjena?).");
+                ? string.Format(Strings.Log_NapravaOdstranjena, entry.Label, entry.SlaveId)
+                : string.Format(Strings.Log_NapraveNiBiloMogoceNajti, entry.Label));
         }
         catch (Exception ex)
         {
-            Log($"NAPAKA pri odstranjevanju naprave: {ex.Message}");
+            Log(string.Format(Strings.Log_NapakaOdstranjevanjaNaprave, ex.Message));
             return;
         }
 
-        LoadConfig();
+        RefreshDevicesFromDisk();
+    }
+
+    /// <summary>
+    /// Premakne izbrano napravo za eno mesto navzgor (offset -1) ali navzdol (offset +1) v seznamu
+    /// in vrstni red trajno shrani v devices.json.
+    /// </summary>
+    private void MoveSelectedDevice(int offset)
+    {
+        if (_loaded is null || SelectedDevice is null)
+            return;
+
+        int oldIndex = Devices.IndexOf(SelectedDevice);
+        int newIndex = oldIndex + offset;
+        if (oldIndex < 0 || newIndex < 0 || newIndex >= Devices.Count)
+            return;
+
+        Devices.Move(oldIndex, newIndex);
+        MoveDeviceUpCommand.RaiseCanExecuteChanged();
+        MoveDeviceDownCommand.RaiseCanExecuteChanged();
+
+        // Prepletenost z morebitnimi onemogočenimi napravami (ki jih Devices ne vsebuje) ohranimo
+        // tako, da izpolnimo njihova mesta z novo urejenim zaporedjem omogočenih naprav.
+        var enabledInNewOrder = new Queue<DeviceEntry>(Devices.Select(d => d.Entry));
+        var newOrder = new List<DeviceEntry>(_loaded.Config.Devices.Count);
+        foreach (var entry in _loaded.Config.Devices)
+            newOrder.Add(entry.Enabled ? enabledInNewOrder.Dequeue() : entry);
+
+        _loaded.Config.Devices.Clear();
+        _loaded.Config.Devices.AddRange(newOrder);
+        ConfigLoader.Save(_loaded.Config, _loaded.DevicesPath);
     }
 
     private void RefreshCommands()
@@ -761,6 +901,8 @@ public sealed class MainViewModel : ViewModelBase
         AddDeviceCommand.RaiseCanExecuteChanged();
         EditDeviceCommand.RaiseCanExecuteChanged();
         RemoveDeviceCommand.RaiseCanExecuteChanged();
+        MoveDeviceUpCommand.RaiseCanExecuteChanged();
+        MoveDeviceDownCommand.RaiseCanExecuteChanged();
         SaveConfigCommand.RaiseCanExecuteChanged();
     }
 }
@@ -773,6 +915,12 @@ public sealed record DelimiterOption(string Label, string Value)
 
 /// <summary>Ena možnost v izbirniku načina povezave (Modbus RTU prek COM porta ali Modbus TCP).</summary>
 public sealed record ConnectionModeOption(string Label, bool IsTcp)
+{
+    public override string ToString() => Label;
+}
+
+/// <summary>En jezik vmesnika v izbirniku (prikazno ime v tem jeziku + dvočrkovna koda kulture).</summary>
+public sealed record LanguageOption(string Label, string Code)
 {
     public override string ToString() => Label;
 }

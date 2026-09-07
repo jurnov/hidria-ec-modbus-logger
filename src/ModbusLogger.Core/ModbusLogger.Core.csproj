@@ -13,4 +13,8 @@
     <PackageReference Include="System.IO.Ports" Version="10.0.10" />
   </ItemGroup>
 
+  <!-- Strings.resx (nevtralno = slovensko) + Strings.{en,de,it,es}.resx (satelitski viri po
+       kulturi) so vsi samodejno vključeni kot EmbeddedResource prek privzetega SDK globbinga.
+       Ročno pisan Strings.cs (ne generiran) jih bere prek ResourceManager. -->
+
 </Project>

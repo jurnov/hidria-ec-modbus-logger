@@ -46,7 +46,7 @@ public static class DeviceReader
         if (!client.ConnectAsync(s.Host, s.Port).Wait(s.TimeoutMs))
         {
             client.Dispose();
-            throw new TimeoutException($"povezava na {s.Host}:{s.Port} ni uspela v {s.TimeoutMs} ms");
+            throw new TimeoutException(string.Format(Strings.Err_PovezavaNiUspela, s.Host, s.Port, s.TimeoutMs));
         }
         client.ReceiveTimeout = s.TimeoutMs;
         client.SendTimeout = s.TimeoutMs;
@@ -71,17 +71,17 @@ public static class DeviceReader
             }
             catch (TimeoutException)
             {
-                return DeviceReadResult.Failed(ts, "timeout — naprava ne odgovarja", sw.ElapsedMilliseconds);
+                return DeviceReadResult.Failed(ts, Strings.Err_Timeout, sw.ElapsedMilliseconds);
             }
             catch (SlaveException ex)
             {
                 return DeviceReadResult.Failed(ts,
-                    $"Modbus exception (function {ex.FunctionCode}, code {ex.SlaveExceptionCode}) — naprava zavrača zahtevo, preveri naslove v profilu",
+                    string.Format(Strings.Err_ModbusException, ex.FunctionCode, ex.SlaveExceptionCode),
                     sw.ElapsedMilliseconds);
             }
             catch (Exception ex) when (ex is IOException or InvalidOperationException or UnauthorizedAccessException or SocketException)
             {
-                return DeviceReadResult.Failed(ts, $"napaka povezave: {ex.Message}", sw.ElapsedMilliseconds);
+                return DeviceReadResult.Failed(ts, string.Format(Strings.Err_NapakaPovezave, ex.Message), sw.ElapsedMilliseconds);
             }
         }
 

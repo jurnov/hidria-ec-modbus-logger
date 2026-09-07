@@ -47,25 +47,25 @@
     },
     {
       "slaveId": 1,
-      "profile": "Fan-1",
+      "profile": "_private/Fan-1",
       "label": "Fan 1",
       "enabled": true
     },
     {
       "slaveId": 2,
-      "profile": "Fan2",
+      "profile": "_private/Fan2",
       "label": "Fan 2",
       "enabled": true
     },
     {
       "slaveId": 3,
-      "profile": "Fan-3",
+      "profile": "_private/Fan-3",
       "label": "Fan 3",
       "enabled": true
     },
     {
       "slaveId": 100,
-      "profile": "ADAM-2",
+      "profile": "_private/ADAM-2",
       "label": "ADAM",
       "enabled": true
     }

@@ -49,6 +49,13 @@ prevajanja aplikacije.
 - **Pregledovalnik Modbus prometka (HEX)** — surovi poslani zahtevki in
   prejeti odgovori (RTU ali TCP), z natančnim časom pošiljanja in prejema;
   uporabno za diagnostiko komunikacijskih težav.
+- **Premikanje naprav v seznamu** — gumba ▲/▼ premakneta izbrano napravo
+  za eno mesto navzgor/navzdol; vrstni red se trajno shrani.
+- **Večjezični vmesnik** — slovenščina, angleščina, nemščina, italijanščina,
+  španščina; izbirnik jezika v orodni vrstici, popolnoma prevedeno
+  (vključno z dnevnikom dogodkov in sporočili o napakah).
+- **Navodila za uporabo** — gumb "?" poleg izbirnika jezika odpre HTML
+  navodila v privzetem brskalniku, v trenutno izbranem jeziku.
 - **Namestitveni program** (`ModbusLoggerSetup.exe`) — namestitev brez
   skrbniških pravic, z že pripravljenim začetnim profilom.
 - Celostna podoba Hidria (barve in logotip s hidria.com).
@@ -57,14 +64,15 @@ prevajanja aplikacije.
 
 ```
 src/
-  ModbusLogger.Core/   knjižnica: Modbus komunikacija (RTU/TCP), konfiguracija, CSV/MySQL, HEX promet
-  ModbusLogger.App/    WPF namizna aplikacija (glavni uporabniški vmesnik)
+  ModbusLogger.Core/   knjižnica: Modbus komunikacija (RTU/TCP), konfiguracija, CSV/MySQL, HEX promet,
+                       Strings.resx (sl) + Strings.{en,de,it,es}.resx (prevodi vmesnika)
+  ModbusLogger.App/    WPF namizna aplikacija (glavni uporabniški vmesnik), docs/help-*.html (navodila)
   ModbusLogger.Cli/    konzolno orodje — isto jedro, brez GUI (za headless/strežniški zagon)
 config/
   devices.json         povezava, naprave, čas vzorčenja/interval zapisa, beleženje
-  profiles/*.json       register mape posameznih naprav
+  profiles/*.json       register mape posameznih naprav (v profiles/_private/ tiste, ki so last ene naprave)
 logs/                  CSV izhod (ni v git repozitoriju, nastane ob teku)
-dist/                  pripravljen paket za deljenje (exe + začetni config), izhodišče za installer
+dist/                  pripravljen paket za deljenje (exe + začetni config + navodila), izhodišče za installer
 installer/             izvorna skripta namestitvenega programa (Inno Setup)
 installer-output/      zgrajen ModbusLoggerSetup.exe (ni v git repozitoriju)
 ```
@@ -147,8 +155,8 @@ Izsek nastavitev povezave in beleženja v `devices.json` (Modbus TCP + MySQL):
 - MySQL beleženje piše v **obstoječo** tabelo (aplikacija je ne ustvari) in
   vedno z enim INSERT-om na napravo na cikel zapisa — brez agregacije
   (povprečja, min/max) med cikli.
-- Namestitveni program je trenutno samo v angleščini (privzeta Inno Setup
-  lokalizacija); sama aplikacija ostane v slovenščini.
+- Namestitveni program (čarovnik Inno Setup) je trenutno samo v
+  angleščini; sama aplikacija je večjezična (glej zgoraj).
 
 ## Zgodovina razvoja
 

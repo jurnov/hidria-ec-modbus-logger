@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Benutzerhandbuch — Hidria EC Modbus-Datenlogger</title>
+<style>
+  :root {
+    --dark-blue: #205080;
+    --blue: #1888B8;
+    --teal: #00A0C0;
+    --light: #EFF6FA;
+    --light-hover: #DCEDF6;
+    --text: #222;
+    --muted: #666;
+  }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: var(--text);
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 32px 64px;
+    line-height: 1.55;
+  }
+  header {
+    border-bottom: 3px solid var(--teal);
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+  }
+  header h1 {
+    color: var(--dark-blue);
+    margin: 0 0 4px;
+    font-size: 26px;
+  }
+  header p {
+    color: var(--muted);
+    margin: 0;
+  }
+  nav {
+    background: var(--light);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+  }
+  nav h2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--dark-blue);
+    margin: 0 0 8px;
+  }
+  nav ol {
+    margin: 0;
+    padding-left: 20px;
+    columns: 2;
+  }
+  nav a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+  nav a:hover { text-decoration: underline; }
+  h2 {
+    color: var(--dark-blue);
+    border-bottom: 1px solid var(--light-hover);
+    padding-bottom: 6px;
+    margin-top: 40px;
+  }
+  h3 {
+    color: var(--blue);
+    margin-top: 24px;
+  }
+  code, kbd {
+    background: var(--light);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: Consolas, monospace;
+    font-size: 0.92em;
+  }
+  .btn {
+    display: inline-block;
+    background: var(--light);
+    border: 1px solid var(--light-hover);
+    border-radius: 4px;
+    padding: 1px 8px;
+    font-weight: 600;
+    color: var(--dark-blue);
+    font-size: 0.92em;
+  }
+  .tip, .warn {
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin: 14px 0;
+  }
+  .tip {
+    background: var(--light);
+    border-left: 4px solid var(--teal);
+  }
+  .warn {
+    background: #FFF6E8;
+    border-left: 4px solid #E0A030;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0;
+  }
+  th, td {
+    border: 1px solid var(--light-hover);
+    padding: 6px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: var(--light);
+    color: var(--dark-blue);
+  }
+  footer {
+    margin-top: 48px;
+    padding-top: 12px;
+    border-top: 1px solid var(--light-hover);
+    color: var(--muted);
+    font-size: 0.85em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Hidria EC — Modbus-Datenlogger</h1>
+  <p>Benutzerhandbuch</p>
+</header>
+
+<nav>
+  <h2>Inhalt</h2>
+  <ol>
+    <li><a href="#uvod">Einführung</a></li>
+    <li><a href="#povezava">Verbindung mit Geräten</a></li>
+    <li><a href="#naprave">Geräteverwaltung</a></li>
+    <li><a href="#registri">Registerkarte des Geräts (Profil)</a></li>
+    <li><a href="#konfiguracije">Konfigurationen laden und speichern</a></li>
+    <li><a href="#zagon">Protokollierung starten und stoppen</a></li>
+    <li><a href="#belezenje">Protokollierungseinstellungen (CSV / MySQL)</a></li>
+    <li><a href="#promet">Modbus-Verkehr anzeigen (HEX)</a></li>
+    <li><a href="#jezik">Sprache der Benutzeroberfläche ändern</a></li>
+    <li><a href="#tezave">Fehlerbehebung</a></li>
+  </ol>
+</nav>
+
+<h2 id="uvod">1. Einführung</h2>
+<p>
+  Der Modbus-Datenlogger liest Daten von Geräten über das Modbus-Protokoll aus (RTU über eine
+  serielle RS-485/RS-232-Schnittstelle oder Modbus TCP) und protokolliert sie in CSV-Dateien
+  und/oder in einer MySQL-Datenbank. Das Programm liest gleichzeitig eine beliebige Anzahl von
+  Geräten aus, zeigt deren aktuelle Werte live an und versucht bei einem Verbindungsabbruch
+  automatisch, die Verbindung erneut herzustellen.
+</p>
+
+<h2 id="povezava">2. Verbindung mit Geräten</h2>
+<p>
+  Im Bereich <b>Verbindung</b> auf der linken Seite des Fensters wählen Sie die Verbindungsart:
+</p>
+<table>
+  <tr><th>Verbindungsart</th><th>Beschreibung</th></tr>
+  <tr>
+    <td>Seriell (RS-485)</td>
+    <td>
+      Wählen Sie den <b>COM-Port</b> (Schaltfläche <span class="btn">⟳</span> aktualisiert die
+      Liste der verfügbaren Ports), die Übertragungsgeschwindigkeit (<b>Baud</b>), das
+      Rahmenformat (Datenbits/Parität/Stoppbits, z. B. 8E1) sowie <b>Timeout</b> und die Anzahl
+      der <b>Wiederholungen</b> bei fehlgeschlagenem Lesevorgang.
+    </td>
+  </tr>
+  <tr>
+    <td>Modbus TCP</td>
+    <td>
+      Geben Sie die <b>IP-Adresse</b> (oder den Hostnamen) und den <b>Port</b> des
+      Geräts/Gateways ein, ebenso Timeout und Wiederholungen wie bei der seriellen Verbindung.
+    </td>
+  </tr>
+</table>
+<div class="tip">
+  Die Verbindungseinstellungen können nur geändert werden, wenn die Protokollierung nicht läuft.
+  Die <b>Abtastzeit [s]</b> (wie oft die Geräte ausgelesen werden) kann dagegen auch während des
+  Betriebs geändert werden — die Änderung wird sofort wirksam.
+</div>
+
+<h2 id="naprave">3. Geräteverwaltung</h2>
+<p>
+  Die Liste der Geräte befindet sich in der mittleren Spalte <b>Geräte</b>. Jedes Gerät hat
+  seine eigene <b>Slave ID</b> (Busadresse) und seine eigene Registerkarte (Profil).
+</p>
+<ul>
+  <li><span class="btn">Hinzufügen</span> — öffnet das Fenster zum Hinzufügen eines neuen Geräts.</li>
+  <li><span class="btn">Bearbeiten</span> — bearbeitet das ausgewählte Gerät (Name, Slave ID,
+    Register).</li>
+  <li><span class="btn">Entfernen</span> — entfernt das ausgewählte Gerät aus der Liste (seine
+    Registerkarte bleibt auf der Festplatte erhalten, da sie von einem anderen Gerät verwendet
+    werden kann).</li>
+</ul>
+<p>
+  Wird ein Gerät in der Liste ausgewählt, erscheint auf der rechten Seite eine Tabelle mit
+  seinen Registern und aktuellen Werten, die während der laufenden Protokollierung aktualisiert
+  werden.
+</p>
+
+<h2 id="registri">4. Registerkarte des Geräts (Profil)</h2>
+<p>
+  Im Fenster <b>Gerät hinzufügen</b>/<b>Gerät bearbeiten</b> bearbeiten Sie die Registerkarte —
+  die Liste aller Werte, die das Programm von diesem Gerät ausliest. Für jedes Register legen
+  Sie Folgendes fest:
+</p>
+<table>
+  <tr><th>Feld</th><th>Bedeutung</th></tr>
+  <tr><td>Adresse</td><td>Modbus-Adresse des Registers (z. B. <code>0x0100</code> oder
+    dezimal).</td></tr>
+  <tr><td>Funktion</td><td><code>input</code> (fc 04), <code>holding</code> (fc 03) oder
+    <code>constant</code> — ein konstanter Wert, der nie vom Bus gelesen wird.</td></tr>
+  <tr><td>Name / Einheit</td><td>Anzeigename und physikalische Einheit (z. B. °C, V, rpm).</td></tr>
+  <tr><td>Typ</td><td><code>uint16</code>, <code>int16</code>, <code>uint32</code>,
+    <code>int32</code> oder <code>float32</code>.</td></tr>
+  <tr><td>Skala</td><td>Der Rohwert wird vor der Anzeige mit dieser Zahl multipliziert
+    (z. B. zur Umrechnung von Zehntelwerten in ganze Einheiten).</td></tr>
+  <tr><td>Word order</td><td>Reihenfolge der 16-Bit-Wörter bei 32-Bit-Typen — <code>big</code>
+    oder <code>little</code>.</td></tr>
+  <tr><td>Konstante</td><td>Wird nur bei der Funktion <code>constant</code> verwendet — ein
+    fester Wert (z. B. eine Standortkennung), der in jede protokollierte Zeile geschrieben
+    wird.</td></tr>
+</table>
+<div class="warn">
+  <b>Wichtig:</b> Die im Gerätefenster bearbeitete Registerkarte ist <b>Eigentum dieses
+  Geräts</b> — Änderungen wirken sich nicht auf andere Geräte aus, auch wenn diese zuvor dieselbe
+  Vorlage verwendet haben. Um dieselbe Registerkarte bewusst von mehreren Geräten gemeinsam
+  nutzen zu lassen, verwenden Sie die folgenden Schaltflächen:
+</div>
+<ul>
+  <li><span class="btn">Profil laden</span> — lädt eine vorhandene gespeicherte
+    Registervorlage in den Editor (ersetzt den aktuellen Inhalt).</li>
+  <li><span class="btn">Speichern als Profil ...</span> — speichert die aktuelle Registerkarte
+    als eigenständige, benannte Vorlage, die später von jedem beliebigen Gerät geladen werden
+    kann.</li>
+  <li><span class="btn">Profil löschen</span> — löscht die ausgewählte gespeicherte Vorlage von
+    der Festplatte.</li>
+</ul>
+
+<h2 id="konfiguracije">5. Konfigurationen laden und speichern</h2>
+<p>
+  Die Schaltflächen <span class="btn">Profil laden</span> und <span class="btn">Profil
+  speichern</span> in der <b>Hauptsymbolleiste</b> (am oberen Fensterrand) wirken auf die
+  <b>gesamte Konfiguration</b>: alle Geräte zusammen mit den Verbindungs- und
+  Protokollierungseinstellungen, gespeichert unter einem gemeinsamen Namen. Das ist nützlich,
+  wenn Sie mehrere unterschiedliche Aufbauten haben (z. B. verschiedene Standorte oder
+  Prüfstände) und zwischen ihnen wechseln.
+</p>
+<div class="tip">
+  Verwechseln Sie dies nicht mit der <a href="#registri">Registerkarte eines einzelnen
+  Geräts</a> (Punkt 4) — es handelt sich um zwei getrennte Begriffe, für die in der
+  Benutzeroberfläche beide Male das Wort „Profil" verwendet wird.
+</div>
+
+<h2 id="zagon">6. Protokollierung starten und stoppen</h2>
+<p>
+  Die Schaltfläche <span class="btn" style="background:#00A0C0;color:#fff;">START</span> in der
+  oberen linken Ecke stellt die Verbindung her und startet den Auslesezyklus der Geräte.
+  Während des Betriebs ändert sich die Schaltfläche zu <b>STOPP</b>. Jedes Gerät in der Liste
+  zeigt seinen aktuellen Lesestatus an (farbiger Punkt: grau = noch nicht gelesen, grün = OK,
+  rot = Fehler).
+</p>
+<p>
+  Die <b>Abtastzeit [s]</b> legt fest, wie oft die Geräte ausgelesen werden (und die Anzeige in
+  der Benutzeroberfläche aktualisiert wird). Das <b>Schreibintervall</b> (in den
+  Protokollierungseinstellungen) legt dagegen fest, wie oft die ausgelesenen Werte tatsächlich
+  in CSV/MySQL geschrieben werden — diese beiden Zeitabstände können unterschiedlich sein.
+</p>
+
+<h2 id="belezenje">7. Protokollierungseinstellungen (CSV / MySQL)</h2>
+<p>
+  Die Schaltfläche <span class="btn">Protokollierungseinstellungen</span> öffnet ein Fenster mit
+  folgenden Einstellungen:
+</p>
+<h3>CSV</h3>
+<ul>
+  <li><b>Ordner</b> für CSV-Dateien (ein relativer Pfad bezieht sich auf den
+    Konfigurationsordner).</li>
+  <li><b>Spaltentrennzeichen</b> (Semikolon, Komma oder Tabulator) und <b>Dezimaltrennzeichen</b>
+    (Komma oder Punkt).</li>
+</ul>
+<h3>MySQL</h3>
+<ul>
+  <li>Verbindungsdaten: Host, Port, Datenbank, Benutzer, Passwort, Tabellenname.</li>
+  <li>Die Schaltfläche <b>Spalten abrufen</b> liest die vorhandenen Spalten der ausgewählten
+    Tabelle aus und bietet sie zur Zuordnung an — für jede Spalte wählen Sie die Datenquelle
+    (Messzeitpunkt, Gerätename, Status, ein einzelnes Register oder eine feste Konstante).</li>
+</ul>
+<div class="warn">
+  Das Schreibintervall kann während der laufenden Protokollierung nicht geändert werden — die
+  Einstellungen in diesem Fenster werden erst beim nächsten Start wirksam.
+</div>
+
+<h2 id="promet">8. Modbus-Verkehr anzeigen (HEX)</h2>
+<p>
+  Die Schaltfläche <span class="btn">Modbus-Verkehr (HEX)</span> öffnet ein Fenster, in dem Sie
+  während der laufenden Protokollierung live die rohen Modbus-Anfragen und -Antworten (in
+  HEX-Darstellung) einsehen können — nützlich zur Diagnose von Kommunikationsproblemen.
+</p>
+
+<h2 id="jezik">9. Sprache der Benutzeroberfläche ändern</h2>
+<p>
+  Wählen Sie oben rechts im Fenster die Sprache aus dem Dropdown-Menü (SL/EN/DE/IT/ES). Die
+  Anwendung startet bei der Änderung kurz neu, damit die neue Sprache überall wirksam wird — in
+  Menüs, Meldungen und im Ereignisprotokoll. Die gewählte Sprache merkt sich die Anwendung für
+  den nächsten Start.
+</p>
+
+<h2 id="tezave">10. Fehlerbehebung</h2>
+<table>
+  <tr><th>Problem</th><th>Mögliche Ursache / Lösung</th></tr>
+  <tr>
+    <td>Die Liste der COM-Ports ist leer</td>
+    <td>Prüfen Sie, ob der USB/RS-485-Adapter angeschlossen ist, und klicken Sie dann auf
+      <span class="btn">⟳</span>.</td>
+  </tr>
+  <tr>
+    <td>„Port kann nicht geöffnet werden"</td>
+    <td>Der Port wird möglicherweise von einem anderen Programm verwendet (z. B. einem anderen
+      Terminal oder einer bereits laufenden Kopie dieser Anwendung).</td>
+  </tr>
+  <tr>
+    <td>„Verbindung kann nicht hergestellt werden" (TCP)</td>
+    <td>Prüfen Sie IP-Adresse, Port und Netzwerkverbindung (z. B. Ping zum Gerät).</td>
+  </tr>
+  <tr>
+    <td>Gerät zeigt „Fehler" / Timeout</td>
+    <td>Prüfen Sie die Slave ID, die Busverkabelung, die RS-485-Terminierung und ob die
+      Registerkarte dem tatsächlichen Gerät entspricht.</td>
+  </tr>
+  <tr>
+    <td>Verbindung während des Betriebs verloren</td>
+    <td>Das Programm erkennt dies automatisch, schließt die Verbindung und versucht, sie im
+      nächsten Zyklus erneut herzustellen — der Ausfall bleibt im Ereignisprotokoll und im
+      CSV/MySQL-Datensatz sichtbar.</td>
+  </tr>
+</table>
+
+<footer>
+  Hidria EC — Modbus-Datenlogger
+</footer>
+
+</body>
+</html>

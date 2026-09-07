@@ -11,7 +11,7 @@ public sealed class DeviceVm : ViewModelBase
     private static readonly Brush OkBrush = Brushes.LimeGreen;
     private static readonly Brush ErrorBrush = Brushes.OrangeRed;
 
-    private string _status = "čakam na prvo branje";
+    private string _status = Strings.Device_CakamNaPrvoBranje;
     private Brush _statusBrush = IdleBrush;
     private string _lastReadText = "";
 
@@ -38,21 +38,21 @@ public sealed class DeviceVm : ViewModelBase
         LastReadText = result.Timestamp.ToString("HH:mm:ss");
         if (result.Success)
         {
-            Status = $"OK ({result.ElapsedMs} ms)";
+            Status = string.Format(Strings.Device_OkMs, result.ElapsedMs);
             StatusBrush = OkBrush;
             for (int i = 0; i < result.Readings.Count && i < Registers.Count; i++)
                 Registers[i].SetValue(result.Readings[i].Value);
         }
         else
         {
-            Status = result.Error ?? "napaka";
+            Status = result.Error ?? Strings.Device_Napaka;
             StatusBrush = ErrorBrush;
         }
     }
 
     public void ResetStatus()
     {
-        Status = "čakam na prvo branje";
+        Status = Strings.Device_CakamNaPrvoBranje;
         StatusBrush = IdleBrush;
         LastReadText = "";
     }
@@ -60,7 +60,7 @@ public sealed class DeviceVm : ViewModelBase
     /// <summary>Ob ustavitvi zapisovalnika: siva lučka, brez zadnjega odzivnega časa/statusa "OK".</summary>
     public void SetStopped()
     {
-        Status = "brez povezave — ustavljeno";
+        Status = Strings.Device_BrezPovezaveUstavljeno;
         StatusBrush = IdleBrush;
         LastReadText = "";
     }

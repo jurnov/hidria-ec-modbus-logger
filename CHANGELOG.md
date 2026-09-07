@@ -223,3 +223,60 @@ Kronološki povzetek razvoja aplikacije, od prvega prototipa do trenutnega stanj
 - **Popravek**: registri "Target Speed", "Actual Speed" in "Calculated
   Speed" v profilu Hidria EC ventilatorja so bili `uint16`, spremenjeni v
   `int16` (vsi obstoječi profili ventilatorjev na disku).
+
+## Popravek: zasebni profili naprav ločeni od skupnih predlog
+
+- **Popravek**: samodejno ustvarjeni profil vsake naprave (ob shranjevanju
+  v oknu Dodaj/Uredi napravo) se je zapisal neposredno v `profiles/`, zato
+  je onesnaževal izbirnik **Naloži profil**, namenjen pravim, namensko
+  deljenim predlogam.
+- Taki samodejni profili zdaj pristanejo v podmapi `profiles/_private/`,
+  ki je izbirnik ne prikazuje.
+
+## Popravek: nastavitve povezave in beleženja se izgubijo ob shranjevanju naprave
+
+- **Popravek**: shranjevanje naprave (Dodaj/Uredi/Odstrani) je za osvežitev
+  seznama naprav v ozadju znova naložilo **celotno** konfiguracijo, kar je
+  prepisalo tudi še neshranjene spremembe COM porta, MySQL nastavitev ipd.,
+  ki jih dialogi naprav sploh ne urejajo. Osveževanje seznama naprav je
+  zdaj ločeno od nalaganja povezave/beleženja.
+
+## Verzija aplikacije in prikaz naloženega profila
+
+- Verzija aplikacije (iz `.csproj`) je vidna poleg naslova v orodni
+  vrstici.
+- Namesto polne poti do datoteke je v glavi okna viden samo kratek napis
+  "Profil: ime".
+
+## Podpora za več jezikov vmesnika
+
+- Izbirnik jezika (slovenščina/angleščina/nemščina/italijanščina/
+  španščina) v orodni vrstici, prikazan kot nevpadljiva dvočrkovna oznaka
+  (SL/EN/DE/IT/ES) v slogu jezikovnega izbirnika na www.hidria.com —
+  imena jezikov se namenoma ne prevajajo, da ostanejo prepoznavna ne glede
+  na trenutno izbran jezik.
+- Prevedeno **popolnoma vse**: vsa okna, gumbi, oznake polj, sporočila v
+  dnevniku dogodkov in vse napake (tudi tiste iz `ConfigLoader`-ja in
+  Modbus komunikacije), prek `.resx` virov (`Strings.resx` = slovenščina,
+  `Strings.{en,de,it,es}.resx` = prevodi).
+- Sprememba jezika se shrani (`%AppData%\ModbusLogger\language.txt`) in
+  se uveljavi s kratkim samodejnim ponovnim zagonom aplikacije; izbirnik
+  je med tekom beleženja zaklenjen.
+
+## Navodila za uporabo
+
+- Nov gumb "?" poleg izbirnika jezika odpre navodila za uporabo (HTML) v
+  privzetem brskalniku, v trenutno izbranem jeziku vmesnika (s samodejnim
+  padcem nazaj na slovenščino, če prevod manjka).
+- Navodila (`docs/help-{sl,en,de,it,es}.html`) pokrivajo povezavo z
+  napravami, upravljanje naprav in njihovih register map, razliko med
+  profilom naprave in shranjeno konfiguracijo, zagon/ustavljanje
+  beleženja, nastavitve CSV/MySQL, pregled Modbus prometka, spremembo
+  jezika ter odpravljanje pogostih težav.
+
+## Premikanje naprav v seznamu
+
+- Gumba ▲/▼ poleg Dodaj/Uredi/Odstrani premakneta izbrano napravo za eno
+  mesto navzgor/navzdol v seznamu; vrstni red se takoj trajno shrani v
+  `devices.json`. Onemogočeno med tekom beleženja, tako kot ostala
+  urejanja seznama naprav.

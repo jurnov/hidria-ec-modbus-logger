@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<title>Navodila za uporabo — Hidria EC Modbus zapisovalnik</title>
+<style>
+  :root {
+    --dark-blue: #205080;
+    --blue: #1888B8;
+    --teal: #00A0C0;
+    --light: #EFF6FA;
+    --light-hover: #DCEDF6;
+    --text: #222;
+    --muted: #666;
+  }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: var(--text);
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 32px 64px;
+    line-height: 1.55;
+  }
+  header {
+    border-bottom: 3px solid var(--teal);
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+  }
+  header h1 {
+    color: var(--dark-blue);
+    margin: 0 0 4px;
+    font-size: 26px;
+  }
+  header p {
+    color: var(--muted);
+    margin: 0;
+  }
+  nav {
+    background: var(--light);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+  }
+  nav h2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--dark-blue);
+    margin: 0 0 8px;
+  }
+  nav ol {
+    margin: 0;
+    padding-left: 20px;
+    columns: 2;
+  }
+  nav a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+  nav a:hover { text-decoration: underline; }
+  h2 {
+    color: var(--dark-blue);
+    border-bottom: 1px solid var(--light-hover);
+    padding-bottom: 6px;
+    margin-top: 40px;
+  }
+  h3 {
+    color: var(--blue);
+    margin-top: 24px;
+  }
+  code, kbd {
+    background: var(--light);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: Consolas, monospace;
+    font-size: 0.92em;
+  }
+  .btn {
+    display: inline-block;
+    background: var(--light);
+    border: 1px solid var(--light-hover);
+    border-radius: 4px;
+    padding: 1px 8px;
+    font-weight: 600;
+    color: var(--dark-blue);
+    font-size: 0.92em;
+  }
+  .tip, .warn {
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin: 14px 0;
+  }
+  .tip {
+    background: var(--light);
+    border-left: 4px solid var(--teal);
+  }
+  .warn {
+    background: #FFF6E8;
+    border-left: 4px solid #E0A030;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0;
+  }
+  th, td {
+    border: 1px solid var(--light-hover);
+    padding: 6px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: var(--light);
+    color: var(--dark-blue);
+  }
+  footer {
+    margin-top: 48px;
+    padding-top: 12px;
+    border-top: 1px solid var(--light-hover);
+    color: var(--muted);
+    font-size: 0.85em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Hidria EC — Modbus zapisovalnik</h1>
+  <p>Navodila za uporabo</p>
+</header>
+
+<nav>
+  <h2>Vsebina</h2>
+  <ol>
+    <li><a href="#uvod">Uvod</a></li>
+    <li><a href="#povezava">Povezava z napravami</a></li>
+    <li><a href="#naprave">Upravljanje naprav</a></li>
+    <li><a href="#registri">Register mapa naprave (profil)</a></li>
+    <li><a href="#konfiguracije">Nalaganje in shranjevanje konfiguracij</a></li>
+    <li><a href="#zagon">Zagon in ustavljanje beleženja</a></li>
+    <li><a href="#belezenje">Nastavitve beleženja (CSV / MySQL)</a></li>
+    <li><a href="#promet">Pregled Modbus prometa (HEX)</a></li>
+    <li><a href="#jezik">Sprememba jezika vmesnika</a></li>
+    <li><a href="#tezave">Odpravljanje težav</a></li>
+  </ol>
+</nav>
+
+<h2 id="uvod">1. Uvod</h2>
+<p>
+  Modbus zapisovalnik bere podatke iz naprav prek protokola Modbus (RTU prek serijskega
+  RS-485/RS-232 porta ali Modbus TCP) in jih beleži v CSV datoteke in/ali v MySQL bazo.
+  Program hkrati bere poljubno število naprav, prikazuje njihove trenutne vrednosti v živo
+  in ob morebitni prekinitvi povezave samodejno poskuša znova vzpostaviti povezavo.
+</p>
+
+<h2 id="povezava">2. Povezava z napravami</h2>
+<p>
+  V polju <b>Povezava</b> na levi strani okna izberete način povezave:
+</p>
+<table>
+  <tr><th>Način povezave</th><th>Opis</th></tr>
+  <tr>
+    <td>Serijska (RS-485)</td>
+    <td>
+      Izberite <b>COM port</b> (gumb <span class="btn">⟳</span> osveži seznam razpoložljivih
+      portov), hitrost prenosa (<b>baud</b>), format okvirja (podatkovni biti/pariteta/stop biti,
+      npr. 8E1) ter <b>timeout</b> in število <b>ponovitev</b> ob neuspešnem branju.
+    </td>
+  </tr>
+  <tr>
+    <td>Modbus TCP</td>
+    <td>
+      Vpišite <b>IP naslov</b> (ali ime gostitelja) in <b>vrata (port)</b> naprave/prehoda,
+      ter timeout in ponovitve enako kot pri serijski povezavi.
+    </td>
+  </tr>
+</table>
+<div class="tip">
+  Nastavitve povezave lahko spreminjate le, kadar beleženje ne teče. <b>Čas vzorčenja [s]</b>
+  (kako pogosto se naprave berejo) pa lahko spremenite tudi med tekom — sprememba velja takoj.
+</div>
+
+<h2 id="naprave">3. Upravljanje naprav</h2>
+<p>
+  Seznam naprav je v sredinskem stolpcu <b>Naprave</b>. Vsaka naprava ima svoj <b>Slave ID</b>
+  (naslov na vodilu) in svojo register mapo (profil).
+</p>
+<ul>
+  <li><span class="btn">Dodaj</span> — odpre okno za dodajanje nove naprave.</li>
+  <li><span class="btn">Uredi</span> — uredi izbrano napravo (ime, Slave ID, registre).</li>
+  <li><span class="btn">Odstrani</span> — odstrani izbrano napravo iz seznama (njena register
+    mapa ostane na disku, saj jo lahko uporablja druga naprava).</li>
+</ul>
+<p>
+  Ob izbiri naprave v seznamu se na desni strani prikaže tabela z njenimi registri in trenutnimi
+  vrednostmi, ki se osvežujejo med tekom beleženja.
+</p>
+
+<h2 id="registri">4. Register mapa naprave (profil)</h2>
+<p>
+  V oknu <b>Dodaj napravo</b>/<b>Uredi napravo</b> urejate register mapo — seznam vseh
+  vrednosti, ki jih program bere iz te naprave. Za vsak register določite:
+</p>
+<table>
+  <tr><th>Polje</th><th>Pomen</th></tr>
+  <tr><td>Naslov</td><td>Modbus naslov registra (npr. <code>0x0100</code> ali decimalno).</td></tr>
+  <tr><td>Funkcija</td><td><code>input</code> (fc 04), <code>holding</code> (fc 03) ali
+    <code>constant</code> — konstantna vrednost, ki se nikoli ne bere z vodila.</td></tr>
+  <tr><td>Ime / Enota</td><td>Prikazno ime in fizikalna enota (npr. °C, V, rpm).</td></tr>
+  <tr><td>Tip</td><td><code>uint16</code>, <code>int16</code>, <code>uint32</code>,
+    <code>int32</code> ali <code>float32</code>.</td></tr>
+  <tr><td>Skala</td><td>Surova vrednost se pred prikazom pomnoži s to številko
+    (npr. za pretvorbo desetink v cele enote).</td></tr>
+  <tr><td>Word order</td><td>Vrstni red 16-bitnih besed pri 32-bitnih tipih — <code>big</code>
+    ali <code>little</code>.</td></tr>
+  <tr><td>Konstanta</td><td>Uporabljeno samo pri funkciji <code>constant</code> — fiksna
+    vrednost (npr. oznaka lokacije), ki se zapiše v vsako vrstico beleženja.</td></tr>
+</table>
+<div class="warn">
+  <b>Pomembno:</b> register mapa, ki jo urejate v oknu naprave, je <b>last te naprave</b> —
+  spremembe ne vplivajo na druge naprave, tudi če so prej uporabljale isto predlogo. Za
+  namerno souporabo iste register mape med več napravami uporabite spodnja gumba:
+</div>
+<ul>
+  <li><span class="btn">Naloži profil</span> — naloži obstoječo shranjeno predlogo registrov v
+    urejevalnik (nadomesti trenutno vsebino).</li>
+  <li><span class="btn">Shrani kot profil ...</span> — trenutno register mapo shrani kot
+    samostojno, poimenovano predlogo, ki jo lahko pozneje naloži katera koli naprava.</li>
+  <li><span class="btn">Izbriši profil</span> — izbriše izbrano shranjeno predlogo z diska.</li>
+</ul>
+
+<h2 id="konfiguracije">5. Nalaganje in shranjevanje konfiguracij</h2>
+<p>
+  Gumba <span class="btn">Naloži profil</span> in <span class="btn">Shrani profil</span> v
+  <b>glavni orodni vrstici</b> (na vrhu okna) delujeta na <b>celotno konfiguracijo</b>: vse
+  naprave skupaj z nastavitvami povezave in beleženja, shranjene pod enim imenom. To je uporabno,
+  če imate več različnih postavitev (npr. različne lokacije ali testne mize) in med njimi
+  preklapljate.
+</p>
+<div class="tip">
+  Ne zamenjujte tega z <a href="#registri">register mapo posamezne naprave</a> (točka 4) — gre za
+  dva ločena pojma, ki v vmesniku oba uporabljata besedo "profil".
+</div>
+
+<h2 id="zagon">6. Zagon in ustavljanje beleženja</h2>
+<p>
+  Gumb <span class="btn" style="background:#00A0C0;color:#fff;">ZAŽENI</span> v levem zgornjem
+  kotu vzpostavi povezavo in začne cikel branja naprav. Med tekom se gumb spremeni v
+  <b>USTAVI</b>. Vsaka naprava v seznamu prikazuje trenuten status branja (obarvana pika: siva =
+  še ni brano, zelena = OK, rdeča = napaka).
+</p>
+<p>
+  <b>Čas vzorčenja [s]</b> določa, kako pogosto se naprave berejo (in prikaz v vmesniku
+  osvežuje). <b>Interval zapisa</b> (v nastavitvah beleženja) pa določa, kako pogosto se
+  prebrane vrednosti dejansko zapišejo v CSV/MySQL — te dve frekvenci sta lahko različni.
+</p>
+
+<h2 id="belezenje">7. Nastavitve beleženja (CSV / MySQL)</h2>
+<p>
+  Gumb <span class="btn">Nastavitve beleženja</span> odpre okno z naslednjimi nastavitvami:
+</p>
+<h3>CSV</h3>
+<ul>
+  <li><b>Mapa</b> za CSV datoteke (relativna pot je glede na mapo konfiguracije).</li>
+  <li><b>Ločilo stolpcev</b> (podpičje, vejica ali tabulator) in <b>decimalno ločilo</b>
+    (vejica ali pika).</li>
+</ul>
+<h3>MySQL</h3>
+<ul>
+  <li>Podatki za povezavo: gostitelj, vrata, baza, uporabnik, geslo, ime tabele.</li>
+  <li>Gumb <b>Preberi stolpce</b> prebere obstoječe stolpce izbrane tabele in jih ponudi za
+    mapiranje — za vsak stolpec izberete vir podatka (čas meritve, ime naprave, status,
+    posamezen register ali fiksna konstanta).</li>
+</ul>
+<div class="warn">
+  Interval zapisa ni urejljiv med tekom beleženja — nastavitve v tem oknu se uveljavijo šele ob
+  naslednjem zagonu.
+</div>
+
+<h2 id="promet">8. Pregled Modbus prometa (HEX)</h2>
+<p>
+  Gumb <span class="btn">Modbus promet (HEX)</span> odpre okno, v katerem si lahko v živo
+  ogledate surove Modbus zahtevke in odgovore (v HEX zapisu) med tekom beleženja — uporabno
+  pri diagnosticiranju komunikacijskih težav.
+</p>
+
+<h2 id="jezik">9. Sprememba jezika vmesnika</h2>
+<p>
+  V zgornjem desnem kotu okna izberite jezik v spustnem seznamu (SL/EN/DE/IT/ES). Aplikacija se
+  ob spremembi na kratko znova zažene, da se nov jezik uveljavi povsod — v menijih, sporočilih
+  in dnevniku dogodkov. Izbran jezik si aplikacija zapomni za naslednji zagon.
+</p>
+
+<h2 id="tezave">10. Odpravljanje težav</h2>
+<table>
+  <tr><th>Težava</th><th>Možen vzrok / rešitev</th></tr>
+  <tr>
+    <td>Seznam COM portov je prazen</td>
+    <td>Preverite, ali je USB/RS-485 pretvornik priklopljen, nato kliknite <span class="btn">⟳</span>.</td>
+  </tr>
+  <tr>
+    <td>"Porta ni mogoče odpreti"</td>
+    <td>Port morda uporablja drug program (npr. drug terminal ali že tekoča kopija te aplikacije).</td>
+  </tr>
+  <tr>
+    <td>"Povezave ni mogoče vzpostaviti" (TCP)</td>
+    <td>Preverite IP naslov, vrata in omrežno povezljivost (npr. ping do naprave).</td>
+  </tr>
+  <tr>
+    <td>Naprava kaže "napaka" / timeout</td>
+    <td>Preverite Slave ID, ožičenje vodila, terminacijo RS-485 in ali register mapa ustreza
+      dejanski napravi.</td>
+  </tr>
+  <tr>
+    <td>Povezava je izginila med tekom</td>
+    <td>Program to samodejno zazna, zapre povezavo in jo poskuša znova vzpostaviti v naslednjem
+      ciklu — izpad ostane viden v dnevniku dogodkov in v CSV/MySQL zapisu.</td>
+  </tr>
+</table>
+
+<footer>
+  Hidria EC — Modbus zapisovalnik
+</footer>
+
+</body>
+</html>

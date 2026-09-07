@@ -1,6 +1,9 @@
+using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using ModbusLogger.Core;
 
 namespace ModbusLogger.App;
 
@@ -11,12 +14,16 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        var culture = new CultureInfo(AppState.LoadLanguage() ?? "sl");
+        Thread.CurrentThread.CurrentUICulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = culture;
+
         DispatcherUnhandledException += (_, args) =>
         {
             LogCrash("DispatcherUnhandledException", args.Exception);
             MessageBox.Show(
-                $"Prišlo je do napake:\n\n{args.Exception.Message}\n\nPodrobnosti so v {CrashLogPath}",
-                "Napaka", MessageBoxButton.OK, MessageBoxImage.Error);
+                string.Format(Strings.App_CrashMessage, args.Exception.Message, CrashLogPath),
+                Strings.App_CrashTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             args.Handled = true;
         };
         AppDomain.CurrentDomain.UnhandledException += (_, args) =>

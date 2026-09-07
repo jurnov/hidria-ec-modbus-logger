@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Skupno -->
+  <data name="Btn_Preklici" xml:space="preserve"><value>Prekliči</value></data>
+  <data name="App_CrashMessage" xml:space="preserve"><value>Prišlo je do napake:
+
+{0}
+
+Podrobnosti so v {1}</value></data>
+  <data name="App_CrashTitle" xml:space="preserve"><value>Napaka</value></data>
+  <data name="Btn_Shrani" xml:space="preserve"><value>Shrani</value></data>
+
+  <!-- MainWindow -->
+  <data name="Main_Title" xml:space="preserve"><value>Hidria EC — Modbus zapisovalnik</value></data>
+  <data name="Main_HeaderText" xml:space="preserve"><value>Modbus zapisovalnik</value></data>
+  <data name="Main_Btn_NalPro" xml:space="preserve"><value>Naloži profil</value></data>
+  <data name="Main_Btn_ShrPro" xml:space="preserve"><value>Shrani profil</value></data>
+  <data name="Main_Btn_HexPromet" xml:space="preserve"><value>Modbus promet (HEX)</value></data>
+  <data name="Main_Btn_NastBel" xml:space="preserve"><value>Nastavitve beleženja</value></data>
+  <data name="Main_Group_Povezava" xml:space="preserve"><value>Povezava</value></data>
+  <data name="Main_Label_NacinPovezave" xml:space="preserve"><value>Način povezave</value></data>
+  <data name="Main_Label_ComPort" xml:space="preserve"><value>COM port</value></data>
+  <data name="Main_Tooltip_OsveziPorte" xml:space="preserve"><value>Osveži seznam portov</value></data>
+  <data name="Main_Label_Hitrost" xml:space="preserve"><value>Hitrost (baud)</value></data>
+  <data name="Main_Label_Format" xml:space="preserve"><value>Format (podatkovni/pariteta/stop)</value></data>
+  <data name="Main_Label_IpNaslov" xml:space="preserve"><value>IP naslov / gostitelj</value></data>
+  <data name="Main_Label_TcpVrata" xml:space="preserve"><value>TCP vrata</value></data>
+  <data name="Main_Label_Timeout" xml:space="preserve"><value>Timeout [ms]</value></data>
+  <data name="Main_Label_Ponovitve" xml:space="preserve"><value>Ponovitve</value></data>
+  <data name="Main_Label_CasVzorcenja" xml:space="preserve"><value>Čas vzorčenja [s]</value></data>
+  <data name="Main_Tooltip_CasVzorcenja" xml:space="preserve"><value>Kako pogosto aplikacija bere naprave. Sprememba velja takoj, tudi med tekom.</value></data>
+  <data name="Main_Hint_Povezava" xml:space="preserve"><value>Interval zapisa in nastavitve CSV/MySQL beleženja so v gumbu 'Nastavitve beleženja' zgoraj. Za trajno shranitev uporabi 'Shrani profil'.</value></data>
+  <data name="Main_Group_Naprave" xml:space="preserve"><value>Naprave</value></data>
+  <data name="Main_Btn_Dodaj" xml:space="preserve"><value>Dodaj</value></data>
+  <data name="Main_Btn_Uredi" xml:space="preserve"><value>Uredi</value></data>
+  <data name="Main_Btn_Odstrani" xml:space="preserve"><value>Odstrani</value></data>
+  <data name="Main_Tooltip_PremakniGor" xml:space="preserve"><value>Premakni napravo navzgor</value></data>
+  <data name="Main_Tooltip_PremakniDol" xml:space="preserve"><value>Premakni napravo navzdol</value></data>
+  <data name="Main_Group_Registri" xml:space="preserve"><value>Registri</value></data>
+  <data name="Main_Col_Naslov" xml:space="preserve"><value>Naslov</value></data>
+  <data name="Main_Col_Ime" xml:space="preserve"><value>Ime</value></data>
+  <data name="Main_Col_Vrednost" xml:space="preserve"><value>Vrednost</value></data>
+  <data name="Main_Col_Enota" xml:space="preserve"><value>Enota</value></data>
+  <data name="Main_Tooltip_KonstantniNaslov" xml:space="preserve"><value>Konstantni register nima pravega Modbus naslova.</value></data>
+  <data name="Main_DnevnikDogodkov" xml:space="preserve"><value>Dnevnik dogodkov</value></data>
+  <data name="Main_ConnMode_Serial" xml:space="preserve"><value>Serijska (RS-485)</value></data>
+  <data name="Main_ConnMode_Tcp" xml:space="preserve"><value>Modbus TCP</value></data>
+  <data name="Main_StartStop_Start" xml:space="preserve"><value>ZAŽENI</value></data>
+  <data name="Main_StartStop_Stop" xml:space="preserve"><value>USTAVI</value></data>
+  <data name="Main_ConfigPathDisplay" xml:space="preserve"><value>Profil: {0}</value></data>
+  <data name="Main_Lang_Label" xml:space="preserve"><value>Jezik</value></data>
+  <data name="Main_HelpButton_Tooltip" xml:space="preserve"><value>Navodila za uporabo</value></data>
+
+  <!-- AddDeviceWindow -->
+  <data name="AddDevice_Title_Add" xml:space="preserve"><value>Dodaj napravo</value></data>
+  <data name="AddDevice_Title_Edit" xml:space="preserve"><value>Uredi napravo</value></data>
+  <data name="AddDevice_Label_ImeNaprave" xml:space="preserve"><value>Ime naprave</value></data>
+  <data name="AddDevice_Label_SlaveId" xml:space="preserve"><value>Slave ID</value></data>
+  <data name="AddDevice_Group_Profil" xml:space="preserve"><value>Profil naprave (register mapa)</value></data>
+  <data name="AddDevice_Hint_Profil" xml:space="preserve"><value>Register mapa spodaj je last te naprave — spremembe ne vplivajo na druge naprave. Za souporabo/predloge uporabi 'Naloži profil' in 'Shrani kot profil'.</value></data>
+  <data name="AddDevice_Btn_NalPro" xml:space="preserve"><value>Naloži profil</value></data>
+  <data name="AddDevice_Btn_IzbrisiPro" xml:space="preserve"><value>Izbriši profil</value></data>
+  <data name="AddDevice_Btn_ShrKotPro" xml:space="preserve"><value>Shrani kot profil ...</value></data>
+  <data name="AddDevice_Label_Registri" xml:space="preserve"><value>Registri</value></data>
+  <data name="AddDevice_Btn_OdstraniIzbranega" xml:space="preserve"><value>Odstrani izbranega</value></data>
+  <data name="AddDevice_Btn_PlusRegister" xml:space="preserve"><value>+ Register</value></data>
+  <data name="AddDevice_Col_Naslov" xml:space="preserve"><value>Naslov</value></data>
+  <data name="AddDevice_Col_Funkcija" xml:space="preserve"><value>Funkcija</value></data>
+  <data name="AddDevice_Col_Ime" xml:space="preserve"><value>Ime</value></data>
+  <data name="AddDevice_Col_Enota" xml:space="preserve"><value>Enota</value></data>
+  <data name="AddDevice_Col_Tip" xml:space="preserve"><value>Tip</value></data>
+  <data name="AddDevice_Col_Skala" xml:space="preserve"><value>Skala</value></data>
+  <data name="AddDevice_Col_WordOrder" xml:space="preserve"><value>Word order</value></data>
+  <data name="AddDevice_Col_Konstanta" xml:space="preserve"><value>Konstanta</value></data>
+  <data name="AddDevice_Tooltip_KonstNaslov" xml:space="preserve"><value>Konstantni register nima pravega Modbus naslova.</value></data>
+  <data name="AddDevice_Tooltip_KonstStolp" xml:space="preserve"><value>Uporabljeno samo pri funkciji 'constant': fiksna vrednost, ki se ne bere z Modbus vodila.</value></data>
+
+  <!-- ConfigPickerWindow -->
+  <data name="ConfigPicker_Title_Save" xml:space="preserve"><value>Shrani profil kot</value></data>
+  <data name="ConfigPicker_Title_Load" xml:space="preserve"><value>Naloži profil</value></data>
+  <data name="ConfigPicker_ConfirmBtn_Save" xml:space="preserve"><value>Shrani</value></data>
+  <data name="ConfigPicker_ConfirmBtn_Load" xml:space="preserve"><value>Naloži</value></data>
+  <data name="ConfigPicker_Label_ImeProfila" xml:space="preserve"><value>Ime profila</value></data>
+  <data name="ConfigPicker_Label_ShranjeniProfili" xml:space="preserve"><value>Shranjeni profili</value></data>
+  <data name="ConfigPicker_Err_VpisiIme" xml:space="preserve"><value>Vpiši ime profila.</value></data>
+  <data name="ConfigPicker_Err_IzberiProfil" xml:space="preserve"><value>Izberi profil s seznama.</value></data>
+
+  <!-- LoggingSettingsWindow -->
+  <data name="LoggingSettings_Title" xml:space="preserve"><value>Nastavitve beleženja</value></data>
+  <data name="LoggingSettings_RunningWarning" xml:space="preserve"><value>Beleženje teče — ustavi ga (ZAŽENI/USTAVI v glavnem oknu), da spremeniš te nastavitve.</value></data>
+  <data name="LoggingSettings_Label_IntervalZapisa" xml:space="preserve"><value>Interval zapisa [s]</value></data>
+  <data name="LoggingSettings_Tooltip_IntervalZapisa" xml:space="preserve"><value>Kako pogosto se zadnji prebrani vzorec zapiše v CSV/MySQL.</value></data>
+  <data name="LoggingSettings_Chk_BeleziCsv" xml:space="preserve"><value>Beleži v CSV</value></data>
+  <data name="LoggingSettings_Label_MapaCsv" xml:space="preserve"><value>Mapa za CSV datoteke</value></data>
+  <data name="LoggingSettings_Btn_Prebrskaj" xml:space="preserve"><value>Prebrskaj ...</value></data>
+  <data name="LoggingSettings_Btn_OdpriMapo" xml:space="preserve"><value>Odpri mapo</value></data>
+  <data name="LoggingSettings_Label_LociloStolpcev" xml:space="preserve"><value>Ločilo stolpcev</value></data>
+  <data name="LoggingSettings_Label_DecimalnoLocilo" xml:space="preserve"><value>Decimalno ločilo</value></data>
+  <data name="LoggingSettings_Chk_BeleziMySql" xml:space="preserve"><value>Beleži v MySQL</value></data>
+  <data name="LoggingSettings_Label_Gostitelj" xml:space="preserve"><value>Gostitelj</value></data>
+  <data name="LoggingSettings_Label_Vrata" xml:space="preserve"><value>Vrata</value></data>
+  <data name="LoggingSettings_Label_Baza" xml:space="preserve"><value>Baza</value></data>
+  <data name="LoggingSettings_Label_Uporabnik" xml:space="preserve"><value>Uporabnik</value></data>
+  <data name="LoggingSettings_Label_Geslo" xml:space="preserve"><value>Geslo</value></data>
+  <data name="LoggingSettings_Label_Tabela" xml:space="preserve"><value>Tabela</value></data>
+  <data name="LoggingSettings_Btn_PreberiStolpce" xml:space="preserve"><value>Preberi stolpce iz tabele</value></data>
+  <data name="LoggingSettings_Label_PovezavaStolpcev" xml:space="preserve"><value>Povezava stolpcev s podatki (klikni 'Preberi stolpce', če je seznam prazen)</value></data>
+  <data name="LoggingSettings_Hint_TrajnoShrani" xml:space="preserve"><value>Za trajno shranitev uporabi 'Shrani profil' v glavnem oknu.</value></data>
+  <data name="LoggingSettings_Btn_Zapri" xml:space="preserve"><value>Zapri</value></data>
+  <data name="LoggingSettings_Delim_Podpicje" xml:space="preserve"><value>; (podpičje)</value></data>
+  <data name="LoggingSettings_Delim_Vejica" xml:space="preserve"><value>, (vejica)</value></data>
+  <data name="LoggingSettings_Delim_Tab" xml:space="preserve"><value>Tabulator</value></data>
+
+  <!-- TrafficWindow -->
+  <data name="Traffic_Title" xml:space="preserve"><value>Modbus promet (HEX)</value></data>
+  <data name="Traffic_Hint" xml:space="preserve"><value>Zadnjih do 500 izmenjav na trenutni povezavi. Ena vrstica = en poslan Modbus zahtevek in nanj prejet odgovor (surovi bajti, HEX). Oranžno = ni bilo odgovora (timeout).</value></data>
+  <data name="Traffic_Col_CasPosiljanja" xml:space="preserve"><value>Čas pošiljanja</value></data>
+  <data name="Traffic_Col_Poslano" xml:space="preserve"><value>Poslano (request)</value></data>
+  <data name="Traffic_Col_CasPrejema" xml:space="preserve"><value>Čas prejema</value></data>
+  <data name="Traffic_Col_Prejeto" xml:space="preserve"><value>Prejeto (response)</value></data>
+  <data name="Traffic_NoResponse" xml:space="preserve"><value>(brez odgovora — timeout)</value></data>
+
+  <!-- MySQL field options (izbirnik vira podatka za stolpec) -->
+  <data name="MySqlField_NeUporabi" xml:space="preserve"><value>(ne uporabi)</value></data>
+  <data name="MySqlField_CasMeritve" xml:space="preserve"><value>Čas meritve</value></data>
+  <data name="MySqlField_NapravaIme" xml:space="preserve"><value>Naprava (ime)</value></data>
+  <data name="MySqlField_SlaveId" xml:space="preserve"><value>Slave ID</value></data>
+  <data name="MySqlField_StatusNapaka" xml:space="preserve"><value>Status / napaka</value></data>
+  <data name="MySqlField_CasOdziva" xml:space="preserve"><value>Čas odziva [ms]</value></data>
+  <data name="MySqlField_NapakaKomunikacije" xml:space="preserve"><value>Napaka komunikacije (1 = napaka, 0 = OK)</value></data>
+  <data name="MySqlField_Konstanta" xml:space="preserve"><value>Konstantna vrednost ...</value></data>
+  <data name="MySqlField_Register" xml:space="preserve"><value>Register: {0}</value></data>
+
+  <!-- Status naprave -->
+  <data name="Device_CakamNaPrvoBranje" xml:space="preserve"><value>čakam na prvo branje</value></data>
+  <data name="Device_BrezPovezaveUstavljeno" xml:space="preserve"><value>brez povezave — ustavljeno</value></data>
+  <data name="Device_OkMs" xml:space="preserve"><value>OK ({0} ms)</value></data>
+  <data name="Device_Napaka" xml:space="preserve"><value>napaka</value></data>
+
+  <!-- MainViewModel: dnevnik/status/dialogi -->
+  <data name="St_NiNalozeneKonf" xml:space="preserve"><value>Ni naložene konfiguracije — uporabi 'Naloži profil'.</value></data>
+  <data name="St_DevicesJsonNiNajden" xml:space="preserve"><value>config\devices.json ni najden — postavi ga poleg aplikacije.</value></data>
+  <data name="Log_Opozorilo" xml:space="preserve"><value>OPOZORILO: {0}</value></data>
+  <data name="Log_Napaka" xml:space="preserve"><value>NAPAKA: {0}</value></data>
+  <data name="St_KonfImaNapak" xml:space="preserve"><value>Konfiguracija ima {0} napak — glej dnevnik.</value></data>
+  <data name="St_Nalozeno" xml:space="preserve"><value>Naloženo: {0} naprav, {1} profilov.</value></data>
+  <data name="St_VpisiIpNaslov" xml:space="preserve"><value>Vpiši IP naslov ali ime gostitelja.</value></data>
+  <data name="St_IzberiComPort" xml:space="preserve"><value>Izberi COM port.</value></data>
+  <data name="Log_CsvBelezenjeV" xml:space="preserve"><value>CSV beleženje v: {0}</value></data>
+  <data name="Log_NapakaMapeCsv" xml:space="preserve"><value>NAPAKA: mape za CSV ni mogoče ustvariti: {0}</value></data>
+  <data name="Log_CsvIzklopljeno" xml:space="preserve"><value>CSV beleženje je izklopljeno — samo prikaz.</value></data>
+  <data name="Log_MySqlBelezenjeV" xml:space="preserve"><value>MySQL beleženje v tabelo '{0}' na {1}:{2}/{3} ({4} povezanih stolpcev).</value></data>
+  <data name="Log_NapakaMySqlPovezave" xml:space="preserve"><value>NAPAKA: MySQL povezave ni mogoče vzpostaviti: {0}</value></data>
+  <data name="St_BelezenjeTece" xml:space="preserve"><value>Beleženje teče (vzorčenje {0} s, zapis {1} s).</value></data>
+  <data name="Log_Zagnano" xml:space="preserve"><value>Zagnano.</value></data>
+  <data name="St_Ustavljam" xml:space="preserve"><value>Ustavljam ...</value></data>
+  <data name="Log_NapakaObUstavljanju" xml:space="preserve"><value>Napaka ob ustavljanju: {0}</value></data>
+  <data name="St_Ustavljeno" xml:space="preserve"><value>Ustavljeno.</value></data>
+  <data name="Log_NalagamProfil" xml:space="preserve"><value>Nalagam profil: {0}</value></data>
+  <data name="Log_ProfilShranjenKot" xml:space="preserve"><value>Profil shranjen kot: {0}</value></data>
+  <data name="Log_NapakaPriShranjevanjuProfila" xml:space="preserve"><value>NAPAKA pri shranjevanju profila: {0}</value></data>
+  <data name="Dlg_IzberiMapoCsv" xml:space="preserve"><value>Izberi mapo za CSV datoteke</value></data>
+  <data name="Log_TabelaNeObstaja" xml:space="preserve"><value>Tabela '{0}' v bazi '{1}' ne obstaja ali nima stolpcev.</value></data>
+  <data name="Log_PrebranihStolpcev" xml:space="preserve"><value>Prebranih {0} stolpcev iz tabele '{1}'. Poveži jih s podatki spodaj.</value></data>
+  <data name="Log_NapakaBranjaStolpcev" xml:space="preserve"><value>NAPAKA pri branju stolpcev MySQL tabele: {0}</value></data>
+  <data name="Log_NapravaDodana" xml:space="preserve"><value>Naprava '{0}' (slave {1}) je bila dodana v devices.json.</value></data>
+  <data name="Log_NapravaPosodobljena" xml:space="preserve"><value>Naprava '{0}' (slave {1}) je bila posodobljena.</value></data>
+  <data name="Log_NapakaProfilNiNalozen" xml:space="preserve"><value>NAPAKA: profil '{0}' za napravo '{1}' ni naložen — ni ga mogoče urediti.</value></data>
+  <data name="Msg_OdstraniNapravo" xml:space="preserve"><value>Odstranim napravo '{0}' (slave {1}) iz devices.json?
+
+Profil '{2}' ostane na disku (lahko ga uporablja druga naprava).</value></data>
+  <data name="Msg_OdstraniNapravoTitle" xml:space="preserve"><value>Odstrani napravo</value></data>
+  <data name="Log_NapravaOdstranjena" xml:space="preserve"><value>Naprava '{0}' (slave {1}) je bila odstranjena iz devices.json.</value></data>
+  <data name="Log_NapraveNiBiloMogoceNajti" xml:space="preserve"><value>Naprave '{0}' ni bilo mogoče najti v devices.json (že odstranjena?).</value></data>
+  <data name="Log_NapakaOdstranjevanjaNaprave" xml:space="preserve"><value>NAPAKA pri odstranjevanju naprave: {0}</value></data>
+  <data name="Log_CasVzorcenjaSpremenjen" xml:space="preserve"><value>Čas vzorčenja spremenjen na {0} s (velja takoj).</value></data>
+
+  <!-- AddDeviceViewModel -->
+  <data name="AddDevice_ErrLoadProfil" xml:space="preserve"><value>Profila '{0}' ni bilo mogoče naložiti: {1}</value></data>
+  <data name="AddDevice_ErrNiRegistrovZaShranjevanje" xml:space="preserve"><value>Ni registrov za shranjevanje.</value></data>
+  <data name="AddDevice_SaveFileDialog_Title" xml:space="preserve"><value>Shrani kot profil</value></data>
+  <data name="AddDevice_SaveFileDialog_Filter" xml:space="preserve"><value>Profil (*.json)|*.json</value></data>
+  <data name="AddDevice_DefaultProfileFileName" xml:space="preserve"><value>profil.json</value></data>
+  <data name="AddDevice_ProfilShranjen" xml:space="preserve"><value>Profil '{0}' shranjen.</value></data>
+  <data name="AddDevice_NapakaShranjevanjaProfila" xml:space="preserve"><value>Napaka pri shranjevanju profila: {0}</value></data>
+  <data name="AddDevice_OpozoriloProfilUporabljajo" xml:space="preserve"><value>
+
+Opozorilo: ta profil trenutno uporablja(jo) tudi: {0}. Po izbrisu ne bodo delovale, dokler jim ne izberete drugega profila.</value></data>
+  <data name="AddDevice_MsgIzbrisemProfil" xml:space="preserve"><value>Izbrišem profil '{0}' s diska?{1}</value></data>
+  <data name="AddDevice_MsgIzbrisiProfilTitle" xml:space="preserve"><value>Izbriši profil</value></data>
+  <data name="AddDevice_ProfilIzbrisan" xml:space="preserve"><value>Profil '{0}' izbrisan.</value></data>
+  <data name="AddDevice_NapakaBrisanjaProfila" xml:space="preserve"><value>Napaka pri brisanju profila: {0}</value></data>
+  <data name="AddDevice_ErrImeNapraveNeSmeBitiPrazno" xml:space="preserve"><value>Ime naprave ne sme biti prazno.</value></data>
+  <data name="AddDevice_ErrSlaveIdMoraBitiMed" xml:space="preserve"><value>Slave ID mora biti med 1 in 247.</value></data>
+  <data name="AddDevice_ErrNapravaPotrebujeVsajEnRegister" xml:space="preserve"><value>Naprava potrebuje vsaj en register.</value></data>
+  <data name="AddDevice_NapakaShranjevanja" xml:space="preserve"><value>Napaka pri shranjevanju: {0}</value></data>
+  <data name="AddDevice_ErrVsakRegisterPotrebujeIme" xml:space="preserve"><value>Vsak register potrebuje ime.</value></data>
+  <data name="AddDevice_ErrNeveljavnaKonstanta" xml:space="preserve"><value>Neveljavna konstantna vrednost za '{0}': '{1}'.</value></data>
+  <data name="AddDevice_ErrNeveljavenNaslov" xml:space="preserve"><value>Neveljaven naslov registra '{0}': '{1}'.</value></data>
+  <data name="AddDevice_ErrNeveljavnaSkala" xml:space="preserve"><value>Neveljavna skala za register '{0}': '{1}'.</value></data>
+  <data name="AddDevice_DefaultPrivateName" xml:space="preserve"><value>naprava</value></data>
+
+  <!-- Core: DeviceReader / PollService -->
+  <data name="Err_Timeout" xml:space="preserve"><value>timeout — naprava ne odgovarja</value></data>
+  <data name="Err_ModbusException" xml:space="preserve"><value>Modbus exception (function {0}, code {1}) — naprava zavrača zahtevo, preveri naslove v profilu</value></data>
+  <data name="Err_NapakaPovezave" xml:space="preserve"><value>napaka povezave: {0}</value></data>
+  <data name="Err_PovezavaNiUspela" xml:space="preserve"><value>povezava na {0}:{1} ni uspela v {2} ms</value></data>
+  <data name="Msg_PortOdprt" xml:space="preserve"><value>Port {0} odprt ({1} baud, 8{2}{3}).</value></data>
+  <data name="Msg_PortaNiMogoceOdpreti" xml:space="preserve"><value>Porta {0} ni mogoče odpreti: {1}</value></data>
+  <data name="Msg_PovezavaVzpostavljena" xml:space="preserve"><value>Povezava na {0}:{1} vzpostavljena (Modbus TCP).</value></data>
+  <data name="Msg_PovezaveNiMogoceVzpostaviti" xml:space="preserve"><value>Povezave na {0}:{1} ni mogoče vzpostaviti: {2}</value></data>
+  <data name="Msg_PovezavaNiNaVoljo" xml:space="preserve"><value>povezava ({0}) ni na voljo</value></data>
+  <data name="Err_NepricakovanaNapaka" xml:space="preserve"><value>nepričakovana napaka: {0}: {1}</value></data>
+  <data name="Msg_PovezavaJeIzginila" xml:space="preserve"><value>Povezava ({0}) je izginila — poskušal jo bom znova vzpostaviti.</value></data>
+  <data name="Msg_NapakaPriZapisu" xml:space="preserve"><value>Napaka pri zapisu ({0}): {1}</value></data>
+
+  <!-- Core: ConfigLoader -->
+  <data name="Err_SerialPortNiNastavljen" xml:space="preserve"><value>serial.port ni nastavljen.</value></data>
+  <data name="Err_SerialBaudNiVeljaven" xml:space="preserve"><value>serial.baud ni veljaven: {0}</value></data>
+  <data name="Err_SerialParityMoraBiti" xml:space="preserve"><value>serial.parity mora biti none/even/odd (je "{0}").</value></data>
+  <data name="Err_SerialStopBitsMoraBiti" xml:space="preserve"><value>serial.stopBits mora biti 1 ali 2 (je {0}).</value></data>
+  <data name="Err_SerialTimeoutMoraBiti" xml:space="preserve"><value>serial.timeoutMs mora biti >= 50 (je {0}).</value></data>
+  <data name="Err_LoggingFolderPrazen" xml:space="preserve"><value>logging.folder ne sme biti prazen.</value></data>
+  <data name="Err_LoggingDelimiterEnZnak" xml:space="preserve"><value>logging.delimiter mora biti en znak (je "{0}").</value></data>
+  <data name="Err_LoggingDecimalSep" xml:space="preserve"><value>logging.decimalSeparator mora biti "." ali "," (je "{0}").</value></data>
+  <data name="Err_LoggingDelimiterEnakDecimal" xml:space="preserve"><value>logging.delimiter in decimalSeparator ne smeta biti enaka.</value></data>
+  <data name="Err_ProfilNimaPollGroup" xml:space="preserve"><value>{0}: nima nobenega poll group.</value></data>
+  <data name="Err_ProfilNimaRegistra" xml:space="preserve"><value>{0}: nima nobenega registra.</value></data>
+  <data name="Err_NeznanaFunkcijaPollGroup" xml:space="preserve"><value>{0}: neznana funkcija "{1}" (input/holding)</value></data>
+  <data name="Err_NeveljavenStartAddress" xml:space="preserve"><value>{0}: neveljaven startAddress "{1}".</value></data>
+  <data name="Err_CountMoraBiti" xml:space="preserve"><value>{0}: count mora biti 1-125 (je {1}); Modbus omejuje en odgovor na 125 registrov.</value></data>
+  <data name="Err_BlokPresegaNaslovniProstor" xml:space="preserve"><value>{0}: blok 0x{1}+{2} presega naslovni prostor.</value></data>
+  <data name="Err_NeznanaFunkcijaRegister" xml:space="preserve"><value>{0}: neznana funkcija "{1}" (input/holding/constant)</value></data>
+  <data name="Err_NeveljavenNaslovProfil" xml:space="preserve"><value>{0} ({1}): neveljaven naslov.</value></data>
+  <data name="Err_NeznanTip" xml:space="preserve"><value>{0}: neznan tip "{1}" (uint16/int16/uint32/int32/float32).</value></data>
+  <data name="Err_WordOrderMoraBiti" xml:space="preserve"><value>{0}: wordOrder mora biti big ali little.</value></data>
+  <data name="Err_NaslovNiPokrit" xml:space="preserve"><value>{0} ({1}): naslov ni pokrit z nobenim poll group iste funkcije ({2}) — dodaj ali razširi blok.</value></data>
+  <data name="Err_SampleIntervalMoraBiti" xml:space="preserve"><value>sampleIntervalSeconds mora biti >= 1 (je {0}).</value></data>
+  <data name="Err_WriteIntervalMoraBiti" xml:space="preserve"><value>writeIntervalSeconds mora biti >= 1 (je {0}).</value></data>
+  <data name="Err_DevicesListPrazen" xml:space="preserve"><value>Seznam "devices" je prazen.</value></data>
+  <data name="Err_NapravaSlaveIdMoraBiti" xml:space="preserve"><value>{0}: slaveId mora biti 1-247.</value></data>
+  <data name="Err_NapravaManjkaProfile" xml:space="preserve"><value>{0}: manjka "profile".</value></data>
+  <data name="Err_ProfilNeObstaja" xml:space="preserve"><value>{0}: profil ne obstaja: {1}</value></data>
+  <data name="Warn_SlaveIdUporabljenVecKrat" xml:space="preserve"><value>Slave ID {0} je uporabljen pri več omogočenih napravah — na isti liniji odgovori le ena.</value></data>
+  <data name="Err_DatotekaPrazna" xml:space="preserve"><value>datoteka je prazna (JSON null).</value></data>
+  <data name="Err_NeveljavenJson" xml:space="preserve"><value>neveljaven JSON (vrstica {0}): {1}</value></data>
+  <data name="Err_Who_Profil" xml:space="preserve"><value>profil "{0}"</value></data>
+  <data name="Err_Who_Naprava" xml:space="preserve"><value>naprava "{0}" (slave {1})</value></data>
+  <data name="Err_Who_Register" xml:space="preserve"><value>{0}, register "{1}"</value></data>
+</root>

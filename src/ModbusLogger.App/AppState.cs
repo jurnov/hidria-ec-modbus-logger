@@ -12,6 +12,10 @@ internal static class AppState
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "ModbusLogger", "last-config.txt");
 
+    private static readonly string LanguageFilePath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "ModbusLogger", "language.txt");
+
     public static string? LoadLastConfigPath()
     {
         try
@@ -35,6 +39,33 @@ internal static class AppState
         catch
         {
             // ni kritično, če si aplikacija ne zapomni zadnje konfiguracije
+        }
+    }
+
+    /// <summary>Dvočrkovna koda kulture (sl/en/de/it/es) izbranega jezika vmesnika, ali null, če še ni izbran.</summary>
+    public static string? LoadLanguage()
+    {
+        try
+        {
+            string code = File.ReadAllText(LanguageFilePath).Trim();
+            return code.Length > 0 ? code : null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public static void SaveLanguage(string cultureCode)
+    {
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(LanguageFilePath)!);
+            File.WriteAllText(LanguageFilePath, cultureCode);
+        }
+        catch
+        {
+            // ni kritično, če si aplikacija ne zapomni izbranega jezika
         }
     }
 }

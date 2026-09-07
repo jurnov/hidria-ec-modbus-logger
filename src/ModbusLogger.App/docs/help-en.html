@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>User Guide — Hidria EC Modbus Logger</title>
+<style>
+  :root {
+    --dark-blue: #205080;
+    --blue: #1888B8;
+    --teal: #00A0C0;
+    --light: #EFF6FA;
+    --light-hover: #DCEDF6;
+    --text: #222;
+    --muted: #666;
+  }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: var(--text);
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 32px 64px;
+    line-height: 1.55;
+  }
+  header {
+    border-bottom: 3px solid var(--teal);
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+  }
+  header h1 {
+    color: var(--dark-blue);
+    margin: 0 0 4px;
+    font-size: 26px;
+  }
+  header p {
+    color: var(--muted);
+    margin: 0;
+  }
+  nav {
+    background: var(--light);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+  }
+  nav h2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--dark-blue);
+    margin: 0 0 8px;
+  }
+  nav ol {
+    margin: 0;
+    padding-left: 20px;
+    columns: 2;
+  }
+  nav a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+  nav a:hover { text-decoration: underline; }
+  h2 {
+    color: var(--dark-blue);
+    border-bottom: 1px solid var(--light-hover);
+    padding-bottom: 6px;
+    margin-top: 40px;
+  }
+  h3 {
+    color: var(--blue);
+    margin-top: 24px;
+  }
+  code, kbd {
+    background: var(--light);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: Consolas, monospace;
+    font-size: 0.92em;
+  }
+  .btn {
+    display: inline-block;
+    background: var(--light);
+    border: 1px solid var(--light-hover);
+    border-radius: 4px;
+    padding: 1px 8px;
+    font-weight: 600;
+    color: var(--dark-blue);
+    font-size: 0.92em;
+  }
+  .tip, .warn {
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin: 14px 0;
+  }
+  .tip {
+    background: var(--light);
+    border-left: 4px solid var(--teal);
+  }
+  .warn {
+    background: #FFF6E8;
+    border-left: 4px solid #E0A030;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0;
+  }
+  th, td {
+    border: 1px solid var(--light-hover);
+    padding: 6px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: var(--light);
+    color: var(--dark-blue);
+  }
+  footer {
+    margin-top: 48px;
+    padding-top: 12px;
+    border-top: 1px solid var(--light-hover);
+    color: var(--muted);
+    font-size: 0.85em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Hidria EC — Modbus Logger</h1>
+  <p>User Guide</p>
+</header>
+
+<nav>
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#uvod">Introduction</a></li>
+    <li><a href="#povezava">Connecting to Devices</a></li>
+    <li><a href="#naprave">Managing Devices</a></li>
+    <li><a href="#registri">Device Register Map (Profile)</a></li>
+    <li><a href="#konfiguracije">Loading and Saving Configurations</a></li>
+    <li><a href="#zagon">Starting and Stopping Logging</a></li>
+    <li><a href="#belezenje">Logging Settings (CSV / MySQL)</a></li>
+    <li><a href="#promet">Viewing Modbus Traffic (HEX)</a></li>
+    <li><a href="#jezik">Changing the Interface Language</a></li>
+    <li><a href="#tezave">Troubleshooting</a></li>
+  </ol>
+</nav>
+
+<h2 id="uvod">1. Introduction</h2>
+<p>
+  The Modbus Logger reads data from devices over the Modbus protocol (RTU via a serial
+  RS-485/RS-232 port, or Modbus TCP) and logs it to CSV files and/or a MySQL database.
+  The application can read any number of devices at the same time, displays their current
+  values live, and automatically attempts to reconnect if the connection is lost.
+</p>
+
+<h2 id="povezava">2. Connecting to Devices</h2>
+<p>
+  In the <b>Connection</b> panel on the left side of the window, select the connection type:
+</p>
+<table>
+  <tr><th>Connection Type</th><th>Description</th></tr>
+  <tr>
+    <td>Serial (RS-485)</td>
+    <td>
+      Select the <b>COM Port</b> (the <span class="btn">⟳</span> button refreshes the list of
+      available ports), the transfer rate (<b>baud</b>), the frame format (data bits/parity/stop
+      bits, e.g. 8E1), and the <b>timeout</b> and number of <b>retries</b> for failed reads.
+    </td>
+  </tr>
+  <tr>
+    <td>Modbus TCP</td>
+    <td>
+      Enter the <b>IP address</b> (or host name) and <b>port</b> of the device/gateway, along
+      with the timeout and retries, same as for a serial connection.
+    </td>
+  </tr>
+</table>
+<div class="tip">
+  Connection settings can only be changed while logging is not running. The <b>Sample interval [s]</b>
+  (how often devices are polled), however, can be changed even while logging is running — the
+  change takes effect immediately.
+</div>
+
+<h2 id="naprave">3. Managing Devices</h2>
+<p>
+  The device list is shown in the middle <b>Devices</b> column. Each device has its own
+  <b>Slave ID</b> (bus address) and its own register map (profile).
+</p>
+<ul>
+  <li><span class="btn">Add</span> — opens a window for adding a new device.</li>
+  <li><span class="btn">Edit</span> — edits the selected device (name, Slave ID, registers).</li>
+  <li><span class="btn">Remove</span> — removes the selected device from the list (its register
+    map remains on disk, since it may still be used by another device).</li>
+</ul>
+<p>
+  When a device is selected in the list, the panel on the right shows a table of its registers
+  and current values, which are refreshed while logging is running.
+</p>
+
+<h2 id="registri">4. Device Register Map (Profile)</h2>
+<p>
+  In the <b>Add Device</b>/<b>Edit Device</b> window you edit the register map — the list of
+  all values the application reads from that device. For each register you specify:
+</p>
+<table>
+  <tr><th>Field</th><th>Meaning</th></tr>
+  <tr><td>Address</td><td>Modbus register address (e.g. <code>0x0100</code> or decimal).</td></tr>
+  <tr><td>Function</td><td><code>input</code> (fc 04), <code>holding</code> (fc 03), or
+    <code>constant</code> — a constant value that is never read from the bus.</td></tr>
+  <tr><td>Name / Unit</td><td>Display name and physical unit (e.g. °C, V, rpm).</td></tr>
+  <tr><td>Type</td><td><code>uint16</code>, <code>int16</code>, <code>uint32</code>,
+    <code>int32</code>, or <code>float32</code>.</td></tr>
+  <tr><td>Scale</td><td>The raw value is multiplied by this number before it is displayed
+    (e.g. to convert tenths to whole units).</td></tr>
+  <tr><td>Word order</td><td>The order of the 16-bit words for 32-bit types — <code>big</code>
+    or <code>little</code>.</td></tr>
+  <tr><td>Constant</td><td>Used only with the <code>constant</code> function — a fixed value
+    (e.g. a location tag) written into every logged row.</td></tr>
+</table>
+<div class="warn">
+  <b>Important:</b> the register map you edit in the device window <b>belongs to that device
+  only</b> — changes do not affect other devices, even if they previously used the same
+  template. To deliberately share the same register map between several devices, use the
+  buttons below:
+</div>
+<ul>
+  <li><span class="btn">Load Profile</span> — loads an existing saved register template into the
+    editor (replacing the current contents).</li>
+  <li><span class="btn">Save as Profile ...</span> — saves the current register map as a
+    standalone, named template that can later be loaded by any device.</li>
+  <li><span class="btn">Delete Profile</span> — deletes the selected saved template from disk.</li>
+</ul>
+
+<h2 id="konfiguracije">5. Loading and Saving Configurations</h2>
+<p>
+  The <span class="btn">Load Profile</span> and <span class="btn">Save Profile</span> buttons in
+  the <b>main toolbar</b> (at the top of the window) act on the <b>entire configuration</b>: all
+  devices together with the connection and logging settings, saved under a single name. This is
+  useful if you have several different setups (e.g. different sites or test benches) and switch
+  between them.
+</p>
+<div class="tip">
+  Do not confuse this with the <a href="#registri">register map of an individual device</a>
+  (section 4) — these are two separate concepts that both happen to use the word "profile" in
+  the interface.
+</div>
+
+<h2 id="zagon">6. Starting and Stopping Logging</h2>
+<p>
+  The <span class="btn" style="background:#00A0C0;color:#fff;">START</span> button in the
+  top-left corner establishes the connection and starts the device polling cycle. While running,
+  the button changes to <b>STOP</b>. Each device in the list shows its current read status (a
+  colored dot: gray = not yet read, green = OK, red = error).
+</p>
+<p>
+  The <b>Sample interval [s]</b> determines how often devices are polled (and how often the
+  interface display is refreshed). The <b>Write interval</b> (in the logging settings), on the
+  other hand, determines how often the values read are actually written to CSV/MySQL — these two
+  rates can differ.
+</p>
+
+<h2 id="belezenje">7. Logging Settings (CSV / MySQL)</h2>
+<p>
+  The <span class="btn">Logging Settings</span> button opens a window with the following
+  settings:
+</p>
+<h3>CSV</h3>
+<ul>
+  <li><b>Folder</b> for CSV files (a relative path is resolved against the configuration folder).</li>
+  <li><b>Column separator</b> (semicolon, comma, or tab) and <b>decimal separator</b>
+    (comma or period).</li>
+</ul>
+<h3>MySQL</h3>
+<ul>
+  <li>Connection details: host, port, database, user, password, table name.</li>
+  <li>The <b>Fetch Columns</b> button reads the existing columns of the selected table and
+    offers them for mapping — for each column you choose the data source (measurement time,
+    device name, status, a specific register, or a fixed constant).</li>
+</ul>
+<div class="warn">
+  The write interval cannot be edited while logging is running — settings in this window only
+  take effect the next time logging is started.
+</div>
+
+<h2 id="promet">8. Viewing Modbus Traffic (HEX)</h2>
+<p>
+  The <span class="btn">Modbus Traffic (HEX)</span> button opens a window where you can watch
+  the raw Modbus requests and responses live (in HEX format) while logging is running — useful
+  for diagnosing communication problems.
+</p>
+
+<h2 id="jezik">9. Changing the Interface Language</h2>
+<p>
+  In the top-right corner of the window, select a language from the drop-down list (SL/EN/DE/IT/ES).
+  The application briefly restarts when the language is changed, so that the new language takes
+  effect everywhere — in menus, messages, and the event log. The application remembers the
+  selected language for the next launch.
+</p>
+
+<h2 id="tezave">10. Troubleshooting</h2>
+<table>
+  <tr><th>Problem</th><th>Possible Cause / Solution</th></tr>
+  <tr>
+    <td>The COM port list is empty</td>
+    <td>Check that the USB/RS-485 adapter is plugged in, then click <span class="btn">⟳</span>.</td>
+  </tr>
+  <tr>
+    <td>"Unable to open port"</td>
+    <td>The port may be in use by another program (e.g. another terminal, or an already running
+      copy of this application).</td>
+  </tr>
+  <tr>
+    <td>"Unable to establish connection" (TCP)</td>
+    <td>Check the IP address, port, and network connectivity (e.g. ping the device).</td>
+  </tr>
+  <tr>
+    <td>Device shows "error" / timeout</td>
+    <td>Check the Slave ID, the bus wiring, RS-485 termination, and whether the register map
+      matches the actual device.</td>
+  </tr>
+  <tr>
+    <td>Connection was lost while running</td>
+    <td>The application detects this automatically, closes the connection, and attempts to
+      re-establish it on the next cycle — the outage remains visible in the event log and in the
+      CSV/MySQL record.</td>
+  </tr>
+</table>
+
+<footer>
+  Hidria EC — Modbus Logger
+</footer>
+
+</body>
+</html>

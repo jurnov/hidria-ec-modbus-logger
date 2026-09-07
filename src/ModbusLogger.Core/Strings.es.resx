@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+
+  <!-- Skupno -->
+  <data name="Btn_Preklici" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="App_CrashMessage" xml:space="preserve"><value>Se ha producido un error:
+
+{0}
+
+Los detalles están en {1}</value></data>
+  <data name="App_CrashTitle" xml:space="preserve"><value>Error</value></data>
+  <data name="Btn_Shrani" xml:space="preserve"><value>Guardar</value></data>
+
+  <!-- MainWindow -->
+  <data name="Main_Title" xml:space="preserve"><value>Hidria EC — Registrador Modbus</value></data>
+  <data name="Main_HeaderText" xml:space="preserve"><value>Registrador Modbus</value></data>
+  <data name="Main_Btn_NalPro" xml:space="preserve"><value>Cargar perfil</value></data>
+  <data name="Main_Btn_ShrPro" xml:space="preserve"><value>Guardar perfil</value></data>
+  <data name="Main_Btn_HexPromet" xml:space="preserve"><value>Tráfico Modbus (HEX)</value></data>
+  <data name="Main_Btn_NastBel" xml:space="preserve"><value>Configuración de registro</value></data>
+  <data name="Main_Group_Povezava" xml:space="preserve"><value>Conexión</value></data>
+  <data name="Main_Label_NacinPovezave" xml:space="preserve"><value>Modo de conexión</value></data>
+  <data name="Main_Label_ComPort" xml:space="preserve"><value>Puerto COM</value></data>
+  <data name="Main_Tooltip_OsveziPorte" xml:space="preserve"><value>Actualizar lista de puertos</value></data>
+  <data name="Main_Label_Hitrost" xml:space="preserve"><value>Velocidad (baudios)</value></data>
+  <data name="Main_Label_Format" xml:space="preserve"><value>Formato (bits de datos/paridad/stop)</value></data>
+  <data name="Main_Label_IpNaslov" xml:space="preserve"><value>Dirección IP / host</value></data>
+  <data name="Main_Label_TcpVrata" xml:space="preserve"><value>Puerto TCP</value></data>
+  <data name="Main_Label_Timeout" xml:space="preserve"><value>Timeout [ms]</value></data>
+  <data name="Main_Label_Ponovitve" xml:space="preserve"><value>Reintentos</value></data>
+  <data name="Main_Label_CasVzorcenja" xml:space="preserve"><value>Tiempo de muestreo [s]</value></data>
+  <data name="Main_Tooltip_CasVzorcenja" xml:space="preserve"><value>Con qué frecuencia la aplicación lee los dispositivos. El cambio se aplica de inmediato, incluso durante la ejecución.</value></data>
+  <data name="Main_Hint_Povezava" xml:space="preserve"><value>El intervalo de escritura y la configuración de registro CSV/MySQL se encuentran en el botón 'Configuración de registro' de arriba. Para guardar de forma permanente, usa 'Guardar perfil'.</value></data>
+  <data name="Main_Group_Naprave" xml:space="preserve"><value>Dispositivos</value></data>
+  <data name="Main_Btn_Dodaj" xml:space="preserve"><value>Añadir</value></data>
+  <data name="Main_Btn_Uredi" xml:space="preserve"><value>Editar</value></data>
+  <data name="Main_Btn_Odstrani" xml:space="preserve"><value>Eliminar</value></data>
+  <data name="Main_Tooltip_PremakniGor" xml:space="preserve"><value>Mover dispositivo hacia arriba</value></data>
+  <data name="Main_Tooltip_PremakniDol" xml:space="preserve"><value>Mover dispositivo hacia abajo</value></data>
+  <data name="Main_Group_Registri" xml:space="preserve"><value>Registros</value></data>
+  <data name="Main_Col_Naslov" xml:space="preserve"><value>Dirección</value></data>
+  <data name="Main_Col_Ime" xml:space="preserve"><value>Nombre</value></data>
+  <data name="Main_Col_Vrednost" xml:space="preserve"><value>Valor</value></data>
+  <data name="Main_Col_Enota" xml:space="preserve"><value>Unidad</value></data>
+  <data name="Main_Tooltip_KonstantniNaslov" xml:space="preserve"><value>El registro constante no tiene una dirección Modbus real.</value></data>
+  <data name="Main_DnevnikDogodkov" xml:space="preserve"><value>Registro de eventos</value></data>
+  <data name="Main_ConnMode_Serial" xml:space="preserve"><value>Serie (RS-485)</value></data>
+  <data name="Main_ConnMode_Tcp" xml:space="preserve"><value>Modbus TCP</value></data>
+  <data name="Main_StartStop_Start" xml:space="preserve"><value>INICIAR</value></data>
+  <data name="Main_StartStop_Stop" xml:space="preserve"><value>DETENER</value></data>
+  <data name="Main_ConfigPathDisplay" xml:space="preserve"><value>Perfil: {0}</value></data>
+  <data name="Main_Lang_Label" xml:space="preserve"><value>Idioma</value></data>
+  <data name="Main_HelpButton_Tooltip" xml:space="preserve"><value>Instrucciones de uso</value></data>
+
+  <!-- AddDeviceWindow -->
+  <data name="AddDevice_Title_Add" xml:space="preserve"><value>Añadir dispositivo</value></data>
+  <data name="AddDevice_Title_Edit" xml:space="preserve"><value>Editar dispositivo</value></data>
+  <data name="AddDevice_Label_ImeNaprave" xml:space="preserve"><value>Nombre del dispositivo</value></data>
+  <data name="AddDevice_Label_SlaveId" xml:space="preserve"><value>Slave ID</value></data>
+  <data name="AddDevice_Group_Profil" xml:space="preserve"><value>Perfil del dispositivo (mapa de registros)</value></data>
+  <data name="AddDevice_Hint_Profil" xml:space="preserve"><value>El mapa de registros de abajo pertenece a este dispositivo — los cambios no afectan a otros dispositivos. Para compartirlo o usarlo como plantilla, utiliza 'Cargar perfil' y 'Guardar como perfil'.</value></data>
+  <data name="AddDevice_Btn_NalPro" xml:space="preserve"><value>Cargar perfil</value></data>
+  <data name="AddDevice_Btn_IzbrisiPro" xml:space="preserve"><value>Eliminar perfil</value></data>
+  <data name="AddDevice_Btn_ShrKotPro" xml:space="preserve"><value>Guardar como perfil ...</value></data>
+  <data name="AddDevice_Label_Registri" xml:space="preserve"><value>Registros</value></data>
+  <data name="AddDevice_Btn_OdstraniIzbranega" xml:space="preserve"><value>Eliminar seleccionado</value></data>
+  <data name="AddDevice_Btn_PlusRegister" xml:space="preserve"><value>+ Registro</value></data>
+  <data name="AddDevice_Col_Naslov" xml:space="preserve"><value>Dirección</value></data>
+  <data name="AddDevice_Col_Funkcija" xml:space="preserve"><value>Función</value></data>
+  <data name="AddDevice_Col_Ime" xml:space="preserve"><value>Nombre</value></data>
+  <data name="AddDevice_Col_Enota" xml:space="preserve"><value>Unidad</value></data>
+  <data name="AddDevice_Col_Tip" xml:space="preserve"><value>Tipo</value></data>
+  <data name="AddDevice_Col_Skala" xml:space="preserve"><value>Escala</value></data>
+  <data name="AddDevice_Col_WordOrder" xml:space="preserve"><value>Word order</value></data>
+  <data name="AddDevice_Col_Konstanta" xml:space="preserve"><value>Constante</value></data>
+  <data name="AddDevice_Tooltip_KonstNaslov" xml:space="preserve"><value>El registro constante no tiene una dirección Modbus real.</value></data>
+  <data name="AddDevice_Tooltip_KonstStolp" xml:space="preserve"><value>Se usa solo con la función 'constant': un valor fijo que no se lee del bus Modbus.</value></data>
+
+  <!-- ConfigPickerWindow -->
+  <data name="ConfigPicker_Title_Save" xml:space="preserve"><value>Guardar perfil como</value></data>
+  <data name="ConfigPicker_Title_Load" xml:space="preserve"><value>Cargar perfil</value></data>
+  <data name="ConfigPicker_ConfirmBtn_Save" xml:space="preserve"><value>Guardar</value></data>
+  <data name="ConfigPicker_ConfirmBtn_Load" xml:space="preserve"><value>Cargar</value></data>
+  <data name="ConfigPicker_Label_ImeProfila" xml:space="preserve"><value>Nombre del perfil</value></data>
+  <data name="ConfigPicker_Label_ShranjeniProfili" xml:space="preserve"><value>Perfiles guardados</value></data>
+  <data name="ConfigPicker_Err_VpisiIme" xml:space="preserve"><value>Introduce el nombre del perfil.</value></data>
+  <data name="ConfigPicker_Err_IzberiProfil" xml:space="preserve"><value>Selecciona un perfil de la lista.</value></data>
+
+  <!-- LoggingSettingsWindow -->
+  <data name="LoggingSettings_Title" xml:space="preserve"><value>Configuración de registro</value></data>
+  <data name="LoggingSettings_RunningWarning" xml:space="preserve"><value>El registro está en ejecución — detenlo (INICIAR/DETENER en la ventana principal) para cambiar esta configuración.</value></data>
+  <data name="LoggingSettings_Label_IntervalZapisa" xml:space="preserve"><value>Intervalo de escritura [s]</value></data>
+  <data name="LoggingSettings_Tooltip_IntervalZapisa" xml:space="preserve"><value>Con qué frecuencia se escribe la última muestra leída en CSV/MySQL.</value></data>
+  <data name="LoggingSettings_Chk_BeleziCsv" xml:space="preserve"><value>Registrar en CSV</value></data>
+  <data name="LoggingSettings_Label_MapaCsv" xml:space="preserve"><value>Carpeta para los archivos CSV</value></data>
+  <data name="LoggingSettings_Btn_Prebrskaj" xml:space="preserve"><value>Examinar ...</value></data>
+  <data name="LoggingSettings_Btn_OdpriMapo" xml:space="preserve"><value>Abrir carpeta</value></data>
+  <data name="LoggingSettings_Label_LociloStolpcev" xml:space="preserve"><value>Separador de columnas</value></data>
+  <data name="LoggingSettings_Label_DecimalnoLocilo" xml:space="preserve"><value>Separador decimal</value></data>
+  <data name="LoggingSettings_Chk_BeleziMySql" xml:space="preserve"><value>Registrar en MySQL</value></data>
+  <data name="LoggingSettings_Label_Gostitelj" xml:space="preserve"><value>Host</value></data>
+  <data name="LoggingSettings_Label_Vrata" xml:space="preserve"><value>Puerto</value></data>
+  <data name="LoggingSettings_Label_Baza" xml:space="preserve"><value>Base de datos</value></data>
+  <data name="LoggingSettings_Label_Uporabnik" xml:space="preserve"><value>Usuario</value></data>
+  <data name="LoggingSettings_Label_Geslo" xml:space="preserve"><value>Contraseña</value></data>
+  <data name="LoggingSettings_Label_Tabela" xml:space="preserve"><value>Tabla</value></data>
+  <data name="LoggingSettings_Btn_PreberiStolpce" xml:space="preserve"><value>Leer columnas de la tabla</value></data>
+  <data name="LoggingSettings_Label_PovezavaStolpcev" xml:space="preserve"><value>Asociación de columnas con datos (haz clic en 'Leer columnas' si la lista está vacía)</value></data>
+  <data name="LoggingSettings_Hint_TrajnoShrani" xml:space="preserve"><value>Para guardar de forma permanente, usa 'Guardar perfil' en la ventana principal.</value></data>
+  <data name="LoggingSettings_Btn_Zapri" xml:space="preserve"><value>Cerrar</value></data>
+  <data name="LoggingSettings_Delim_Podpicje" xml:space="preserve"><value>; (punto y coma)</value></data>
+  <data name="LoggingSettings_Delim_Vejica" xml:space="preserve"><value>, (coma)</value></data>
+  <data name="LoggingSettings_Delim_Tab" xml:space="preserve"><value>Tabulador</value></data>
+
+  <!-- TrafficWindow -->
+  <data name="Traffic_Title" xml:space="preserve"><value>Tráfico Modbus (HEX)</value></data>
+  <data name="Traffic_Hint" xml:space="preserve"><value>Últimos hasta 500 intercambios en la conexión actual. Cada fila = una solicitud Modbus enviada y la respuesta recibida (bytes en bruto, HEX). Naranja = no hubo respuesta (timeout).</value></data>
+  <data name="Traffic_Col_CasPosiljanja" xml:space="preserve"><value>Hora de envío</value></data>
+  <data name="Traffic_Col_Poslano" xml:space="preserve"><value>Enviado (request)</value></data>
+  <data name="Traffic_Col_CasPrejema" xml:space="preserve"><value>Hora de recepción</value></data>
+  <data name="Traffic_Col_Prejeto" xml:space="preserve"><value>Recibido (response)</value></data>
+  <data name="Traffic_NoResponse" xml:space="preserve"><value>(sin respuesta — timeout)</value></data>
+
+  <!-- MySQL field options (izbirnik vira podatka za stolpec) -->
+  <data name="MySqlField_NeUporabi" xml:space="preserve"><value>(no usar)</value></data>
+  <data name="MySqlField_CasMeritve" xml:space="preserve"><value>Hora de medición</value></data>
+  <data name="MySqlField_NapravaIme" xml:space="preserve"><value>Dispositivo (nombre)</value></data>
+  <data name="MySqlField_SlaveId" xml:space="preserve"><value>Slave ID</value></data>
+  <data name="MySqlField_StatusNapaka" xml:space="preserve"><value>Estado / error</value></data>
+  <data name="MySqlField_CasOdziva" xml:space="preserve"><value>Tiempo de respuesta [ms]</value></data>
+  <data name="MySqlField_NapakaKomunikacije" xml:space="preserve"><value>Error de comunicación (1 = error, 0 = OK)</value></data>
+  <data name="MySqlField_Konstanta" xml:space="preserve"><value>Valor constante ...</value></data>
+  <data name="MySqlField_Register" xml:space="preserve"><value>Registro: {0}</value></data>
+
+  <!-- Status naprave -->
+  <data name="Device_CakamNaPrvoBranje" xml:space="preserve"><value>esperando la primera lectura</value></data>
+  <data name="Device_BrezPovezaveUstavljeno" xml:space="preserve"><value>sin conexión — detenido</value></data>
+  <data name="Device_OkMs" xml:space="preserve"><value>OK ({0} ms)</value></data>
+  <data name="Device_Napaka" xml:space="preserve"><value>error</value></data>
+
+  <!-- MainViewModel: dnevnik/status/dialogi -->
+  <data name="St_NiNalozeneKonf" xml:space="preserve"><value>No hay ninguna configuración cargada — usa 'Cargar perfil'.</value></data>
+  <data name="St_DevicesJsonNiNajden" xml:space="preserve"><value>config\devices.json no se encuentra — colócalo junto a la aplicación.</value></data>
+  <data name="Log_Opozorilo" xml:space="preserve"><value>ADVERTENCIA: {0}</value></data>
+  <data name="Log_Napaka" xml:space="preserve"><value>ERROR: {0}</value></data>
+  <data name="St_KonfImaNapak" xml:space="preserve"><value>La configuración tiene {0} errores — consulta el registro.</value></data>
+  <data name="St_Nalozeno" xml:space="preserve"><value>Cargado: {0} dispositivos, {1} perfiles.</value></data>
+  <data name="St_VpisiIpNaslov" xml:space="preserve"><value>Introduce la dirección IP o el nombre de host.</value></data>
+  <data name="St_IzberiComPort" xml:space="preserve"><value>Selecciona un puerto COM.</value></data>
+  <data name="Log_CsvBelezenjeV" xml:space="preserve"><value>Registro CSV en: {0}</value></data>
+  <data name="Log_NapakaMapeCsv" xml:space="preserve"><value>ERROR: no se puede crear la carpeta para CSV: {0}</value></data>
+  <data name="Log_CsvIzklopljeno" xml:space="preserve"><value>El registro CSV está desactivado — solo visualización.</value></data>
+  <data name="Log_MySqlBelezenjeV" xml:space="preserve"><value>Registro MySQL en la tabla '{0}' en {1}:{2}/{3} ({4} columnas asociadas).</value></data>
+  <data name="Log_NapakaMySqlPovezave" xml:space="preserve"><value>ERROR: no se puede establecer la conexión MySQL: {0}</value></data>
+  <data name="St_BelezenjeTece" xml:space="preserve"><value>El registro está en ejecución (muestreo {0} s, escritura {1} s).</value></data>
+  <data name="Log_Zagnano" xml:space="preserve"><value>Iniciado.</value></data>
+  <data name="St_Ustavljam" xml:space="preserve"><value>Deteniendo ...</value></data>
+  <data name="Log_NapakaObUstavljanju" xml:space="preserve"><value>Error al detener: {0}</value></data>
+  <data name="St_Ustavljeno" xml:space="preserve"><value>Detenido.</value></data>
+  <data name="Log_NalagamProfil" xml:space="preserve"><value>Cargando perfil: {0}</value></data>
+  <data name="Log_ProfilShranjenKot" xml:space="preserve"><value>Perfil guardado como: {0}</value></data>
+  <data name="Log_NapakaPriShranjevanjuProfila" xml:space="preserve"><value>ERROR al guardar el perfil: {0}</value></data>
+  <data name="Dlg_IzberiMapoCsv" xml:space="preserve"><value>Selecciona la carpeta para los archivos CSV</value></data>
+  <data name="Log_TabelaNeObstaja" xml:space="preserve"><value>La tabla '{0}' en la base de datos '{1}' no existe o no tiene columnas.</value></data>
+  <data name="Log_PrebranihStolpcev" xml:space="preserve"><value>Se leyeron {0} columnas de la tabla '{1}'. Asócialas con los datos a continuación.</value></data>
+  <data name="Log_NapakaBranjaStolpcev" xml:space="preserve"><value>ERROR al leer las columnas de la tabla MySQL: {0}</value></data>
+  <data name="Log_NapravaDodana" xml:space="preserve"><value>El dispositivo '{0}' (slave {1}) se añadió a devices.json.</value></data>
+  <data name="Log_NapravaPosodobljena" xml:space="preserve"><value>El dispositivo '{0}' (slave {1}) se actualizó.</value></data>
+  <data name="Log_NapakaProfilNiNalozen" xml:space="preserve"><value>ERROR: el perfil '{0}' del dispositivo '{1}' no está cargado — no se puede editar.</value></data>
+  <data name="Msg_OdstraniNapravo" xml:space="preserve"><value>¿Eliminar el dispositivo '{0}' (slave {1}) de devices.json?
+
+El perfil '{2}' permanecerá en el disco (puede utilizarlo otro dispositivo).</value></data>
+  <data name="Msg_OdstraniNapravoTitle" xml:space="preserve"><value>Eliminar dispositivo</value></data>
+  <data name="Log_NapravaOdstranjena" xml:space="preserve"><value>El dispositivo '{0}' (slave {1}) se eliminó de devices.json.</value></data>
+  <data name="Log_NapraveNiBiloMogoceNajti" xml:space="preserve"><value>No se pudo encontrar el dispositivo '{0}' en devices.json (¿ya eliminado?).</value></data>
+  <data name="Log_NapakaOdstranjevanjaNaprave" xml:space="preserve"><value>ERROR al eliminar el dispositivo: {0}</value></data>
+  <data name="Log_CasVzorcenjaSpremenjen" xml:space="preserve"><value>El tiempo de muestreo se cambió a {0} s (se aplica de inmediato).</value></data>
+
+  <!-- AddDeviceViewModel -->
+  <data name="AddDevice_ErrLoadProfil" xml:space="preserve"><value>No se pudo cargar el perfil '{0}': {1}</value></data>
+  <data name="AddDevice_ErrNiRegistrovZaShranjevanje" xml:space="preserve"><value>No hay registros para guardar.</value></data>
+  <data name="AddDevice_SaveFileDialog_Title" xml:space="preserve"><value>Guardar como perfil</value></data>
+  <data name="AddDevice_SaveFileDialog_Filter" xml:space="preserve"><value>Perfil (*.json)|*.json</value></data>
+  <data name="AddDevice_DefaultProfileFileName" xml:space="preserve"><value>perfil.json</value></data>
+  <data name="AddDevice_ProfilShranjen" xml:space="preserve"><value>Perfil '{0}' guardado.</value></data>
+  <data name="AddDevice_NapakaShranjevanjaProfila" xml:space="preserve"><value>Error al guardar el perfil: {0}</value></data>
+  <data name="AddDevice_OpozoriloProfilUporabljajo" xml:space="preserve"><value>
+
+Advertencia: este perfil también lo utilizan actualmente: {0}. Tras eliminarlo, dejarán de funcionar hasta que se les asigne otro perfil.</value></data>
+  <data name="AddDevice_MsgIzbrisemProfil" xml:space="preserve"><value>¿Eliminar el perfil '{0}' del disco?{1}</value></data>
+  <data name="AddDevice_MsgIzbrisiProfilTitle" xml:space="preserve"><value>Eliminar perfil</value></data>
+  <data name="AddDevice_ProfilIzbrisan" xml:space="preserve"><value>Perfil '{0}' eliminado.</value></data>
+  <data name="AddDevice_NapakaBrisanjaProfila" xml:space="preserve"><value>Error al eliminar el perfil: {0}</value></data>
+  <data name="AddDevice_ErrImeNapraveNeSmeBitiPrazno" xml:space="preserve"><value>El nombre del dispositivo no puede estar vacío.</value></data>
+  <data name="AddDevice_ErrSlaveIdMoraBitiMed" xml:space="preserve"><value>El Slave ID debe estar entre 1 y 247.</value></data>
+  <data name="AddDevice_ErrNapravaPotrebujeVsajEnRegister" xml:space="preserve"><value>El dispositivo necesita al menos un registro.</value></data>
+  <data name="AddDevice_NapakaShranjevanja" xml:space="preserve"><value>Error al guardar: {0}</value></data>
+  <data name="AddDevice_ErrVsakRegisterPotrebujeIme" xml:space="preserve"><value>Cada registro necesita un nombre.</value></data>
+  <data name="AddDevice_ErrNeveljavnaKonstanta" xml:space="preserve"><value>Valor constante no válido para '{0}': '{1}'.</value></data>
+  <data name="AddDevice_ErrNeveljavenNaslov" xml:space="preserve"><value>Dirección de registro no válida para '{0}': '{1}'.</value></data>
+  <data name="AddDevice_ErrNeveljavnaSkala" xml:space="preserve"><value>Escala no válida para el registro '{0}': '{1}'.</value></data>
+  <data name="AddDevice_DefaultPrivateName" xml:space="preserve"><value>dispositivo</value></data>
+
+  <!-- Core: DeviceReader / PollService -->
+  <data name="Err_Timeout" xml:space="preserve"><value>timeout — el dispositivo no responde</value></data>
+  <data name="Err_ModbusException" xml:space="preserve"><value>Modbus exception (function {0}, code {1}) — el dispositivo rechaza la solicitud, verifica las direcciones en el perfil</value></data>
+  <data name="Err_NapakaPovezave" xml:space="preserve"><value>error de conexión: {0}</value></data>
+  <data name="Err_PovezavaNiUspela" xml:space="preserve"><value>la conexión a {0}:{1} falló en {2} ms</value></data>
+  <data name="Msg_PortOdprt" xml:space="preserve"><value>Puerto {0} abierto ({1} baudios, 8{2}{3}).</value></data>
+  <data name="Msg_PortaNiMogoceOdpreti" xml:space="preserve"><value>No se puede abrir el puerto {0}: {1}</value></data>
+  <data name="Msg_PovezavaVzpostavljena" xml:space="preserve"><value>Conexión establecida con {0}:{1} (Modbus TCP).</value></data>
+  <data name="Msg_PovezaveNiMogoceVzpostaviti" xml:space="preserve"><value>No se puede establecer la conexión con {0}:{1}: {2}</value></data>
+  <data name="Msg_PovezavaNiNaVoljo" xml:space="preserve"><value>la conexión ({0}) no está disponible</value></data>
+  <data name="Err_NepricakovanaNapaka" xml:space="preserve"><value>error inesperado: {0}: {1}</value></data>
+  <data name="Msg_PovezavaJeIzginila" xml:space="preserve"><value>La conexión ({0}) se perdió — se intentará restablecer.</value></data>
+  <data name="Msg_NapakaPriZapisu" xml:space="preserve"><value>Error al escribir ({0}): {1}</value></data>
+
+  <!-- Core: ConfigLoader -->
+  <data name="Err_SerialPortNiNastavljen" xml:space="preserve"><value>serial.port no está configurado.</value></data>
+  <data name="Err_SerialBaudNiVeljaven" xml:space="preserve"><value>serial.baud no es válido: {0}</value></data>
+  <data name="Err_SerialParityMoraBiti" xml:space="preserve"><value>serial.parity debe ser none/even/odd (es "{0}").</value></data>
+  <data name="Err_SerialStopBitsMoraBiti" xml:space="preserve"><value>serial.stopBits debe ser 1 o 2 (es {0}).</value></data>
+  <data name="Err_SerialTimeoutMoraBiti" xml:space="preserve"><value>serial.timeoutMs debe ser >= 50 (es {0}).</value></data>
+  <data name="Err_LoggingFolderPrazen" xml:space="preserve"><value>logging.folder no puede estar vacío.</value></data>
+  <data name="Err_LoggingDelimiterEnZnak" xml:space="preserve"><value>logging.delimiter debe ser un solo carácter (es "{0}").</value></data>
+  <data name="Err_LoggingDecimalSep" xml:space="preserve"><value>logging.decimalSeparator debe ser "." o "," (es "{0}").</value></data>
+  <data name="Err_LoggingDelimiterEnakDecimal" xml:space="preserve"><value>logging.delimiter y decimalSeparator no pueden ser iguales.</value></data>
+  <data name="Err_ProfilNimaPollGroup" xml:space="preserve"><value>{0}: no tiene ningún poll group.</value></data>
+  <data name="Err_ProfilNimaRegistra" xml:space="preserve"><value>{0}: no tiene ningún registro.</value></data>
+  <data name="Err_NeznanaFunkcijaPollGroup" xml:space="preserve"><value>{0}: función desconocida "{1}" (input/holding)</value></data>
+  <data name="Err_NeveljavenStartAddress" xml:space="preserve"><value>{0}: startAddress no válido "{1}".</value></data>
+  <data name="Err_CountMoraBiti" xml:space="preserve"><value>{0}: count debe estar entre 1 y 125 (es {1}); Modbus limita cada respuesta a 125 registros.</value></data>
+  <data name="Err_BlokPresegaNaslovniProstor" xml:space="preserve"><value>{0}: el bloque 0x{1}+{2} excede el espacio de direcciones.</value></data>
+  <data name="Err_NeznanaFunkcijaRegister" xml:space="preserve"><value>{0}: función desconocida "{1}" (input/holding/constant)</value></data>
+  <data name="Err_NeveljavenNaslovProfil" xml:space="preserve"><value>{0} ({1}): dirección no válida.</value></data>
+  <data name="Err_NeznanTip" xml:space="preserve"><value>{0}: tipo desconocido "{1}" (uint16/int16/uint32/int32/float32).</value></data>
+  <data name="Err_WordOrderMoraBiti" xml:space="preserve"><value>{0}: wordOrder debe ser big o little.</value></data>
+  <data name="Err_NaslovNiPokrit" xml:space="preserve"><value>{0} ({1}): la dirección no está cubierta por ningún poll group de la misma función ({2}) — añade o amplía el bloque.</value></data>
+  <data name="Err_SampleIntervalMoraBiti" xml:space="preserve"><value>sampleIntervalSeconds debe ser >= 1 (es {0}).</value></data>
+  <data name="Err_WriteIntervalMoraBiti" xml:space="preserve"><value>writeIntervalSeconds debe ser >= 1 (es {0}).</value></data>
+  <data name="Err_DevicesListPrazen" xml:space="preserve"><value>La lista "devices" está vacía.</value></data>
+  <data name="Err_NapravaSlaveIdMoraBiti" xml:space="preserve"><value>{0}: slaveId debe estar entre 1 y 247.</value></data>
+  <data name="Err_NapravaManjkaProfile" xml:space="preserve"><value>{0}: falta "profile".</value></data>
+  <data name="Err_ProfilNeObstaja" xml:space="preserve"><value>{0}: el perfil no existe: {1}</value></data>
+  <data name="Warn_SlaveIdUporabljenVecKrat" xml:space="preserve"><value>El Slave ID {0} se usa en varios dispositivos habilitados — en la misma línea solo debe responder uno.</value></data>
+  <data name="Err_DatotekaPrazna" xml:space="preserve"><value>el archivo está vacío (JSON null).</value></data>
+  <data name="Err_NeveljavenJson" xml:space="preserve"><value>JSON no válido (línea {0}): {1}</value></data>
+  <data name="Err_Who_Profil" xml:space="preserve"><value>perfil "{0}"</value></data>
+  <data name="Err_Who_Naprava" xml:space="preserve"><value>dispositivo "{0}" (slave {1})</value></data>
+  <data name="Err_Who_Register" xml:space="preserve"><value>{0}, registro "{1}"</value></data>
+</root>

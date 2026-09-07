@@ -8,6 +8,8 @@ dist/ModbusLogger.App.exe
 
 # Podatki, ki nastanejo med tekom aplikacije (ne izvorna koda)
 logs/
+crash.log
+dist/crash.log
 
 # Visual Studio / Rider
 .vs/

@@ -114,7 +114,7 @@ public sealed class AddDeviceViewModel : ViewModelBase
     }
 
     public bool IsEditMode => _editingOriginal is not null;
-    public string DialogTitle => IsEditMode ? "Uredi napravo" : "Dodaj napravo";
+    public string DialogTitle => IsEditMode ? Strings.AddDevice_Title_Edit : Strings.AddDevice_Title_Add;
 
     public ObservableCollection<string> AvailableProfiles { get; } = new();
     public ObservableCollection<RegisterRowVm> Registers { get; } = new();
@@ -166,7 +166,7 @@ public sealed class AddDeviceViewModel : ViewModelBase
         var profile = ConfigLoader.LoadProfileRaw(path, out string? error);
         if (profile is null)
         {
-            ValidationMessage = $"Profila '{ProfileToLoad}' ni bilo mogoče naložiti: {error}";
+            ValidationMessage = string.Format(Strings.AddDevice_ErrLoadProfil, ProfileToLoad, error);
             return;
         }
 
@@ -188,7 +188,7 @@ public sealed class AddDeviceViewModel : ViewModelBase
         if (Registers.Count == 0)
             Registers.Add(new RegisterRowVm());
 
-        ValidationMessage = "";
+        ValidationMessage = string.Empty;
     }
 
     /// <summary>
@@ -200,7 +200,7 @@ public sealed class AddDeviceViewModel : ViewModelBase
         var errors = new List<string>();
         var parsed = ParseRegisters(errors);
         if (parsed.Count == 0)
-            errors.Add("Ni registrov za shranjevanje.");
+            errors.Add(Strings.AddDevice_ErrNiRegistrovZaShranjevanje);
         if (errors.Count > 0)
         {
             ValidationMessage = string.Join("\n", errors);
@@ -212,11 +212,11 @@ public sealed class AddDeviceViewModel : ViewModelBase
 
         var dialog = new SaveFileDialog
         {
-            Title = "Shrani kot profil",
+            Title = Strings.AddDevice_SaveFileDialog_Title,
             InitialDirectory = profilesDir,
-            Filter = "Profil (*.json)|*.json",
+            Filter = Strings.AddDevice_SaveFileDialog_Filter,
             DefaultExt = "json",
-            FileName = SanitizeFileName(Label.Trim()) is { Length: > 0 } suggested ? suggested + ".json" : "profil.json",
+            FileName = SanitizeFileName(Label.Trim()) is { Length: > 0 } suggested ? suggested + ".json" : Strings.AddDevice_DefaultProfileFileName,
         };
         if (dialog.ShowDialog() != true)
             return;
@@ -234,11 +234,11 @@ public sealed class AddDeviceViewModel : ViewModelBase
                 AvailableProfiles.Add(n);
             if (AvailableProfiles.Contains(name, StringComparer.OrdinalIgnoreCase))
                 ProfileToLoad = name;
-            ValidationMessage = $"Profil '{name}' shranjen.";
+            ValidationMessage = string.Format(Strings.AddDevice_ProfilShranjen, name);
         }
         catch (Exception ex)
         {
-            ValidationMessage = $"Napaka pri shranjevanju profila: {ex.Message}";
+            ValidationMessage = string.Format(Strings.AddDevice_NapakaShranjevanjaProfila, ex.Message);
         }
     }
 
@@ -259,11 +259,11 @@ public sealed class AddDeviceViewModel : ViewModelBase
             usedBy.Remove(_editingOriginal.Label);
 
         string warning = usedBy.Count > 0
-            ? $"\n\nOpozorilo: ta profil trenutno uporablja(jo) tudi: {string.Join(", ", usedBy)}. Po izbrisu ne bodo delovale, dokler jim ne izberete drugega profila."
+            ? string.Format(Strings.AddDevice_OpozoriloProfilUporabljajo, string.Join(", ", usedBy))
             : "";
         var choice = MessageBox.Show(
-            $"Izbrišem profil '{name}' s diska?{warning}",
-            "Izbriši profil", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            string.Format(Strings.AddDevice_MsgIzbrisemProfil, name, warning),
+            Strings.AddDevice_MsgIzbrisiProfilTitle, MessageBoxButton.YesNo, MessageBoxImage.Warning);
         if (choice != MessageBoxResult.Yes)
             return;
 
@@ -273,11 +273,11 @@ public sealed class AddDeviceViewModel : ViewModelBase
             File.Delete(Path.Combine(profilesDir, name + ".json"));
             AvailableProfiles.Remove(name);
             ProfileToLoad = AvailableProfiles.FirstOrDefault();
-            ValidationMessage = $"Profil '{name}' izbrisan.";
+            ValidationMessage = string.Format(Strings.AddDevice_ProfilIzbrisan, name);
         }
         catch (Exception ex)
         {
-            ValidationMessage = $"Napaka pri brisanju profila: {ex.Message}";
+            ValidationMessage = string.Format(Strings.AddDevice_NapakaBrisanjaProfila, ex.Message);
         }
     }
 
@@ -286,13 +286,13 @@ public sealed class AddDeviceViewModel : ViewModelBase
         var errors = new List<string>();
         string label = Label.Trim();
         if (label.Length == 0)
-            errors.Add("Ime naprave ne sme biti prazno.");
+            errors.Add(Strings.AddDevice_ErrImeNapraveNeSmeBitiPrazno);
         if (SlaveId is < 1 or > 247)
-            errors.Add("Slave ID mora biti med 1 in 247.");
+            errors.Add(Strings.AddDevice_ErrSlaveIdMoraBitiMed);
 
         var parsed = ParseRegisters(errors);
         if (parsed.Count == 0)
-            errors.Add("Naprava potrebuje vsaj en register.");
+            errors.Add(Strings.AddDevice_ErrNapravaPotrebujeVsajEnRegister);
 
         if (errors.Count > 0)
         {
@@ -347,7 +347,7 @@ public sealed class AddDeviceViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            ValidationMessage = $"Napaka pri shranjevanju: {ex.Message}";
+            ValidationMessage = string.Format(Strings.AddDevice_NapakaShranjevanja, ex.Message);
             return;
         }
 
@@ -362,7 +362,7 @@ public sealed class AddDeviceViewModel : ViewModelBase
         {
             if (string.IsNullOrWhiteSpace(row.Name))
             {
-                errors.Add("Vsak register potrebuje ime.");
+                errors.Add(Strings.AddDevice_ErrVsakRegisterPotrebujeIme);
                 continue;
             }
 
@@ -370,7 +370,7 @@ public sealed class AddDeviceViewModel : ViewModelBase
             {
                 if (!double.TryParse(row.ConstantValue, NumberStyles.Float, CultureInfo.InvariantCulture, out double constantValue))
                 {
-                    errors.Add($"Neveljavna konstantna vrednost za '{row.Name}': '{row.ConstantValue}'.");
+                    errors.Add(string.Format(Strings.AddDevice_ErrNeveljavnaKonstanta, row.Name, row.ConstantValue));
                     continue;
                 }
                 var constantDef = new RegisterDef
@@ -386,12 +386,12 @@ public sealed class AddDeviceViewModel : ViewModelBase
 
             if (!ConfigLoader.TryParseAddress(row.Address, out ushort addr))
             {
-                errors.Add($"Neveljaven naslov registra '{row.Name}': '{row.Address}'.");
+                errors.Add(string.Format(Strings.AddDevice_ErrNeveljavenNaslov, row.Name, row.Address));
                 continue;
             }
             if (!double.TryParse(row.Scale, NumberStyles.Float, CultureInfo.InvariantCulture, out double scale))
             {
-                errors.Add($"Neveljavna skala za register '{row.Name}': '{row.Scale}'.");
+                errors.Add(string.Format(Strings.AddDevice_ErrNeveljavnaSkala, row.Name, row.Scale));
                 continue;
             }
             int wordCount = row.Type is "uint32" or "int32" or "float32" ? 2 : 1;
@@ -410,21 +410,32 @@ public sealed class AddDeviceViewModel : ViewModelBase
         return parsed;
     }
 
-    /// <summary>Poišče prosto ime datoteke profila, ki izhaja iz imena naprave (npr. "Ventilator-1", "-2" ...).</summary>
+    /// <summary>
+    /// Zasebni profili naprav (samodejno ustvarjeni, ne namenoma deljene predloge) živijo v
+    /// podmapi "_private", da ne onesnažijo seznama "Naloži profil"/"Izbriši profil" — ta
+    /// prikazuje le datoteke neposredno v profiles/ (ConfigLoader.ListAvailableProfiles ne gre
+    /// v podmape), namenjenega izbiri pravih, deljenih predlog.
+    /// </summary>
+    private const string PrivateProfileSubfolder = "_private";
+
+    /// <summary>Poišče prosto ime zasebnega profila naprave (npr. "Ventilator-1", "-2" ...) v podmapi _private.</summary>
     private static string GenerateUniquePrivateName(string label, string profilesDir)
     {
+        string privateDir = Path.Combine(profilesDir, PrivateProfileSubfolder);
+        Directory.CreateDirectory(privateDir);
+
         string baseName = SanitizeFileName(label);
         if (baseName.Length == 0)
-            baseName = "naprava";
+            baseName = Strings.AddDevice_DefaultPrivateName;
 
         string candidate = baseName;
         int i = 2;
-        while (File.Exists(Path.Combine(profilesDir, candidate + ".json")))
+        while (File.Exists(Path.Combine(privateDir, candidate + ".json")))
         {
             candidate = $"{baseName}-{i}";
             i++;
         }
-        return candidate;
+        return $"{PrivateProfileSubfolder}/{candidate}";
     }
 
     /// <summary>

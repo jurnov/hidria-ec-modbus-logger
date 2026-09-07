@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Manual de usuario — Hidria EC Registrador Modbus</title>
+<style>
+  :root {
+    --dark-blue: #205080;
+    --blue: #1888B8;
+    --teal: #00A0C0;
+    --light: #EFF6FA;
+    --light-hover: #DCEDF6;
+    --text: #222;
+    --muted: #666;
+  }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: var(--text);
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 32px 64px;
+    line-height: 1.55;
+  }
+  header {
+    border-bottom: 3px solid var(--teal);
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+  }
+  header h1 {
+    color: var(--dark-blue);
+    margin: 0 0 4px;
+    font-size: 26px;
+  }
+  header p {
+    color: var(--muted);
+    margin: 0;
+  }
+  nav {
+    background: var(--light);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+  }
+  nav h2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--dark-blue);
+    margin: 0 0 8px;
+  }
+  nav ol {
+    margin: 0;
+    padding-left: 20px;
+    columns: 2;
+  }
+  nav a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+  nav a:hover { text-decoration: underline; }
+  h2 {
+    color: var(--dark-blue);
+    border-bottom: 1px solid var(--light-hover);
+    padding-bottom: 6px;
+    margin-top: 40px;
+  }
+  h3 {
+    color: var(--blue);
+    margin-top: 24px;
+  }
+  code, kbd {
+    background: var(--light);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: Consolas, monospace;
+    font-size: 0.92em;
+  }
+  .btn {
+    display: inline-block;
+    background: var(--light);
+    border: 1px solid var(--light-hover);
+    border-radius: 4px;
+    padding: 1px 8px;
+    font-weight: 600;
+    color: var(--dark-blue);
+    font-size: 0.92em;
+  }
+  .tip, .warn {
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin: 14px 0;
+  }
+  .tip {
+    background: var(--light);
+    border-left: 4px solid var(--teal);
+  }
+  .warn {
+    background: #FFF6E8;
+    border-left: 4px solid #E0A030;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0;
+  }
+  th, td {
+    border: 1px solid var(--light-hover);
+    padding: 6px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: var(--light);
+    color: var(--dark-blue);
+  }
+  footer {
+    margin-top: 48px;
+    padding-top: 12px;
+    border-top: 1px solid var(--light-hover);
+    color: var(--muted);
+    font-size: 0.85em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Hidria EC — Registrador Modbus</h1>
+  <p>Manual de usuario</p>
+</header>
+
+<nav>
+  <h2>Contenido</h2>
+  <ol>
+    <li><a href="#uvod">Introducción</a></li>
+    <li><a href="#povezava">Conexión con los dispositivos</a></li>
+    <li><a href="#naprave">Gestión de dispositivos</a></li>
+    <li><a href="#registri">Mapa de registros del dispositivo (perfil)</a></li>
+    <li><a href="#konfiguracije">Carga y guardado de configuraciones</a></li>
+    <li><a href="#zagon">Inicio y detención del registro</a></li>
+    <li><a href="#belezenje">Configuración de registro (CSV / MySQL)</a></li>
+    <li><a href="#promet">Visualización del tráfico Modbus (HEX)</a></li>
+    <li><a href="#jezik">Cambio del idioma de la interfaz</a></li>
+    <li><a href="#tezave">Solución de problemas</a></li>
+  </ol>
+</nav>
+
+<h2 id="uvod">1. Introducción</h2>
+<p>
+  El registrador Modbus lee datos de los dispositivos a través del protocolo Modbus (RTU mediante
+  un puerto serie RS-485/RS-232 o Modbus TCP) y los registra en archivos CSV y/o en una base de
+  datos MySQL. El programa lee simultáneamente cualquier número de dispositivos, muestra sus
+  valores actuales en tiempo real y, ante una posible interrupción de la conexión, intenta
+  restablecerla automáticamente.
+</p>
+
+<h2 id="povezava">2. Conexión con los dispositivos</h2>
+<p>
+  En el campo <b>Conexión</b>, en la parte izquierda de la ventana, seleccione el modo de conexión:
+</p>
+<table>
+  <tr><th>Modo de conexión</th><th>Descripción</th></tr>
+  <tr>
+    <td>Serie (RS-485)</td>
+    <td>
+      Seleccione el <b>Puerto COM</b> (el botón <span class="btn">⟳</span> actualiza la lista de
+      puertos disponibles), la velocidad de transmisión (<b>baud</b>), el formato de la trama
+      (bits de datos/paridad/bits de parada, p. ej. 8E1), así como el <b>timeout</b> y el número
+      de reintentos en caso de lectura fallida.
+    </td>
+  </tr>
+  <tr>
+    <td>Modbus TCP</td>
+    <td>
+      Introduzca la <b>dirección IP</b> (o el nombre de host) y el <b>puerto</b> del
+      dispositivo/pasarela, así como el timeout y los reintentos, igual que en la conexión serie.
+    </td>
+  </tr>
+</table>
+<div class="tip">
+  La configuración de conexión solo se puede modificar cuando el registro no está en ejecución.
+  El <b>tiempo de muestreo [s]</b> (con qué frecuencia se leen los dispositivos), en cambio, puede
+  modificarse también durante la ejecución — el cambio se aplica de inmediato.
+</div>
+
+<h2 id="naprave">3. Gestión de dispositivos</h2>
+<p>
+  La lista de dispositivos se encuentra en la columna central <b>Dispositivos</b>. Cada
+  dispositivo tiene su propio <b>Slave ID</b> (dirección en el bus) y su propio mapa de registros
+  (perfil).
+</p>
+<ul>
+  <li><span class="btn">Añadir</span> — abre la ventana para añadir un nuevo dispositivo.</li>
+  <li><span class="btn">Editar</span> — edita el dispositivo seleccionado (nombre, Slave ID,
+    registros).</li>
+  <li><span class="btn">Eliminar</span> — elimina el dispositivo seleccionado de la lista (su
+    mapa de registros permanece en el disco, ya que puede utilizarla otro dispositivo).</li>
+</ul>
+<p>
+  Al seleccionar un dispositivo en la lista, en la parte derecha se muestra una tabla con sus
+  registros y sus valores actuales, que se actualizan durante la ejecución del registro.
+</p>
+
+<h2 id="registri">4. Mapa de registros del dispositivo (perfil)</h2>
+<p>
+  En la ventana <b>Añadir dispositivo</b>/<b>Editar dispositivo</b> se edita el mapa de
+  registros: la lista de todos los valores que el programa lee de ese dispositivo. Para cada
+  registro se define:
+</p>
+<table>
+  <tr><th>Campo</th><th>Significado</th></tr>
+  <tr><td>Dirección</td><td>Dirección Modbus del registro (p. ej. <code>0x0100</code> o en
+    decimal).</td></tr>
+  <tr><td>Función</td><td><code>input</code> (fc 04), <code>holding</code> (fc 03) o
+    <code>constant</code> — un valor constante que nunca se lee del bus.</td></tr>
+  <tr><td>Nombre / Unidad</td><td>Nombre para mostrar y unidad física (p. ej. °C, V, rpm).</td></tr>
+  <tr><td>Tipo</td><td><code>uint16</code>, <code>int16</code>, <code>uint32</code>,
+    <code>int32</code> o <code>float32</code>.</td></tr>
+  <tr><td>Escala</td><td>El valor bruto se multiplica por este número antes de mostrarse
+    (p. ej. para convertir décimas en unidades enteras).</td></tr>
+  <tr><td>Word order</td><td>Orden de las palabras de 16 bits en los tipos de 32 bits —
+    <code>big</code> o <code>little</code>.</td></tr>
+  <tr><td>Constante</td><td>Se utiliza únicamente con la función <code>constant</code> — un
+    valor fijo (p. ej. una etiqueta de ubicación) que se escribe en cada línea del registro.</td></tr>
+</table>
+<div class="warn">
+  <b>Importante:</b> el mapa de registros que se edita en la ventana del dispositivo es
+  <b>propiedad de ese dispositivo</b> — los cambios no afectan a otros dispositivos, aunque
+  antes utilizaran la misma plantilla. Para compartir intencionadamente el mismo mapa de
+  registros entre varios dispositivos, utilice los siguientes botones:
+</div>
+<ul>
+  <li><span class="btn">Cargar perfil</span> — carga en el editor una plantilla de registros
+    guardada previamente (sustituye el contenido actual).</li>
+  <li><span class="btn">Guardar como perfil ...</span> — guarda el mapa de registros actual
+    como una plantilla independiente y con nombre, que posteriormente puede cargar cualquier
+    dispositivo.</li>
+  <li><span class="btn">Eliminar perfil</span> — elimina del disco la plantilla guardada
+    seleccionada.</li>
+</ul>
+
+<h2 id="konfiguracije">5. Carga y guardado de configuraciones</h2>
+<p>
+  Los botones <span class="btn">Cargar perfil</span> y <span class="btn">Guardar perfil</span> de
+  la <b>barra de herramientas principal</b> (en la parte superior de la ventana) actúan sobre
+  <b>toda la configuración</b>: todos los dispositivos junto con la configuración de conexión y
+  de registro, guardados bajo un mismo nombre. Esto resulta útil si dispone de varias
+  configuraciones distintas (p. ej. diferentes ubicaciones o bancos de pruebas) y necesita
+  alternar entre ellas.
+</p>
+<div class="tip">
+  No confunda esto con el <a href="#registri">mapa de registros de cada dispositivo</a>
+  (punto 4) — son dos conceptos distintos que en la interfaz utilizan ambos la palabra «perfil».
+</div>
+
+<h2 id="zagon">6. Inicio y detención del registro</h2>
+<p>
+  El botón <span class="btn" style="background:#00A0C0;color:#fff;">INICIAR</span>, en la
+  esquina superior izquierda, establece la conexión e inicia el ciclo de lectura de los
+  dispositivos. Durante la ejecución, el botón cambia a <b>DETENER</b>. Cada dispositivo de la
+  lista muestra el estado actual de la lectura (un punto de color: gris = aún no leído, verde =
+  correcto, rojo = error).
+</p>
+<p>
+  El <b>tiempo de muestreo [s]</b> determina con qué frecuencia se leen los dispositivos (y se
+  actualiza la visualización en la interfaz). El <b>intervalo de escritura</b> (en la
+  configuración de registro) determina, en cambio, con qué frecuencia los valores leídos se
+  escriben realmente en CSV/MySQL — estas dos frecuencias pueden ser diferentes.
+</p>
+
+<h2 id="belezenje">7. Configuración de registro (CSV / MySQL)</h2>
+<p>
+  El botón <span class="btn">Configuración de registro</span> abre una ventana con los
+  siguientes ajustes:
+</p>
+<h3>CSV</h3>
+<ul>
+  <li><b>Carpeta</b> para los archivos CSV (la ruta relativa se toma respecto a la carpeta de
+    la configuración).</li>
+  <li><b>Separador de columnas</b> (punto y coma, coma o tabulador) y <b>separador decimal</b>
+    (coma o punto).</li>
+</ul>
+<h3>MySQL</h3>
+<ul>
+  <li>Datos de conexión: host, puerto, base de datos, usuario, contraseña, nombre de la tabla.</li>
+  <li>El botón <b>Leer columnas</b> lee las columnas existentes de la tabla seleccionada y las
+    ofrece para su asignación — para cada columna se elige el origen del dato (hora de la
+    medición, nombre del dispositivo, estado, un registro concreto o una constante fija).</li>
+</ul>
+<div class="warn">
+  El intervalo de escritura no se puede modificar mientras el registro está en ejecución — los
+  ajustes de esta ventana solo tienen efecto en el siguiente inicio.
+</div>
+
+<h2 id="promet">8. Visualización del tráfico Modbus (HEX)</h2>
+<p>
+  El botón <span class="btn">Tráfico Modbus (HEX)</span> abre una ventana en la que puede ver
+  en tiempo real las solicitudes y respuestas Modbus en bruto (en formato HEX) durante la
+  ejecución del registro — resulta útil para diagnosticar problemas de comunicación.
+</p>
+
+<h2 id="jezik">9. Cambio del idioma de la interfaz</h2>
+<p>
+  En la esquina superior derecha de la ventana, seleccione el idioma en la lista desplegable
+  (SL/EN/DE/IT/ES). Al cambiarlo, la aplicación se reinicia brevemente para que el nuevo idioma
+  se aplique en todas partes — en los menús, los mensajes y el registro de eventos. La
+  aplicación recuerda el idioma seleccionado para el siguiente inicio.
+</p>
+
+<h2 id="tezave">10. Solución de problemas</h2>
+<table>
+  <tr><th>Problema</th><th>Posible causa / solución</th></tr>
+  <tr>
+    <td>La lista de puertos COM está vacía</td>
+    <td>Compruebe que el convertidor USB/RS-485 esté conectado y, a continuación, haga clic en
+      <span class="btn">⟳</span>.</td>
+  </tr>
+  <tr>
+    <td>«No se puede abrir el puerto»</td>
+    <td>Es posible que el puerto lo esté utilizando otro programa (p. ej. otro terminal o una
+      copia de esta aplicación ya en ejecución).</td>
+  </tr>
+  <tr>
+    <td>«No se puede establecer la conexión» (TCP)</td>
+    <td>Compruebe la dirección IP, el puerto y la conectividad de red (p. ej. haga ping al
+      dispositivo).</td>
+  </tr>
+  <tr>
+    <td>El dispositivo muestra «error» / timeout</td>
+    <td>Compruebe el Slave ID, el cableado del bus, la terminación RS-485 y si el mapa de
+      registros corresponde al dispositivo real.</td>
+  </tr>
+  <tr>
+    <td>La conexión se ha perdido durante la ejecución</td>
+    <td>El programa lo detecta automáticamente, cierra la conexión e intenta restablecerla en
+      el siguiente ciclo — la interrupción queda registrada en el registro de eventos y en los
+      datos CSV/MySQL.</td>
+  </tr>
+</table>
+
+<footer>
+  Hidria EC — Registrador Modbus
+</footer>
+
+</body>
+</html>

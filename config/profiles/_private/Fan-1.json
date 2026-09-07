@@ -1,5 +1,5 @@
 {
-  "name": "Fan-1",
+  "name": "_private/Fan-1",
   "pollGroups": [
     {
       "function": "input",

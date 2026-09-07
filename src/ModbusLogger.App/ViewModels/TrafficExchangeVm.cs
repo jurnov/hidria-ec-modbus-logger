@@ -10,7 +10,7 @@ public sealed class TrafficExchangeVm
         TimeText = exchange.Time.ToString("HH:mm:ss.fff");
         Request = FormatHex(exchange.Request);
         HasResponse = exchange.Response is not null;
-        Response = exchange.Response is not null ? FormatHex(exchange.Response) : "(brez odgovora — timeout)";
+        Response = exchange.Response is not null ? FormatHex(exchange.Response) : Strings.Traffic_NoResponse;
         ResponseTimeText = exchange.ResponseTime is { } t ? t.ToString("HH:mm:ss.fff") : "—";
     }
 

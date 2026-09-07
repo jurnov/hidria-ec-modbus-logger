@@ -87,23 +87,23 @@ public static class ConfigLoader
         ValidateLogging(config.Logging, result);
 
         if (config.SampleIntervalSeconds < 1)
-            result.Errors.Add($"sampleIntervalSeconds mora biti >= 1 (je {config.SampleIntervalSeconds}).");
+            result.Errors.Add(string.Format(Strings.Err_SampleIntervalMoraBiti, config.SampleIntervalSeconds));
         if (config.WriteIntervalSeconds < 1)
-            result.Errors.Add($"writeIntervalSeconds mora biti >= 1 (je {config.WriteIntervalSeconds}).");
+            result.Errors.Add(string.Format(Strings.Err_WriteIntervalMoraBiti, config.WriteIntervalSeconds));
 
         if (config.Devices.Count == 0)
-            result.Errors.Add("Seznam \"devices\" je prazen.");
+            result.Errors.Add(Strings.Err_DevicesListPrazen);
 
         string profilesDir = Path.Combine(Path.GetDirectoryName(result.DevicesPath)!, "profiles");
 
         foreach (var dev in config.Devices)
         {
-            string who = $"naprava \"{dev.Label}\" (slave {dev.SlaveId})";
+            string who = string.Format(Strings.Err_Who_Naprava, dev.Label, dev.SlaveId);
             if (dev.SlaveId is < 1 or > 247)
-                result.Errors.Add($"{who}: slaveId mora biti 1-247.");
+                result.Errors.Add(string.Format(Strings.Err_NapravaSlaveIdMoraBiti, who));
             if (string.IsNullOrWhiteSpace(dev.Profile))
             {
-                result.Errors.Add($"{who}: manjka \"profile\".");
+                result.Errors.Add(string.Format(Strings.Err_NapravaManjkaProfile, who));
                 continue;
             }
             if (result.Profiles.ContainsKey(dev.Profile))
@@ -112,7 +112,7 @@ public static class ConfigLoader
             string profilePath = Path.Combine(profilesDir, dev.Profile + ".json");
             if (!File.Exists(profilePath))
             {
-                result.Errors.Add($"{who}: profil ne obstaja: {profilePath}");
+                result.Errors.Add(string.Format(Strings.Err_ProfilNeObstaja, who, profilePath));
                 continue;
             }
             var profile = Deserialize<DeviceProfile>(profilePath, out string? profileError);
@@ -127,7 +127,7 @@ public static class ConfigLoader
 
         var duplicates = config.Devices.Where(d => d.Enabled).GroupBy(d => d.SlaveId).Where(g => g.Count() > 1);
         foreach (var g in duplicates)
-            result.Warnings.Add($"Slave ID {g.Key} je uporabljen pri več omogočenih napravah — na isti liniji odgovori le ena.");
+            result.Warnings.Add(string.Format(Strings.Warn_SlaveIdUporabljenVecKrat, g.Key));
 
         return result;
     }
@@ -135,76 +135,76 @@ public static class ConfigLoader
     private static void ValidateSerial(SerialSettings s, LoadedConfig result)
     {
         if (string.IsNullOrWhiteSpace(s.Port))
-            result.Errors.Add("serial.port ni nastavljen.");
+            result.Errors.Add(Strings.Err_SerialPortNiNastavljen);
         if (s.Baud < 300)
-            result.Errors.Add($"serial.baud ni veljaven: {s.Baud}");
+            result.Errors.Add(string.Format(Strings.Err_SerialBaudNiVeljaven, s.Baud));
         if (s.Parity.ToLowerInvariant() is not ("none" or "even" or "odd"))
-            result.Errors.Add($"serial.parity mora biti none/even/odd (je \"{s.Parity}\").");
+            result.Errors.Add(string.Format(Strings.Err_SerialParityMoraBiti, s.Parity));
         if (s.StopBits is not (1 or 2))
-            result.Errors.Add($"serial.stopBits mora biti 1 ali 2 (je {s.StopBits}).");
+            result.Errors.Add(string.Format(Strings.Err_SerialStopBitsMoraBiti, s.StopBits));
         if (s.TimeoutMs < 50)
-            result.Errors.Add($"serial.timeoutMs mora biti >= 50 (je {s.TimeoutMs}).");
+            result.Errors.Add(string.Format(Strings.Err_SerialTimeoutMoraBiti, s.TimeoutMs));
     }
 
     private static void ValidateLogging(LoggingSettings l, LoadedConfig result)
     {
         if (string.IsNullOrWhiteSpace(l.Folder))
-            result.Errors.Add("logging.folder ne sme biti prazen.");
+            result.Errors.Add(Strings.Err_LoggingFolderPrazen);
         if (l.Delimiter.Length != 1)
-            result.Errors.Add($"logging.delimiter mora biti en znak (je \"{l.Delimiter}\").");
+            result.Errors.Add(string.Format(Strings.Err_LoggingDelimiterEnZnak, l.Delimiter));
         if (l.DecimalSeparator is not ("." or ","))
-            result.Errors.Add($"logging.decimalSeparator mora biti \".\" ali \",\" (je \"{l.DecimalSeparator}\").");
+            result.Errors.Add(string.Format(Strings.Err_LoggingDecimalSep, l.DecimalSeparator));
         if (l.Delimiter == l.DecimalSeparator)
-            result.Errors.Add("logging.delimiter in decimalSeparator ne smeta biti enaka.");
+            result.Errors.Add(Strings.Err_LoggingDelimiterEnakDecimal);
     }
 
     private static void ValidateProfile(DeviceProfile p, string profileName, LoadedConfig result)
     {
-        string who = $"profil \"{profileName}\"";
+        string who = string.Format(Strings.Err_Who_Profil, profileName);
 
         if (p.PollGroups.Count == 0)
-            result.Errors.Add($"{who}: nima nobenega poll group.");
+            result.Errors.Add(string.Format(Strings.Err_ProfilNimaPollGroup, who));
         if (p.Registers.Count == 0)
-            result.Errors.Add($"{who}: nima nobenega registra.");
+            result.Errors.Add(string.Format(Strings.Err_ProfilNimaRegistra, who));
 
         foreach (var g in p.PollGroups)
         {
-            g.FunctionValue = ParseFunction(g.Function, $"{who}: neznana funkcija \"{g.Function}\" (input/holding)", result);
+            g.FunctionValue = ParseFunction(g.Function, string.Format(Strings.Err_NeznanaFunkcijaPollGroup, who, g.Function), result);
             if (!TryParseAddress(g.StartAddress, out ushort start))
-                result.Errors.Add($"{who}: neveljaven startAddress \"{g.StartAddress}\".");
+                result.Errors.Add(string.Format(Strings.Err_NeveljavenStartAddress, who, g.StartAddress));
             g.StartAddressValue = start;
             if (g.Count is < 1 or > 125)
-                result.Errors.Add($"{who}: count mora biti 1-125 (je {g.Count}); Modbus omejuje en odgovor na 125 registrov.");
+                result.Errors.Add(string.Format(Strings.Err_CountMoraBiti, who, g.Count));
             if (start + g.Count > 0x10000)
-                result.Errors.Add($"{who}: blok 0x{start:X4}+{g.Count} presega naslovni prostor.");
+                result.Errors.Add(string.Format(Strings.Err_BlokPresegaNaslovniProstor, who, $"{start:X4}", g.Count));
         }
 
         foreach (var r in p.Registers)
         {
             r.Type = r.Type.ToLowerInvariant();
             r.WordOrder = r.WordOrder.ToLowerInvariant();
-            string rwho = $"{who}, register \"{r.Name}\"";
+            string rwho = string.Format(Strings.Err_Who_Register, who, r.Name);
 
-            r.FunctionValue = ParseFunction(r.Function, $"{rwho}: neznana funkcija \"{r.Function}\" (input/holding/constant)", result);
+            r.FunctionValue = ParseFunction(r.Function, string.Format(Strings.Err_NeznanaFunkcijaRegister, rwho, r.Function), result);
 
             // Konstantni "register" se nikoli ne bere z vodila — brez naslova, tipa ali poll group pokritosti.
             if (r.FunctionValue == ModbusFunction.Constant)
                 continue;
 
             if (!TryParseAddress(r.Address, out ushort addr))
-                result.Errors.Add($"{rwho} ({r.Address}): neveljaven naslov.");
+                result.Errors.Add(string.Format(Strings.Err_NeveljavenNaslovProfil, rwho, r.Address));
             r.AddressValue = addr;
 
             if (r.Type is not ("uint16" or "int16" or "uint32" or "int32" or "float32"))
-                result.Errors.Add($"{rwho}: neznan tip \"{r.Type}\" (uint16/int16/uint32/int32/float32).");
+                result.Errors.Add(string.Format(Strings.Err_NeznanTip, rwho, r.Type));
             if (r.WordOrder is not ("big" or "little"))
-                result.Errors.Add($"{rwho}: wordOrder mora biti big ali little.");
+                result.Errors.Add(string.Format(Strings.Err_WordOrderMoraBiti, rwho));
 
             bool covered = p.PollGroups.Any(g =>
                 g.FunctionValue == r.FunctionValue &&
                 addr >= g.StartAddressValue && addr + r.WordCount <= g.StartAddressValue + g.Count);
             if (!covered)
-                result.Errors.Add($"{rwho} ({r.Address}): naslov ni pokrit z nobenim poll group iste funkcije ({r.Function}) — dodaj ali razširi blok.");
+                result.Errors.Add(string.Format(Strings.Err_NaslovNiPokrit, rwho, r.Address, r.Function));
         }
     }
 
@@ -280,12 +280,12 @@ public static class ConfigLoader
             error = null;
             var value = JsonSerializer.Deserialize<T>(File.ReadAllText(path), JsonOpts);
             if (value is null)
-                error = "datoteka je prazna (JSON null).";
+                error = Strings.Err_DatotekaPrazna;
             return value;
         }
         catch (JsonException ex)
         {
-            error = $"neveljaven JSON (vrstica {ex.LineNumber + 1}): {ex.Message}";
+            error = string.Format(Strings.Err_NeveljavenJson, ex.LineNumber + 1, ex.Message);
             return null;
         }
         catch (IOException ex)

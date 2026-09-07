@@ -87,7 +87,7 @@ public sealed class PollService : IDisposable
             else
             {
                 // Povezava ni na voljo: zabeleži izpad pri vseh napravah, da v CSV ne nastane luknja brez razlage.
-                var result = DeviceReadResult.Failed(DateTime.Now, $"povezava ({ConnectionDescription}) ni na voljo", 0);
+                var result = DeviceReadResult.Failed(DateTime.Now, string.Format(Strings.Msg_PovezavaNiNaVoljo, ConnectionDescription), 0);
                 foreach (var dev in _devices)
                     Dispatch(dev, result, shouldWrite);
             }
@@ -136,13 +136,13 @@ public sealed class PollService : IDisposable
         catch (Exception ex)
         {
             // Varovalka: dolgotrajen zapisovalnik ne sme pasti zaradi nepričakovane izjeme knjižnice.
-            result = DeviceReadResult.Failed(DateTime.Now, $"nepričakovana napaka: {ex.GetType().Name}: {ex.Message}", 0);
+            result = DeviceReadResult.Failed(DateTime.Now, string.Format(Strings.Err_NepricakovanaNapaka, ex.GetType().Name, ex.Message), 0);
         }
 
         if (!result.Success && !ConnectionStillPresent())
         {
             CloseConnection();
-            Message?.Invoke($"Povezava ({ConnectionDescription}) je izginila — poskušal jo bom znova vzpostaviti.");
+            Message?.Invoke(string.Format(Strings.Msg_PovezavaJeIzginila, ConnectionDescription));
         }
 
         Dispatch(dev, result, shouldWrite);
@@ -167,7 +167,7 @@ public sealed class PollService : IDisposable
             catch (Exception ex)
             {
                 // Npr. CSV odprt v Excelu (zaklenjen) — meritev v tem sinku izgubimo, zanka pa teče naprej.
-                Message?.Invoke($"Napaka pri zapisu ({sink.GetType().Name}): {ex.Message}");
+                Message?.Invoke(string.Format(Strings.Msg_NapakaPriZapisu, sink.GetType().Name, ex.Message));
             }
         }
     }
@@ -195,12 +195,12 @@ public sealed class PollService : IDisposable
             _master.Transport.ReadTimeout = s.TimeoutMs;
             _master.Transport.WriteTimeout = s.TimeoutMs;
             _master.Transport.Retries = s.Retries;
-            Message?.Invoke($"Port {s.Port} odprt ({s.Baud} baud, 8{s.Parity.ToUpperInvariant()[0]}{s.StopBits}).");
+            Message?.Invoke(string.Format(Strings.Msg_PortOdprt, s.Port, s.Baud, s.Parity.ToUpperInvariant()[0], s.StopBits));
             return true;
         }
         catch (Exception ex)
         {
-            Message?.Invoke($"Porta {s.Port} ni mogoče odpreti: {ex.Message}");
+            Message?.Invoke(string.Format(Strings.Msg_PortaNiMogoceOdpreti, s.Port, ex.Message));
             CloseConnection();
             return false;
         }
@@ -225,12 +225,12 @@ public sealed class PollService : IDisposable
             _master.Transport.ReadTimeout = s.TimeoutMs;
             _master.Transport.WriteTimeout = s.TimeoutMs;
             _master.Transport.Retries = s.Retries;
-            Message?.Invoke($"Povezava na {s.Host}:{s.Port} vzpostavljena (Modbus TCP).");
+            Message?.Invoke(string.Format(Strings.Msg_PovezavaVzpostavljena, s.Host, s.Port));
             return true;
         }
         catch (Exception ex)
         {
-            Message?.Invoke($"Povezave na {s.Host}:{s.Port} ni mogoče vzpostaviti: {ex.Message}");
+            Message?.Invoke(string.Format(Strings.Msg_PovezaveNiMogoceVzpostaviti, s.Host, s.Port, ex.Message));
             CloseConnection();
             return false;
         }
